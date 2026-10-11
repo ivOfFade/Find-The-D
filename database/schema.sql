@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS applications, complaints, announcements, dorm_interests, tenants, dorms, landlords, persons CASCADE;
+
 CREATE TABLE persons (
     id            INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name          VARCHAR(100) NOT NULL,
