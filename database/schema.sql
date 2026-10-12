@@ -39,9 +39,9 @@ CREATE TABLE dorms (
     -- tenants (has own table)
     -- amenities    (has own table)
     -- photos       (has own table)
-    -- interestedtenants
+    -- interestedtenants (interested_dorms)
     -- announcements (has own table)
-    -- complaints
+    -- complaints (has own table)
 );
 
 CREATE TABLE dorm_amenities (
