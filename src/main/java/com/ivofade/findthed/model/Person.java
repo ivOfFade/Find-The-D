@@ -1,11 +1,11 @@
-package main.java.com.ivofade.findthed.model;
+package com.ivofade.findthed.model;
 
-import main.java.com.ivofade.findthed.enums.DashboardType;
-import main.java.com.ivofade.findthed.enums.Role;
-import main.java.com.ivofade.findthed.exceptions.AuthenticationException;
-import main.java.com.ivofade.findthed.exceptions.InvalidInputException;
-import main.java.com.ivofade.findthed.util.PasswordHasher;
-import main.java.com.ivofade.findthed.util.Validator;
+import com.ivofade.findthed.enums.DashboardType;
+import com.ivofade.findthed.enums.Role;
+import com.ivofade.findthed.exception.AuthenticationException;
+import com.ivofade.findthed.exception.InvalidInputException;
+import com.ivofade.findthed.util.PasswordHasher;
+import com.ivofade.findthed.util.Validator;
 
 public abstract class Person {
 
