@@ -3,3 +3,8 @@ target/
 *.iml
 .vscode/
 src/main/resources/db.properties
+
+*.env
+
+out/
+*.class
