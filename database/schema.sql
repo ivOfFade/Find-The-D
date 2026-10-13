@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS applications, interested_dorms, tenants, establishments, complaints, announcements, dorm_photos, dorm_amenities, dorms, landlords, persons CASCADE;
 
 -- person
+-- model (done)
 CREATE TABLE persons (
     person_id     INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name          VARCHAR(100) NOT NULL,
@@ -15,6 +15,7 @@ CREATE TABLE persons (
 );
 
 -- landlord inherits person
+-- model
 CREATE TABLE landlords (
     person_id     INT PRIMARY KEY
                     REFERENCES persons(person_id) ON DELETE CASCADE,
@@ -22,6 +23,7 @@ CREATE TABLE landlords (
 );
 
 -- for dorms
+-- model
 CREATE TABLE dorms (
     dorm_id      INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     owner_id     INT NOT NULL
@@ -44,18 +46,21 @@ CREATE TABLE dorms (
     -- complaints (has own table)
 );
 
+-- put to dorms model
 CREATE TABLE dorm_amenities (
     dorm_id   INT NOT NULL REFERENCES dorms(dorm_id) ON DELETE CASCADE,
     amenity   VARCHAR(100) NOT NULL,
     PRIMARY KEY (dorm_id, amenity)
 );
 
+-- put to dorms model
 CREATE TABLE dorm_photos (
     dorm_id   INT NOT NULL REFERENCES dorms(dorm_id) ON DELETE CASCADE,
     photo_url VARCHAR(255) NOT NULL,
     PRIMARY KEY (dorm_id, photo_url)
 );
 
+-- own model
 CREATE TABLE announcements (
     announcement_id          INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     dorm_id     INT NOT NULL REFERENCES dorms(dorm_id) ON DELETE CASCADE,
@@ -65,6 +70,7 @@ CREATE TABLE announcements (
     date_posted TIMESTAMP NOT NULL DEFAULT now()
 );
 
+-- own model
 CREATE TABLE establishments (
     establishment_id      INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     establishment_name    VARCHAR(100),
@@ -74,6 +80,7 @@ CREATE TABLE establishments (
 );
 
 -- for tenants
+-- own model (done)
 CREATE TABLE tenants (
     person_id       INT PRIMARY KEY
                     REFERENCES persons(person_id) ON DELETE CASCADE,
@@ -81,12 +88,14 @@ CREATE TABLE tenants (
                     REFERENCES dorms(dorm_id) ON DELETE SET NULL
 );
 
+-- stick to tenants model
 CREATE TABLE interested_dorms (
     tenant_id INT NOT NULL REFERENCES tenants(person_id) ON DELETE CASCADE,
     dorm_id   INT NOT NULL REFERENCES dorms(dorm_id)          ON DELETE CASCADE,
     PRIMARY KEY (tenant_id, dorm_id)
 );
 
+-- own model
 CREATE TABLE applications (
     application_id     INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     tenant_id          INT NOT NULL REFERENCES tenants(person_id) ON DELETE CASCADE,
@@ -98,6 +107,7 @@ CREATE TABLE applications (
     date_reviewed      TIMESTAMP
 );
 
+-- own model (done)
 CREATE TABLE complaints (
     complaint_id      INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     dorm_id           INT NOT NULL REFERENCES dorms(dorm_id) ON DELETE CASCADE,

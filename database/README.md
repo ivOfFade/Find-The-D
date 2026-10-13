@@ -6,11 +6,12 @@
 ## First-time setup
 1. Create the database:
    psql -U postgres -c "CREATE DATABASE findtheddb;"
+   or psql -U postgres -d findtheddb -f seed.sql in terminal
 
 2. Run the schema (from this folder):
    psql -U postgres -d findtheddb -v ON_ERROR_STOP=1 -1 -f schema.sql
 
-3. Verify (should list 8 tables):
+3. Verify (should list 10 tables):
    psql -U postgres -d findtheddb -c "\dt"
 
 ## Connection
@@ -26,3 +27,6 @@ then run step 2 again.
 ## Tables
 persons, landlords, tenants, dorms, dorm_interests,
 announcements, complaints, applications
+
+## Adding values
+psql -U postgres -d findtheddb -f seed.sql

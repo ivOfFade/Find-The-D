@@ -5,3 +5,6 @@ target/
 src/main/resources/db.properties
 
 *.env
+
+out/
+*.class
