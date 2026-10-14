@@ -3,6 +3,7 @@ package com.ivofade.findthed.util;
 import com.ivofade.findthed.enums.Role;
 import com.ivofade.findthed.exception.InvalidInputException;
 import com.ivofade.findthed.model.PlusCode;
+import java.nio.charset.StandardCharsets;
 
 public final class Validator {
 
@@ -70,15 +71,8 @@ public final class Validator {
         "Password must contain at least 8 characters."
       );
     }
-    return value;
-  }
-
-  public static String passwordHash(String value) throws InvalidInputException {
-    if (value == null || value.trim().isEmpty()) {
-      throw new InvalidInputException("Password is required.");
-    }
-    if (value.length() > 255) {
-      throw new InvalidInputException("It must be below 255 characters");
+    if (value.getBytes(StandardCharsets.UTF_8).length > 72) {
+      throw new InvalidInputException("Password is too long.");
     }
     return value;
   }
