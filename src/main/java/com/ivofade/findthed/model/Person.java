@@ -19,8 +19,24 @@ public abstract class Person {
   private final Role role;
   private boolean loggedIn = false;
 
+  // Constructor for registration
+  protected Person(
+    String name,
+    int age,
+    String contactNum,
+    String email,
+    String rawPassword,
+    Role role
+  ) throws InvalidInputException {
+    this.role = Validator.role(role);
+    setName(name);
+    setAge(age);
+    setContactNum(contactNum);
+    setEmail(email);
+    setPasswordHash(rawPassword);
+  }
 
-  // Constructor
+  // Constructor for database loading
   protected Person(
     int personId,
     String name,
@@ -36,7 +52,7 @@ public abstract class Person {
     setAge(age);
     setContactNum(contactNum);
     setEmail(email);
-    setPasswordHash(passwordHash);
+    this.passwordHash = passwordHash;
   }
 
   // Behaviors
@@ -127,27 +143,8 @@ public abstract class Person {
     this.email = Validator.email(email);
   }
 
-  private void setPasswordHash(String passwordHash)
+  private void setPasswordHash(String rawPassword)
     throws InvalidInputException {
-    this.passwordHash = Validator.passwordHash(passwordHash);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Person)) return false;
-    return personId == ((Person) o).personId;
-  }
-
-  @Override
-  public int hashCode() {
-    return Integer.hashCode(personId);
-  }
-
-  @Override
-  public String toString() {
-    return (
-      "Person{id=" + personId + ", name=" + name + ", email=" + email + "}"
-    );
+    this.passwordHash = PasswordHasher.hash(Validator.password(rawPassword));
   }
 }
