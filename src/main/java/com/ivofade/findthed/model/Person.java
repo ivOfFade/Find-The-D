@@ -147,4 +147,14 @@ public abstract class Person {
     throws InvalidInputException {
     this.passwordHash = PasswordHasher.hash(Validator.password(rawPassword));
   }
+
+  static boolean sameIdentity(Person first, Person second) {
+    return (
+      first == second ||
+      (first != null &&
+        second != null &&
+        first.personId > 0 &&
+        first.personId == second.personId)
+    );
+  }
 }
