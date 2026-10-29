@@ -8,7 +8,7 @@ import java.util.*;
 
 public class TenantRepository implements RepositoryInterface<Tenant, Integer> {
     
-    private static final String SELECT = "SELECT from p.*, t.current_dorm_id FROM persons p JOIN tenants t ON t.person_id = p.person_id";
+    private static final String SELECT = "SELECT p.*, t.current_dorm_id FROM persons p JOIN tenants t ON t.person_id = p.person_id";
 
     //returns tenant data from db for login mainly
     private Tenant map(ResultSet rs) throws SQLException {
@@ -54,7 +54,7 @@ public class TenantRepository implements RepositoryInterface<Tenant, Integer> {
     @Override
     public Optional<Tenant> findById(Integer id) throws SQLException {
         try (Connection conn = DatabaseConnection.getConnection();
-            Preparedstatement ps = conn.prepareStatment(SELECT + "WHERE p.person_id = ?")) {
+            Preparedstatement ps = conn.prepareStatment(SELECT + " WHERE p.person_id = ?")) {
 
                 ps.setInt(1, id);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -126,7 +126,7 @@ public class TenantRepository implements RepositoryInterface<Tenant, Integer> {
     // pass null to clear curr dorm id
     public void setCurrentDormId(int tenantId, Integer dormId) throws SQLException {
         try (Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(SELECT + "UPDATE tenants SET current_dorm_id = ? WHERE t.tenant_id = ?")) {
+            PreparedStatement ps = conn.prepareStatement(SELECT + " UPDATE tenants SET current_dorm_id = ? WHERE person_id = ?")) {
                 setNullableInt(ps, 1, dormId);
                 ps.setInt(2, tenantId);
                 ps.executeUpdate();
