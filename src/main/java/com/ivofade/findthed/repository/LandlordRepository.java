@@ -8,9 +8,9 @@ import java.util.*;
 
 public class LandlordRepository implements RepositoryInterface<Landlord, Integer> {
 
-    private static final String SELECT = "SELECT from p.*, l.other_ontact FROM persons p JOIN landlords l ON l.person_id = p.person_id";
+    private static final String SELECT = "SELECT from p.*, l.other_contact FROM persons p JOIN landlords l ON l.person_id = p.person_id";
 
-    private Landlord map(Result rs) throws SQLException {
+    private Landlord map(ResultSet rs) throws SQLException {
         try {
             // construct the data from tenant that super/calls constructor on person
             return new Landlord(
@@ -34,7 +34,7 @@ public class LandlordRepository implements RepositoryInterface<Landlord, Integer
             try {
                 PersonRepository.insertPerson(conn, l);
 
-                try (PreparedStatement ps = conn.preparedStatement(" INSERT INTO landlords (person_id, current_dorm_id) VALUES (?, ?)")) {
+                try (PreparedStatement ps = conn.prepareStatement(" INSERT INTO landlords (person_id, other_contact) VALUES (?, ?)")) {
                     ps.setInt(1, l.getPersonId());
                     ps.setString(2, l.getOtherContact());
                     ps.executeUpdate();
@@ -50,7 +50,7 @@ public class LandlordRepository implements RepositoryInterface<Landlord, Integer
     @Override
     public Optional<Landlord> findById(Integer id) throws SQLException {
         try (Connection conn = DatabaseConnection.getConnection();
-            Preparedstatement ps = conn.prepareStatment(SELECT + " WHERE p.person_id = ?")) {
+            PreparedStatement ps = conn.prepareStatement(SELECT + " WHERE p.person_id = ?")) {
 
                 ps.setInt(1, id);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -62,7 +62,7 @@ public class LandlordRepository implements RepositoryInterface<Landlord, Integer
     // mainly for logging in
     public Optional<Landlord> findByEmail(String email) throws SQLException {
         try (Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.preparedStatement(SELECT + " WHERE p.email = ?")){
+            PreparedStatement ps = conn.prepareStatement(SELECT + " WHERE p.email = ?")){
 
                 ps.setString(1, email);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -91,7 +91,7 @@ public class LandlordRepository implements RepositoryInterface<Landlord, Integer
 
             try {
                 PersonRepository.updatePerson(conn, l);
-                try (PreparedStatement ps = conn.preparedStatement(" UPDATE landlords SET other_contact = ? WHERE person_id = ?")){
+                try (PreparedStatement ps = conn.prepareStatement(" UPDATE landlords SET other_contact = ? WHERE person_id = ?")){
                     ps.setString(1, l.getOtherContact());
                     ps.setInt(2, l.getPersonId());
                     ps.executeUpdate();
@@ -107,7 +107,7 @@ public class LandlordRepository implements RepositoryInterface<Landlord, Integer
     @Override 
     public void delete(Integer id) throws SQLException {
         try (Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.preparedStatement(" DELETE FROM persons WHERE person_id = ?")) {
+            PreparedStatement ps = conn.prepareStatement(" DELETE FROM persons WHERE person_id = ?")) {
                 ps.setInt(1, id);
                 ps.executeUpdate();
             }
