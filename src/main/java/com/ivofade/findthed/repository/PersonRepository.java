@@ -2,42 +2,30 @@ package com.ivofade.findthed.repository;
 
 import com.ivofade.findthed.model.Person;
 import com.ivofade.findthed.util.DatabaseConnection;
-import com.ivofade.findthed.util.Validator;
 import java.sql.*;
 import java.util.Optional;
-import com.ivofade.findthed.exception.InvalidInputException;
 
 public class PersonRepository {
-
-    static void mapInto(Person p, ResultSet rs) throws SQLException {
-        try { 
-            p.assignPersonId(rs.getInt("person_id"));
-            p.setName(rs.getString("name"));
-            p.setAge(rs.getInt("age"));
-            p.setContactNum(rs.getString("contact_num"));
-            p.setEmail(rs.getString("email"));
-            p.setPasswordHash(rs.getString("password_hash"));
-            p.setRole(rs.getString("role"));
-            // login setter
-        } catch (InvalidInputException e) {
-            throw new SQLException("Invalid data in row: " + e.getMessage(), e);
-        }
-    }
 
     static void insertPerson(Connection conn, Person p) throws SQLException {
         String sql = "INSERT INTO persons (name, age, contact_num, email, pasword_hash, role) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try(PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+        try(PreparedStatement ps = conn.prepareStatement(sql, new String[] { "person_id" })){
             ps.setString(1, p.getName());
-            ps.setInt(2, getAge());
-            ps.setString(3, getContactNum());
-            ps.setString(4, getEmail());
-            ps.setString(5, getPasswordHashForPersistence());
-            ps.setString(6, getRole());
+            ps.setInt(2, p.getAge());
+            ps.setString(3, p.getContactNum());
+            ps.setString(4, p.getEmail());
+            ps.setString(5, p.getPasswordHashForPersistence());
+            ps.setString(6, p.getRole().name());
+
+            ps.executeUpdate();
 
             try (ResultSet keys = ps.getGeneratedKeys()) {
-                keys.next();
-                p.setPersonId(keys.getInt("person_id"));
+                if(keys.next()){
+                    p.assignPersonId(keys.getInt(1));
+                } else {
+                    throw new SQLException("Insert succeeded but no ID was returned.");
+                }
             }
         } 
     }
@@ -47,11 +35,11 @@ public class PersonRepository {
 
         try(PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, p.getName());
-            ps.setInt(2, getAge());
-            ps.setString(3, getContactNum());
-            ps.setString(4, getEmail());
-            ps.setString(5, getPasswordHashForPersistence());
-            ps.setInt(6, getPersonId());
+            ps.setInt(2, p.getAge());
+            ps.setString(3, p.getContactNum());
+            ps.setString(4, p.getEmail());
+            ps.setString(5, p.getPasswordHashForPersistence());
+            ps.setInt(6, p.getPersonId());
             ps.executeUpdate();
 
         }
