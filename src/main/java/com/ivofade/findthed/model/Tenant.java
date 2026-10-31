@@ -1,6 +1,5 @@
 package com.ivofade.findthed.model;
 
-import com.ivofade.findthed.enums.ApplicationStatus;
 import com.ivofade.findthed.enums.DashboardType;
 import com.ivofade.findthed.enums.Role;
 import com.ivofade.findthed.exception.DormNotFoundException;
