@@ -8,7 +8,7 @@ import java.util.*;
 
 public class LandlordRepository implements RepositoryInterface<Landlord, Integer> {
 
-    private static final String SELECT = "SELECT from p.*, l.other_contact FROM persons p JOIN landlords l ON l.person_id = p.person_id";
+    private static final String SELECT = "SELECT p.*, l.other_contact FROM persons p JOIN landlords l ON l.person_id = p.person_id";
 
     private Landlord map(ResultSet rs) throws SQLException {
         try {
