@@ -8,7 +8,7 @@ import java.util.Optional;
 public class PersonRepository {
 
     static void insertPerson(Connection conn, Person p) throws SQLException {
-        String sql = "INSERT INTO persons (name, age, contact_num, email, pasword_hash, role) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO persons (name, age, contact_num, email, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)";
 
         try(PreparedStatement ps = conn.prepareStatement(sql, new String[] { "person_id" })){
             ps.setString(1, p.getName());
@@ -62,7 +62,7 @@ public class PersonRepository {
 
     public void setLoggedIn(int personId, boolean loggedIn) throws SQLException {
         try (Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement("UPDATE persons SET is_logged_in=? WHERE persons_id=?")) {
+            PreparedStatement ps = conn.prepareStatement("UPDATE persons SET is_logged_in=? WHERE person_id=?")) {
                 ps.setBoolean(1, loggedIn);
                 ps.setInt(2, personId);
                 ps.executeUpdate();
