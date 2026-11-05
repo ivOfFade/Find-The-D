@@ -6,6 +6,10 @@ import com.ivofade.findthed.util.DatabaseConnection;
 import java.sql.*;
 import java.util.*;
 
+import com.ivofade.findthed.model.DormDetails;
+import com.ivofade.findthed.model.Landlord;
+import com.ivofade.findthed.model.Tenant;
+
 public class DormRepository implements RepositoryInterface<Dorm, Integer> {
 
     private static final String SELECT = "SELECT d.* FROM dorms d";
@@ -47,29 +51,46 @@ public class DormRepository implements RepositoryInterface<Dorm, Integer> {
     }
 
     private Dorm map(Connection conn, ResultSet rs) throws SQLException {
+
         int dormId = rs.getInt("dorm_id");
+        int ownerId = rs.getInt("owner_id");
+
+        LandlordRepository landlordRepository = new LandlordRepository();
+        Optional<Landlord> result = landlordRepository.findById(ownerId);
+
+        if (result.isEmpty()) {
+            throw new SQLException("Landlord not found: " + ownerId);
+        }
+
+        Landlord owner = result.get();
 
         List<String> amenities = loadAmenities(conn, dormId);
         List<String> photos = loadPhotos(conn, dormId);
 
+        List<Tenant> residents = new TenantRepository().loadResidents(conn, dormId);
+
         try {
-            return new Dorm (
-                dormId,
-                rs.getInt("owner_id"),
+            DormDetails details = new DormDetails(
                 rs.getString("dorm_name"),
                 rs.getString("location"),
                 rs.getString("plus_code"),
                 rs.getString("description"),
                 rs.getInt("total_slots"),
-                rs.getInt("available_slots"),
-                rs.getBigDecimal("rate"),
-                rs.getString("rules"),
-                rs.getTimestamp("date_posted").toLocalDateTime(),
+                rs.getDouble("rate"),
                 amenities,
+                rs.getString("rules"),
                 photos
             );
+
+            return new Dorm(
+                dormId,
+                owner,
+                details,
+                rs.getTimestamp("date_posted").toLocalDateTime(),
+                residents
+            );
         } catch (InvalidInputException e) {
-            throw new SQLException("Invalid data in a row: " + e.getMessage(), e);
+            throw new SQLException("Invalid dorm data.", e);
         }
     }
 
@@ -97,14 +118,14 @@ public class DormRepository implements RepositoryInterface<Dorm, Integer> {
                 try (PreparedStatement ps = conn.prepareStatement(
                         dormSql, new String[] {"dorm_id"})) {
 
-                    ps.setInt(1, d.getOwnerId());
+                    ps.setInt(1, d.getOwner().getPersonId());
                     ps.setString(2, d.getDormName());
                     ps.setString(3, d.getLocation());
-                    ps.setString(4, d.getPlusCode());
+                    ps.setString(4, d.getPlusCode() == null ? null : d.getPlusCode().getCode());
                     ps.setString(5, d.getDescription());
                     ps.setInt(6, d.getTotalSlots());
                     ps.setInt(7, d.getAvailableSlots());
-                    ps.setBigDecimal(8, d.getRate());
+                    ps.setDouble(8, d.getRate());
                     ps.setString(9, d.getRules());
 
                     ps.executeUpdate();
@@ -153,6 +174,8 @@ public class DormRepository implements RepositoryInterface<Dorm, Integer> {
 
             // Keep the object unchanged if any database operation was rolled back.
             d.assignDormId(dormId);
+        } catch (InvalidInputException e) {
+            throw new SQLException("Could not assign the generated dorm ID.", e);
         }
     }
 
@@ -213,11 +236,11 @@ public class DormRepository implements RepositoryInterface<Dorm, Integer> {
                 try (PreparedStatement ps = conn.prepareStatement(dormSql)) {
                     ps.setString(1, d.getDormName());
                     ps.setString(2, d.getLocation());
-                    ps.setString(3, d.getPlusCode());
+                    ps.setString(3, d.getPlusCode() == null ? null : d.getPlusCode().getCode());
                     ps.setString(4, d.getDescription());
                     ps.setInt(5, d.getTotalSlots());
                     ps.setInt(6, d.getAvailableSlots());
-                    ps.setBigDecimal(7, d.getRate());
+                    ps.setDouble(7, d.getRate());
                     ps.setString(8, d.getRules());
                     ps.setInt(9, d.getDormId());
 
