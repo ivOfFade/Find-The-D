@@ -3,6 +3,8 @@ package com.ivofade.findthed.repository;
 import com.ivofade.findthed.enums.ApplicationStatus;
 import com.ivofade.findthed.exception.InvalidInputException;
 import com.ivofade.findthed.model.Application;
+import com.ivofade.findthed.model.Tenant;
+import com.ivofade.findthed.model.Dorm;
 import com.ivofade.findthed.util.DatabaseConnection;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -17,20 +19,24 @@ public class ApplicationRepository implements RepositoryInterface<Application, I
     private Application map(ResultSet rs) throws SQLException {
         Timestamp reviewed = rs.getTimestamp("date_reviewed");
 
+        int tenantId = rs.getInt("tenant_id");
+        int dormId = rs.getInt("dorm_id");
+
+        Tenant tenant = new TenantRepository().findById(tenantId).orElseThrow(() -> new SQLException("Tenant not found: " + tenantId));
+        Dorm dorm = new DormRepository().findById(dormId).orElseThrow(() -> new SQLException("Dorm not found: " + dormId));
+
         try {
             return new Application(
-                rs.getInt("application_id"),
-                rs.getInt("tenant_id"),
-                rs.getInt("dorm_id"),
+                rs.getInt("application_id"), 
+                tenant,
+                dorm,
                 ApplicationStatus.valueOf(rs.getString("status")),
                 rs.getBoolean("transfer_confirmed"),
                 rs.getTimestamp("date_submitted").toLocalDateTime(),
                 reviewed == null ? null : reviewed.toLocalDateTime()
             );
         } catch (InvalidInputException | IllegalArgumentException e) {
-            throw new SQLException(
-                "Invalid data in an application row: " + e.getMessage(), e
-            );
+            throw new SQLException("Invalid data in an application row: " + e.getMessage(), e);
         }
     }
 
@@ -56,11 +62,10 @@ public class ApplicationRepository implements RepositoryInterface<Application, I
             int applicationId;
 
             try {
-                try (PreparedStatement ps = conn.prepareStatement(
-                        sql, new String[] {"application_id"})) {
+                try (PreparedStatement ps = conn.prepareStatement(sql, new String[] {"application_id"})) {
 
-                    ps.setInt(1, a.getTenantId());
-                    ps.setInt(2, a.getDormId());
+                    ps.setInt(1, a.getTenant().getPersonId());
+                    ps.setInt(2, a.getDorm().getDormId());
                     ps.setBoolean(3, a.isTransferConfirmed());
 
                     if (ps.executeUpdate() != 1) {
@@ -89,6 +94,7 @@ public class ApplicationRepository implements RepositoryInterface<Application, I
                 throw e;
             }
 
+            //to change in applicaiton model
             a.assignApplicationId(applicationId);
         }
     }
