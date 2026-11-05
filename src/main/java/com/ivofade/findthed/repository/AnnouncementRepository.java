@@ -1,7 +1,10 @@
 package com.ivofade.findthed.repository;
 
 import com.ivofade.findthed.exception.InvalidInputException;
+import com.ivofade.findthed.exception.UnauthorizedActionException;
 import com.ivofade.findthed.model.Announcement;
+import com.ivofade.findthed.model.Dorm;
+import com.ivofade.findthed.model.Landlord;
 import com.ivofade.findthed.util.DatabaseConnection;
 import java.sql.*;
 import java.util.*;
@@ -11,18 +14,22 @@ public class AnnouncementRepository implements RepositoryInterface<Announcement,
     private static final String SELECT = "SELECT a.* FROM announcements a";
 
     private Announcement map(ResultSet rs) throws SQLException {
+        int dormId = rs.getInt("dorm_id");
+        Dorm dorm = new DormRepository().findById(dormId).orElseThrow(() -> new SQLException("Dorm not found: " + dormId));
+
+        int authorId = rs.getInt("author_id");
+        Landlord author = new LandlordRepository().findById(authorId).orElseThrow(() -> new SQLException("Author not found: " + authorId));
+
         try {
             return new Announcement(
                 rs.getInt("announcement_id"),
-                rs.getInt("dorm_id"),
-                rs.getInt("author_id"),
+                dorm,
+                author,
                 rs.getString("message"),
                 rs.getTimestamp("date_posted").toLocalDateTime()
             );
-        } catch (InvalidInputException e) {
-            throw new SQLException(
-                "Invalid data in an announcement row: " + e.getMessage(), e
-            );
+        } catch (InvalidInputException | UnauthorizedActionException e) {
+            throw new SQLException("Invalid announcement data.", e);    
         }
     }
 
@@ -44,8 +51,8 @@ public class AnnouncementRepository implements RepositoryInterface<Announcement,
                 try (PreparedStatement ps = conn.prepareStatement(
                         sql, new String[] {"announcement_id"})) {
 
-                    ps.setInt(1, a.getDormId());
-                    ps.setInt(2, a.getAuthorId());
+                    ps.setInt(1, a.getDorm().getDormId());
+                    ps.setInt(2, a.getAuthor().getPersonId());
                     ps.setString(3, a.getMessage());
 
                     if (ps.executeUpdate() != 1) {
