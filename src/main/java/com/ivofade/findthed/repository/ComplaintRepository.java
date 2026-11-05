@@ -2,6 +2,8 @@ package com.ivofade.findthed.repository;
 
 import com.ivofade.findthed.exception.InvalidInputException;
 import com.ivofade.findthed.model.Complaint;
+import com.ivofade.findthed.model.Dorm;
+import com.ivofade.findthed.model.Tenant;
 import com.ivofade.findthed.util.DatabaseConnection;
 import java.sql.*;
 import java.util.*;
@@ -11,14 +13,18 @@ public class ComplaintRepository implements RepositoryInterface<Complaint, Integ
     private static final String SELECT = "SELECT c.* FROM complaints c";
 
     private Complaint map(ResultSet rs) throws SQLException {
-        int sender = rs.getInt("sender_id");
-        Integer senderId = rs.wasNull() ? null : sender;
+
+        int dormId = rs.getInt("dorm_id");
+        Dorm dorm = new DormRepository().findById(dormId).orElseThrow(() -> new SQLException("Dorm not found: " + dormId));
+
+        int senderId = rs.getInt("sender_id");
+        Tenant sender = new TenantRepository().findById(senderId).orElseThrow(() -> new SQLException("Sender not found: " + senderId));
 
         try {
             return new Complaint(
                 rs.getInt("complaint_id"),
-                rs.getInt("dorm_id"),
-                senderId,
+                dorm,
+                sender,
                 rs.getString("message"),
                 rs.getBoolean("anonymous"),
                 rs.getTimestamp("date_posted").toLocalDateTime()
@@ -48,9 +54,9 @@ public class ComplaintRepository implements RepositoryInterface<Complaint, Integ
                 try (PreparedStatement ps = conn.prepareStatement(
                         sql, new String[] {"complaint_id"})) {
 
-                    ps.setInt(1, c.getDormId());
+                    ps.setInt(1, c.getDorm().getDormId());
 
-                    setNullableInt(ps, 2, c.isAnonymous() ? null : c.getSenderId());
+                    setNullableInt(ps, 2, c.isAnonymous() ? null : c.getSender().getPersonId());
 
                     ps.setString(3, c.getMessage());
                     ps.setBoolean(4, c.isAnonymous());
