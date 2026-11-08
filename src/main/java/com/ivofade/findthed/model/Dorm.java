@@ -1,5 +1,8 @@
 package com.ivofade.findthed.model;
 
+public class Dorm{
+
+}
 import com.ivofade.findthed.exception.InvalidInputException;
 import com.ivofade.findthed.exception.NoAvailableSlotsException;
 import com.ivofade.findthed.util.Validator;
