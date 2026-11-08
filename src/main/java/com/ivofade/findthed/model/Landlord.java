@@ -1,5 +1,8 @@
 package com.ivofade.findthed.model;
 
+public class Landlord extends Person{
+
+}
 import com.ivofade.findthed.enums.DashboardType;
 import com.ivofade.findthed.enums.Role;
 import com.ivofade.findthed.exception.InvalidInputException;
