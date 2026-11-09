@@ -248,4 +248,114 @@ public class LandlordServiceRepository {
         }
     }
 
+    // Applications and decisions.
+
+    public List<Application> findPendingApplications(Connection connection, Landlord landlord, Dorm dorm)
+        throws SQLException, InvalidInputException {
+        String sql = "SELECT a.*, p.* FROM applications a JOIN persons p ON a.tenant_id = p.person_id "
+            + "JOIN dorms d ON a.dorm_id = d.dorm_id WHERE d.owner_id = ? AND d.dorm_id = ? "
+            + "AND a.status = 'PENDING' ORDER BY a.date_submitted, a.application_id";
+        List<Application> pending = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, landlord.getPersonId());
+            statement.setInt(2, dorm.getDormId());
+            try (ResultSet rows = statement.executeQuery()) {
+                while (rows.next()) pending.add(readApplication(rows, dorm, readTenant(rows)));
+            }
+        }
+        return List.copyOf(pending);
+    }
+
+    public Application findOwnedApplication(Connection connection, int id, Landlord landlord,
+                                 boolean lock, Tenant restoredTenant)
+        throws SQLException, InvalidInputException, UnauthorizedActionException {
+        String sql = "SELECT a.*, p.* FROM applications a JOIN persons p ON a.tenant_id = p.person_id "
+            + "JOIN dorms d ON a.dorm_id = d.dorm_id WHERE a.application_id = ? AND d.owner_id = ?"
+            + (lock ? " FOR UPDATE OF a" : "");
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            statement.setInt(2, landlord.getPersonId());
+            try (ResultSet row = statement.executeQuery()) {
+                if (!row.next()) throw new UnauthorizedActionException("Application is not in your listings.");
+                Dorm dorm = findOwnedDorm(connection, row.getInt("dorm_id"), landlord, false);
+                Tenant tenant = restoredTenant == null ? readTenant(row) : restoredTenant;
+                if (tenant.getPersonId() != row.getInt("tenant_id")) {
+                    throw new SQLException("Application tenant changed while reviewing.");
+                }
+                return readApplication(row, dorm, tenant);
+            }
+        }
+    }
+
+    private Application readApplication(ResultSet row, Dorm dorm, Tenant tenant)
+        throws SQLException, InvalidInputException {
+        Timestamp reviewed = row.getTimestamp("date_reviewed");
+        return new Application(row.getInt("application_id"), tenant, dorm,
+            ApplicationStatus.valueOf(row.getString("status")), row.getBoolean("transfer_confirmed"),
+            row.getTimestamp("date_submitted").toLocalDateTime(),
+            reviewed == null ? null : reviewed.toLocalDateTime());
+    }
+
+    public void saveDecision(Connection connection, Landlord landlord, Application application)
+        throws SQLException {
+        String sql = "UPDATE applications SET status = ?, date_reviewed = ? "
+            + "WHERE application_id = ? AND status = 'PENDING' "
+            + "AND dorm_id IN (SELECT dorm_id FROM dorms WHERE owner_id = ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, application.getStatus().name());
+            statement.setTimestamp(2, Timestamp.valueOf(application.getDateReviewed()));
+            statement.setInt(3, application.getApplicationId());
+            statement.setInt(4, landlord.getPersonId());
+            if (statement.executeUpdate() != 1) throw new SQLException("Application changed while reviewing.");
+        }
+    }
+
+    public void removeAcceptedInterest(Connection connection, Application application) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "DELETE FROM interested_dorms WHERE tenant_id = ? AND dorm_id = ?")) {
+            statement.setInt(1, application.getTenant().getPersonId());
+            statement.setInt(2, application.getDorm().getDormId());
+            statement.executeUpdate();
+        }
+    }
+
+    // Announcements.
+
+    public Announcement insertAnnouncement(Connection connection, Announcement announcement)
+        throws SQLException, InvalidInputException, UnauthorizedActionException {
+        String sql = "INSERT INTO announcements (dorm_id, author_id, message) "
+            + "SELECT dorm_id, owner_id, ? FROM dorms WHERE dorm_id = ? AND owner_id = ? "
+            + "RETURNING announcement_id, date_posted";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, announcement.getMessage());
+            statement.setInt(2, announcement.getDorm().getDormId());
+            statement.setInt(3, announcement.getAuthor().getPersonId());
+            try (ResultSet row = statement.executeQuery()) {
+                if (!row.next()) throw new UnauthorizedActionException("Dorm is not in your listings.");
+                return new Announcement(row.getInt(1), announcement.getDorm(), announcement.getAuthor(),
+                    announcement.getMessage(), row.getTimestamp(2).toLocalDateTime());
+            }
+        }
+    }
+
+    // Sender-free complaints.
+
+    public List<ComplaintView> findComplaints(Connection connection, int dormId, int ownerId)
+        throws SQLException {
+        // Never SELECT sender_id or join persons here, even for nonanonymous messages.
+        String sql = "SELECT c.complaint_id, c.message, c.date_posted FROM complaints c "
+            + "JOIN dorms d ON c.dorm_id = d.dorm_id WHERE d.dorm_id = ? AND d.owner_id = ? "
+            + "ORDER BY c.date_posted DESC, c.complaint_id DESC";
+        List<ComplaintView> complaints = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, dormId);
+            statement.setInt(2, ownerId);
+            try (ResultSet rows = statement.executeQuery()) {
+                while (rows.next()) complaints.add(new ComplaintView(rows.getInt(1), rows.getString(2),
+                    rows.getTimestamp(3).toLocalDateTime()));
+            }
+        }
+        return List.copyOf(complaints);
+    }
+
 }
