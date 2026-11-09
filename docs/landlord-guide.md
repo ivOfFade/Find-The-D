@@ -179,3 +179,24 @@ java '-Djavax.net.ssl.trustStoreType=Windows-ROOT' '-Djavax.net.ssl.trustStore=N
 These options keep TLS verification enabled. They do not change installed certificates or disable certificate checks. No global JVM setting is changed.
 
 The backend provides callable services, not new screen wiring. Frontend code should keep database/HTTP calls off the Swing event thread and refresh displayed data after successful changes.
+
+## Local feature branches
+
+OpenStreetMap was implemented first on `feature/openstreetmap-nearby`, followed
+by the source move. `feature/landlord-service-stubs` contains the revised API
+documentation (the old branch name is retained, but there are no stubs).
+`feature/backend-landlord-listing` adds listings/dashboard, and
+`feature/backend-landlord-communication` adds application decisions,
+announcements, and complaint views. Each later branch includes its dependencies.
+
+The communication branch contains the complete written implementation. Nothing
+has been pushed or merged into develop. The preserved compilation blockers and
+database setup must be resolved before database behavior can be verified and
+Neil can review the features as ready to merge. Delete a feature branch only
+after the corresponding reviewed merge.
+
+The attempted full compile reported eight import-position errors in
+`src/main/model/Tenant.java`, caused by the duplicate declaration before its
+imports. The Application/Complaint API mismatches above are also visible in the
+preserved source, but compilation stops at the Tenant parsing errors first.
+No tests or stubs were created or run.
