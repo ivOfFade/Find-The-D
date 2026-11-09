@@ -1,8 +1,5 @@
 package model;
 
-public class Landlord extends Person{
-
-}
 import enums.DashboardType;
 import enums.Role;
 import exception.InvalidInputException;
@@ -152,7 +149,7 @@ public class Landlord extends Person {
   }
 
   public void acceptApplication(Application application)
-    throws InvalidInputException, UnauthorizedActionException {
+    throws InvalidInputException, UnauthorizedActionException, exception.NoAvailableSlotsException {
     Validator.requiredReference(application, "Application");
     requireOwnership(application.getDorm());
     application.accept(this);

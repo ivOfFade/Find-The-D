@@ -1,8 +1,5 @@
 package model;
 
-public class Dorm{
-
-}
 import exception.InvalidInputException;
 import exception.NoAvailableSlotsException;
 import util.Validator;
