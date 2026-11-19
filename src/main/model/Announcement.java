@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public class Announcement {
 
-  private int announcementId;
+  private final int announcementId;
   private final Dorm dorm;
   private final Landlord author;
   private final String message;
@@ -54,13 +54,6 @@ public class Announcement {
 
   public int getAnnouncementId() {
     return announcementId;
-  }
-
-  public void assignAnnouncementId(int generatedId) {
-    if (announcementId != 0 || generatedId <= 0) {
-      throw new IllegalArgumentException("A new announcement needs a positive generated ID.");
-    }
-    announcementId = generatedId;
   }
 
   public Dorm getDorm() {
