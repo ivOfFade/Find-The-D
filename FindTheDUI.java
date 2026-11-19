@@ -8,31 +8,38 @@ import java.awt.color.*;
 
 public class FindTheDUI extends JFrame {
 
+    // set LIGHT_GRAY_BG as yung hex code
     public static final Color LIGHT_GRAY_BG = Color.decode("#5b5f5d");
 
     // Screen names used by the main window's CardLayout
+    // instead of typing multiple times, gagamitin nalang ung variables
     private static final String WELCOME = "Welcome";
     private static final String LOGIN = "Login";
     private static final String REGISTER = "Register";
     private static final String DASHBOARD = "Dashboard";
 
     private static FindTheDUI instance;
+
+    // manages how makikita ung diff screens
+    // chooses between those screens
     private final CardLayout screens = new CardLayout();
+    // holds all screens
     private final JPanel root = new JPanel(screens);
 
     // The one and only window: every screen is a panel swapped in here
     public FindTheDUI() {
-        setTitle("Find The D");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Find The D"); // Title sa top
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // para magclose pag pinindot yung X
         setSize(1000, 650);
         setMinimumSize(new Dimension(900, 600));
-        setLocationRelativeTo(null);
-        setContentPane(root);
+        setLocationRelativeTo(null); // para nasa center kapag nirun
+        setContentPane(root); // dito madidisplay yung diff screens
         instance = this;
         showWelcome();
     }
 
     // Puts a fresh panel on screen under the given name, replacing the old one
+    // para madisplay kung anong panel yung pinindot mo
     private void display(String name, JPanel panel) {
         for (Component c : root.getComponents()) {
             if (name.equals(c.getName())) {
@@ -47,6 +54,7 @@ public class FindTheDUI extends JFrame {
     }
 
     // ---------- Navigation (used by every screen) ----------
+    // the diff screens
     public static void showWelcome() {
         instance.display(WELCOME, new WelcomePanel());
     }
@@ -69,6 +77,7 @@ public class FindTheDUI extends JFrame {
 
     private static ImageIcon LOGO;
 
+    // left panel, logo side
     public static JPanel createLeftPanel() {
         JPanel leftPanel = new JPanel(new GridBagLayout());
         leftPanel.setOpaque(false);
@@ -98,7 +107,10 @@ public class FindTheDUI extends JFrame {
 
     // Log out pop up confirmation
     public static void showLogoutConfirmationDialog(Component parent) {
+        // parent window
         Window owner = SwingUtilities.getWindowAncestor(parent);
+
+        // new dialog, user cannot interact with others hanggat di naclose yung pop up
         JDialog dialog = new JDialog(owner, Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setUndecorated(true);
         dialog.setSize(500, 220);
@@ -116,6 +128,7 @@ public class FindTheDUI extends JFrame {
         headerTitle.setForeground(Color.WHITE);
         headerBar.add(headerTitle, BorderLayout.WEST);
 
+        // container na lalagyan 
         JPanel mainCanvas = new JPanel(new GridBagLayout());
         mainCanvas.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -125,24 +138,29 @@ public class FindTheDUI extends JFrame {
         gbc.insets = new Insets(15, 30, 15, 30);
         JLabel messageLabel = new JLabel("Are you sure?");
         messageLabel.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 44));
+        messageLabel.setForeground(Color.WHITE);
         mainCanvas.add(messageLabel, gbc);
 
-        gbc.gridy = 1; gbc.anchor = GridBagConstraints.EAST; gbc.insets = new Insets(0, 0, 15, 30);
+        // flow layout arranges horizontally
+        gbc.gridy = 1; gbc.anchor = GridBagConstraints.EAST; 
+        gbc.insets = new Insets(0, 0, 15, 30);
         JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
         buttonRow.setOpaque(false);
 
         JButton yesBtn = new JButton("Yes");
         yesBtn.setPreferredSize(new Dimension(80, 36));
-        yesBtn.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 14));
-        yesBtn.setBackground(new Color(0xDD, 0xDD, 0xDD));
+        yesBtn.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
+        yesBtn.setBackground(Color.WHITE);
+        yesBtn.setForeground(Color.WHITE);
         yesBtn.setBorder(new EmptyBorder(0,0,0,0));
         yesBtn.setFocusPainted(false);
-
+        
         JButton noBtn = new JButton("No");
         noBtn.setPreferredSize(new Dimension(80, 36));
-        noBtn.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 14));
+        noBtn.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
         noBtn.setBackground(Color.WHITE);
-        noBtn.setBorder(new LineBorder(Color.BLACK, 1));
+        noBtn.setForeground(Color.WHITE);
+        noBtn.setBorder(new EmptyBorder(0,0,0,0));
         noBtn.setFocusPainted(false);
 
         yesBtn.addActionListener(e -> {
@@ -207,7 +225,7 @@ class WelcomePanel extends GradientPanel {
         tenantButton.setPreferredSize(new Dimension(300, 45));
         tenantButton.setFont(new Font("Georgia", Font.PLAIN, 16));
         tenantButton.setBackground(Color.WHITE);
-        tenantButton.setForeground(Color.BLACK);
+        tenantButton.setForeground(Color.WHITE);
         tenantButton.setFocusPainted(false);
         tenantButton.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(new Color(0xD0, 0xD0, 0xD0), 1),
@@ -732,6 +750,7 @@ class LandlordDashboard extends JPanel {
         approveTenantBtn.setMinimumSize(new Dimension(150, 36));
         approveTenantBtn.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
         approveTenantBtn.setBackground(new Color(0xBB, 0xBB, 0xBB));
+        approveTenantBtn.setForeground(Color.WHITE);
         approveTenantBtn.setBorder(new LineBorder(Color.GRAY));
         approveTenantBtn.setFocusPainted(false);
         approveTenantBtn.addActionListener(e -> showApproveTenantDialog(null));
@@ -744,6 +763,7 @@ class LandlordDashboard extends JPanel {
         postNewDormBtn.setMinimumSize(new Dimension(150, 36));
         postNewDormBtn.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
         postNewDormBtn.setBackground(new Color(0xBB, 0xBB, 0xBB));
+        postNewDormBtn.setForeground(Color.WHITE);
         postNewDormBtn.setBorder(new LineBorder(Color.GRAY));
         postNewDormBtn.setFocusPainted(false);
         
@@ -776,7 +796,7 @@ class LandlordDashboard extends JPanel {
 
         JLabel titleLbl = new JLabel(manage ? "  Manage Tenants" : "  Approve Tenant");
         titleLbl.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 15));
-        titleLbl.setForeground(Color.BLACK);
+        titleLbl.setForeground(Color.WHITE);
         topBar.add(titleLbl, BorderLayout.WEST);
 
         JLabel closeBtn = new JLabel("\u00D7  ", SwingConstants.RIGHT);
@@ -839,10 +859,10 @@ class LandlordDashboard extends JPanel {
             group.setLayout(new BoxLayout(group, BoxLayout.Y_AXIS));
             group.setAlignmentX(Component.LEFT_ALIGNMENT);
             if (!manage) {
-                addTenantHeaderGroup(group, dorm.name);
+                approveTenantPanel(group, dorm.name);
             }
             for (String applicant : new java.util.ArrayList<>(dorm.pendingApplicants)) {
-                addTenantDataRow(dialog, group, refresh, dorm, applicant);
+                acceptTenant(dialog, group, refresh, dorm, applicant);
             }
             body.add(group);
         }
@@ -867,7 +887,7 @@ class LandlordDashboard extends JPanel {
                 group.setLayout(new BoxLayout(group, BoxLayout.Y_AXIS));
                 group.setAlignmentX(Component.LEFT_ALIGNMENT);
                 for (String tenant : new java.util.ArrayList<>(dorm.tenants)) {
-                    addCurrentTenantRow(dialog, group, refresh, dorm, tenant);
+                    removeCurrentTenant(dialog, group, refresh, dorm, tenant);
                 }
                 body.add(group);
             }
@@ -885,7 +905,7 @@ class LandlordDashboard extends JPanel {
     private void addManageSectionHeader(JPanel container, String text) {
         JLabel lbl = new JLabel(text);
         lbl.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 16));
-        lbl.setForeground(Color.BLACK);
+        lbl.setForeground(Color.WHITE);
         lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
         container.add(lbl);
         container.add(Box.createVerticalStrut(4));
@@ -905,24 +925,33 @@ class LandlordDashboard extends JPanel {
         container.add(noneLabel);
     }
 
-    private void addTenantHeaderGroup(JPanel container, String title) {
+    private void approveTenantPanel(JPanel container, String title) {
         JLabel lbl = new JLabel(title);
-        lbl.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
-        lbl.setForeground(Color.BLACK);
+        lbl.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 16));
+        lbl.setForeground(Color.WHITE);
         lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         container.add(lbl);
-        container.add(Box.createVerticalStrut(8));
+        container.add(Box.createVerticalStrut(5));
+
+        JSeparator separator = new JSeparator();
+        separator.setForeground(Color.WHITE);
+        separator.setBackground(Color.WHITE);
+        separator.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        container.add(separator);
+        container.add(Box.createVerticalStrut(5));
     }
 
     // Pending applicant: name + Approve / Decline
-    private void addTenantDataRow(JDialog parentDialog, JPanel group, Runnable refresh, DormStore.Dorm dorm, String name) {
+    private void acceptTenant(JDialog parentDialog, JPanel group, Runnable refresh, DormStore.Dorm dorm, String name) {
         JPanel row = new JPanel(new BorderLayout());
         row.setOpaque(false);
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
         row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel nameLbl = new JLabel(name);
-        nameLbl.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 14));
+        nameLbl.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
         nameLbl.setForeground(Color.BLACK);
         row.add(nameLbl, BorderLayout.WEST);
 
@@ -960,7 +989,7 @@ class LandlordDashboard extends JPanel {
     }
 
     // Current tenant: name + Remove
-    private void addCurrentTenantRow(JDialog parentDialog, JPanel group, Runnable refresh, DormStore.Dorm dorm, String name) {
+    private void removeCurrentTenant(JDialog parentDialog, JPanel group, Runnable refresh, DormStore.Dorm dorm, String name) {
         JPanel row = new JPanel(new BorderLayout());
         row.setOpaque(false);
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
@@ -968,7 +997,7 @@ class LandlordDashboard extends JPanel {
 
         // Tenant names once you click manage
         JLabel nameLbl = new JLabel(name);
-        nameLbl.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 14));
+        nameLbl.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
         nameLbl.setForeground(Color.BLACK);
         row.add(nameLbl, BorderLayout.WEST);
 
@@ -1011,8 +1040,11 @@ class LandlordDashboard extends JPanel {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(new Color(0xBC, 0xBC, 0xBC));
         header.setPreferredSize(new Dimension(480, 36));
+
+        // title ng pop ups
         JLabel title = new JLabel("  " + dialogTitle);
         title.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 15));
+        title.setForeground(Color.WHITE);
         header.add(title, BorderLayout.WEST);
 
         JPanel body = new JPanel(new GridBagLayout());
@@ -1024,6 +1056,7 @@ class LandlordDashboard extends JPanel {
         
         JLabel msg = new JLabel("Are you sure?");
         msg.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 44));
+        msg.setForeground(Color.WHITE);
         body.add(msg, gbc);
 
         gbc.gridy = 1; gbc.anchor = GridBagConstraints.EAST; gbc.insets = new Insets(0, 0, 15, 25);
@@ -1032,13 +1065,15 @@ class LandlordDashboard extends JPanel {
 
         JButton yes = new JButton("Yes");
         yes.setPreferredSize(new Dimension(75, 34));
-        yes.setBackground(new Color(0xDD, 0xDD, 0xDD));
+        yes.setBackground(Color.WHITE);
+        yes.setForeground(Color.WHITE);
         yes.setBorder(new EmptyBorder(0,0,0,0));
         yes.setFocusPainted(false);
 
         JButton no = new JButton("No");
         no.setPreferredSize(new Dimension(75, 34));
         no.setBackground(Color.WHITE);
+        no.setForeground(Color.WHITE);
         no.setBorder(new LineBorder(Color.BLACK, 1));
         no.setFocusPainted(false);
 
@@ -1369,7 +1404,7 @@ class LandlordDashboard extends JPanel {
     // Label used in the Post New Dorm form
     private JLabel createMockLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
+        label.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 15));
         label.setForeground(Color.BLACK);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         return label;
@@ -1410,7 +1445,7 @@ class LandlordDashboard extends JPanel {
         LineBorder insetBorder = new LineBorder(new Color(150, 150, 150), 1);
 
         gbc.gridx = 0; gbc.gridy = 0; gbc.insets = new Insets(0, 0, 4, 0);
-        mainPanel.add(createFormLabel("Dorm"), gbc);
+        mainPanel.add(createAnnouncementLabel("Dorm"), gbc);
 
         gbc.gridy = 1; gbc.insets = new Insets(0, 0, 15, 0);
         DropdownField dormCombo = new DropdownField("Select a Dorm...", 0, 38);
@@ -1421,7 +1456,7 @@ class LandlordDashboard extends JPanel {
 
         // Message
         gbc.gridy = 2; gbc.insets = new Insets(0, 0, 4, 0);
-        mainPanel.add(createFormLabel("Message"), gbc);
+        mainPanel.add(createAnnouncementLabel("Message"), gbc);
 
         gbc.gridy = 3; gbc.weighty = 1.0; gbc.fill = GridBagConstraints.BOTH; gbc.insets = new Insets(0, 0, 0, 0);
         JTextArea msgArea = new JTextArea();
@@ -1484,7 +1519,7 @@ class LandlordDashboard extends JPanel {
 
         JLabel statusMsgLabel = new JLabel("Posted!", SwingConstants.LEFT);
         statusMsgLabel.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 44));
-        statusMsgLabel.setForeground(Color.BLACK);
+        statusMsgLabel.setForeground(Color.WHITE);
         contentPanel.add(statusMsgLabel, BorderLayout.CENTER);
 
         JPanel actionWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
@@ -1493,9 +1528,9 @@ class LandlordDashboard extends JPanel {
         // Close button sa pop up after you post an announcement
         JButton closeNotificationBtn = new JButton("Close");
         closeNotificationBtn.setPreferredSize(new Dimension(90, 35));
-        closeNotificationBtn.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 14));
+        closeNotificationBtn.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
         closeNotificationBtn.setBackground(new Color(225, 225, 225));
-        closeNotificationBtn.setForeground(Color.BLACK);
+        closeNotificationBtn.setForeground(Color.WHITE);
         closeNotificationBtn.setFocusPainted(false);
         closeNotificationBtn.setBorder(new LineBorder(new Color(140, 140, 140), 1));
         
@@ -1511,7 +1546,7 @@ class LandlordDashboard extends JPanel {
     private static final Color NOTIF_PAGE_BG         = Color.decode("#E5E5E5"); // page behind the boxes
     private static final Color NOTIF_BOX_BG          = new Color(255, 255, 255, 28); // Complaints / Announcement boxes
     private static final Color NOTIF_BOX_OUTLINE     = new Color(255, 255, 255, 55);
-    private static final Color NOTIF_TITLE_TEXT      = Color.decode("#000000");
+    private static final Color notifTitleColor      = Color.WHITE;
     private static final Color NOTIF_DROPDOWN_BG     = Color.decode("#FFFFFF"); // dorm filter dropdown
     private static final Color NOTIF_DROPDOWN_BORDER = Color.decode("#999999");
     private static final Color NOTIF_DROPDOWN_TEXT   = Color.BLACK; // text in the dropdown
@@ -1537,8 +1572,8 @@ class LandlordDashboard extends JPanel {
 
         // Setup CardLayout contents for filtered messages
         CardLayout filterLayout = new CardLayout();
-        JPanel compCardsPanel = new JPanel(filterLayout);
-        compCardsPanel.setOpaque(false);
+        JPanel complaintsCardsPanel = new JPanel(filterLayout);
+        complaintsCardsPanel.setOpaque(false);
 
         // Complaints section
         // Header: title on the left, dorm filter dropdown in the upper right corner
@@ -1546,14 +1581,14 @@ class LandlordDashboard extends JPanel {
         compHeaderPanel.setOpaque(false);
         JLabel compTitle = new JLabel("Complaints");
         compTitle.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
-        compTitle.setForeground(NOTIF_TITLE_TEXT);
+        compTitle.setForeground(notifTitleColor);
         compHeaderPanel.add(compTitle, BorderLayout.WEST);
 
         String[] filterDorms = {"Jeenprasom Dorm", "Benyapa Dorm"};
         String[] filterCards = {"D1", "D2"};
         CompactDropdown dormFilter = new CompactDropdown(filterDorms, 170, 28,
             NOTIF_DROPDOWN_BG, NOTIF_DROPDOWN_BORDER, NOTIF_DROPDOWN_TEXT, NOTIF_DROPDOWN_HOVER,
-            index -> filterLayout.show(compCardsPanel, filterCards[index]));
+            index -> filterLayout.show(complaintsCardsPanel, filterCards[index]));
         compHeaderPanel.add(dormFilter, BorderLayout.EAST);
 
         complaintsOuterBox.add(compHeaderPanel, BorderLayout.NORTH);
@@ -1561,7 +1596,7 @@ class LandlordDashboard extends JPanel {
         // Dorm #1 content (Empty panel)
         JPanel d1Content = new JPanel();
         d1Content.setOpaque(false);
-        compCardsPanel.add(d1Content, "D1");
+        complaintsCardsPanel.add(d1Content, "D1");
 
         // Dorm #2 content panel
         JPanel d2Content = new JPanel(new GridBagLayout());
@@ -1573,37 +1608,38 @@ class LandlordDashboard extends JPanel {
 
         MessageBubble d2Bubble = new MessageBubble("Benyapa Dorm", "11 Nov 2069", "11:11 pm", false);
         d2Content.add(d2Bubble, d2Gbc);
-        compCardsPanel.add(d2Content, "D2");
+        complaintsCardsPanel.add(d2Content, "D2");
 
-        complaintsOuterBox.add(compCardsPanel, BorderLayout.CENTER);
+        complaintsOuterBox.add(complaintsCardsPanel, BorderLayout.CENTER);
         container.add(complaintsOuterBox, gbc);
 
         // Announcement Container
         gbc.gridy = 1; gbc.insets = new Insets(0, 0, 0, 0);
-        RoundedPanel announceOuterBox = new RoundedPanel(new BorderLayout());
-        announceOuterBox.setBackground(NOTIF_BOX_BG);
-        announceOuterBox.setOutline(NOTIF_BOX_OUTLINE);
-        announceOuterBox.setBorder(new EmptyBorder(13, 16, 13, 16));
+        RoundedPanel announcementOuterBox = new RoundedPanel(new BorderLayout());
+        announcementOuterBox.setBackground(NOTIF_BOX_BG);
+        announcementOuterBox.setOutline(NOTIF_BOX_OUTLINE);
+        announcementOuterBox.setBorder(new EmptyBorder(13, 16, 13, 16));
 
         // title "Announcement"
         JPanel annHeaderPanel = new JPanel(new BorderLayout());
         annHeaderPanel.setOpaque(false);
         JLabel annTitle = new JLabel("Announcement");
         annTitle.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
-        annTitle.setForeground(NOTIF_TITLE_TEXT);
+        annTitle.setForeground(notifTitleColor);
         annHeaderPanel.add(annTitle, BorderLayout.WEST);
 
         // Post Announcement button
-        JButton postAnnounceBtn = new JButton("Post Announcement");
-        postAnnounceBtn.setPreferredSize(new Dimension(160, 32));
-        postAnnounceBtn.setBackground(NOTIF_BUTTON_BG);
-        postAnnounceBtn.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 12));
-        postAnnounceBtn.setBorder(new LineBorder(NOTIF_BUTTON_BORDER));
-        postAnnounceBtn.setFocusPainted(false);
-        postAnnounceBtn.addActionListener(e -> showPostAnnouncementDialog());
-        annHeaderPanel.add(postAnnounceBtn, BorderLayout.EAST);
+        JButton postAnnouncementButton = new JButton("Post Announcement");
+        postAnnouncementButton.setPreferredSize(new Dimension(160, 32));
+        postAnnouncementButton.setBackground(NOTIF_BUTTON_BG);
+        postAnnouncementButton.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 12));
+        postAnnouncementButton.setForeground(Color.WHITE);
+        postAnnouncementButton.setBorder(new LineBorder(NOTIF_BUTTON_BORDER));
+        postAnnouncementButton.setFocusPainted(false);
+        postAnnouncementButton.addActionListener(e -> showPostAnnouncementDialog());
+        annHeaderPanel.add(postAnnouncementButton, BorderLayout.EAST);
 
-        announceOuterBox.add(annHeaderPanel, BorderLayout.NORTH);
+        announcementOuterBox.add(annHeaderPanel, BorderLayout.NORTH);
         
         JPanel annBodyPanel = new JPanel(new GridBagLayout());
         annBodyPanel.setOpaque(false);
@@ -1619,15 +1655,15 @@ class LandlordDashboard extends JPanel {
         MessageBubble d5Bubble = new MessageBubble("Jeenprasom Dorm", "2d ago", "", false);
         annBodyPanel.add(d5Bubble, annBodyGbc);
 
-        announceOuterBox.add(annBodyPanel, BorderLayout.CENTER);
-        container.add(announceOuterBox, gbc);
+        announcementOuterBox.add(annBodyPanel, BorderLayout.CENTER);
+        container.add(announcementOuterBox, gbc);
 
         return container;
     }
 
-    private JLabel createFormLabel(String text) {
+    private JLabel createAnnouncementLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 14));
+        label.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
         label.setForeground(Color.BLACK);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         return label;
@@ -1690,7 +1726,7 @@ class TenantDashboard extends JPanel {
         return SwingUtilities.getWindowAncestor(this);
     }
 
-    private static final String ANNOUNCEMENT_TEXT =
+    private static final String announcementText =
         "I love you... In a way that all my thoughts are consumed by you. " +
         "I love you... In a way that I long to be close to you..to see your face, " +
         "to hear your voice , and to touch you";
@@ -1932,7 +1968,7 @@ class TenantDashboard extends JPanel {
         postComplainBtn.setPreferredSize(new Dimension(152, 40));
         postComplainBtn.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
         postComplainBtn.setBackground(new Color(0xCC, 0xCC, 0xCC));
-        postComplainBtn.setForeground(Color.BLACK);
+        postComplainBtn.setForeground(Color.WHITE);
         postComplainBtn.setOpaque(true);
         postComplainBtn.setFocusPainted(false);
         postComplainBtn.setBorder(BorderFactory.createCompoundBorder(
@@ -1963,9 +1999,9 @@ class TenantDashboard extends JPanel {
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         entry.add(titleLabel);
 
-        JTextArea messageArea = new JTextArea(ANNOUNCEMENT_TEXT);
-        messageArea.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
-        messageArea.setForeground(new Color(0xE6, 0xE6, 0xF2));
+        JTextArea messageArea = new JTextArea(announcementText);
+        messageArea.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 13));
+        messageArea.setForeground(Color.BLACK);
         messageArea.setLineWrap(true);
         messageArea.setWrapStyleWord(true);
         messageArea.setEditable(false);
@@ -2073,6 +2109,7 @@ class TenantDashboard extends JPanel {
         dialog.setVisible(true);
     }
 
+    // warning for complaints if wala naaklagay and ipopost na
     private void showCustomWarningDialog(Window owner, String message) {
         JDialog warnDialog = new JDialog(owner, "Message", Dialog.ModalityType.APPLICATION_MODAL);
         warnDialog.setUndecorated(true);
@@ -2088,7 +2125,7 @@ class TenantDashboard extends JPanel {
         headerBar.setPreferredSize(new Dimension(480, 36));
         JLabel headerTitle = new JLabel("  Message");
         headerTitle.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 15));
-        headerTitle.setForeground(Color.BLACK);
+        headerTitle.setForeground(Color.WHITE);
         headerBar.add(headerTitle, BorderLayout.WEST);
 
         JPanel bodyPanel = new JPanel(new GridBagLayout());
@@ -2144,7 +2181,7 @@ class TenantDashboard extends JPanel {
 
         JLabel questionLabel = new JLabel("Are you sure?", SwingConstants.LEFT);
         questionLabel.setFont(new Font("YU Gothic UI Light", Font.BOLD, 44));
-        questionLabel.setForeground(Color.BLACK);
+        questionLabel.setForeground(Color.WHITE);
         contentPanel.add(questionLabel, BorderLayout.CENTER);
 
         JPanel actionWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
@@ -2154,7 +2191,7 @@ class TenantDashboard extends JPanel {
         yesBtn.setPreferredSize(new Dimension(86, 36));
         yesBtn.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
         yesBtn.setBackground(new Color(0xE0, 0xE0, 0xE0));
-        yesBtn.setForeground(Color.BLACK);
+        yesBtn.setForeground(Color.WHITE);
         yesBtn.setOpaque(true);
         yesBtn.setFocusPainted(false);
         yesBtn.setBorder(new LineBorder(new Color(0xD0, 0xD0, 0xD0), 1));
@@ -2167,7 +2204,7 @@ class TenantDashboard extends JPanel {
         noBtn.setPreferredSize(new Dimension(86, 36));
         noBtn.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
         noBtn.setBackground(new Color(0xF2, 0xF2, 0xF2));
-        noBtn.setForeground(Color.BLACK);
+        noBtn.setForeground(Color.WHITE);
         noBtn.setOpaque(true);
         noBtn.setFocusPainted(false);
         noBtn.setBorder(BorderFactory.createCompoundBorder(
@@ -2374,12 +2411,12 @@ class TenantDashboard extends JPanel {
 class MessageBubble extends RoundedPanel {
     // Colours: edit the hex codes here
     private static final Color BUBBLE_BG   = new Color(255, 255, 255, 30);
-    private static final Color TITLE_TEXT  = Color.decode("#F2F2FA");
-    private static final Color DATE_TEXT   = Color.decode("#C9C9DC");
+    private static final Color TITLE_TEXT  = Color.BLACK;
+    private static final Color announcementDate   = Color.decode("#323131");
     private static final Color DOTS        = Color.decode("#C9C9DC");
     private static final Color DOTS_HOVER  = Color.decode("#FFFFFF");
-    private static final Color BODY_TEXT   = Color.decode("#E6E6F2");
-    private static final Color TIME_TEXT   = Color.decode("#A9A9C2");
+    private static final Color messageContentColor   = Color.BLACK;
+    private static final Color TIME_TEXT   = Color.decode("#323131");
 
     public MessageBubble(String title, String mainHeaderDate, String bottomTimestamp, boolean timeOnTop) {
         setBackground(BUBBLE_BG);
@@ -2396,7 +2433,7 @@ class MessageBubble extends RoundedPanel {
             gbc.insets = new Insets(0, 0, 4, 0);
             JLabel dateLbl = new JLabel(mainHeaderDate);
             dateLbl.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 11));
-            dateLbl.setForeground(DATE_TEXT);
+            dateLbl.setForeground(announcementDate);
             add(dateLbl, gbc);
         }
 
@@ -2406,7 +2443,7 @@ class MessageBubble extends RoundedPanel {
             gbc.insets = new Insets(0, 0, 4, 0);
             JLabel topTimeLbl = new JLabel(bottomTimestamp);
             topTimeLbl.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 11));
-            topTimeLbl.setForeground(DATE_TEXT);
+            topTimeLbl.setForeground(announcementDate);
             add(topTimeLbl, gbc);
         }
 
@@ -2457,8 +2494,8 @@ class MessageBubble extends RoundedPanel {
             "I love you... In a way that I long to be close to you..to see your face, " +
             "to hear your voice , and to touch you."
         );
-        messageContentArea.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
-        messageContentArea.setForeground(BODY_TEXT);
+        messageContentArea.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 13));
+        messageContentArea.setForeground(messageContentColor);
         messageContentArea.setLineWrap(true);
         messageContentArea.setWrapStyleWord(true);
         messageContentArea.setEditable(false);
@@ -2512,7 +2549,7 @@ class MessageBubble extends RoundedPanel {
 
         JLabel questionLabel = new JLabel("Are you sure?", SwingConstants.LEFT);
         questionLabel.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 44));
-        questionLabel.setForeground(Color.BLACK);
+        questionLabel.setForeground(Color.WHITE);
         contentPanel.add(questionLabel, BorderLayout.CENTER);
 
         JPanel actionWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
@@ -2523,7 +2560,7 @@ class MessageBubble extends RoundedPanel {
         yesBtn.setPreferredSize(new Dimension(86, 36));
         yesBtn.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
         yesBtn.setBackground(new Color(0xE0, 0xE0, 0xE0));
-        yesBtn.setForeground(Color.BLACK);
+        yesBtn.setForeground(Color.WHITE);
         yesBtn.setOpaque(true);
         yesBtn.setFocusPainted(false);
         yesBtn.setBorder(BorderFactory.createCompoundBorder(
@@ -2646,7 +2683,7 @@ class HouseIcon extends JComponent {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setStroke(new BasicStroke(1.6f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        Color c = interactive ? GradientBackground.TEXT : new Color(0xA9, 0xA9, 0xC2);
+        Color c = Color.WHITE;
 
         // House outline: roof peak, eaves, walls
         java.awt.geom.Path2D.Double house = new java.awt.geom.Path2D.Double();
@@ -3836,9 +3873,11 @@ class DormPostCard extends RoundedPanel {
         nameBlock.setLayout(new BoxLayout(nameBlock, BoxLayout.Y_AXIS));
         nameBlock.setOpaque(false);
         nameBlock.setBorder(new EmptyBorder(12, 0, 0, 0));
+
         JLabel nameLabel = new JLabel(posterName);
-        nameLabel.setFont(new Font("YU Gothic UI Light", Font.PLAIN, 16));
+        nameLabel.setFont(new Font("YU Gothic UI Light", Font.BOLD, 16));
         nameLabel.setForeground(Color.BLACK);
+        
         JLabel dateLabel = new JLabel(postDate);
         dateLabel.setFont(new Font("YU Gothic UI Light", Font.PLAIN, 9));
         dateLabel.setForeground(Color.BLACK);
@@ -3909,8 +3948,9 @@ class DormPostCard extends RoundedPanel {
         JPanel amenitiesRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
         amenitiesRow.setOpaque(false);
         amenitiesRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         JLabel amenitiesLabel = new JLabel("Amenities :");
-        amenitiesLabel.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 15));
+        amenitiesLabel.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 15));
         amenitiesLabel.setForeground(Color.BLACK);
         amenitiesLabel.setBorder(new EmptyBorder(0, 6, 0, 12));
         amenitiesRow.add(amenitiesLabel);
@@ -4609,7 +4649,7 @@ final class RoundedDialog {
             root.add(header, BorderLayout.NORTH);
         }
         if (themed) {
-            themeTree(inner);
+            styleComponentTree(inner);
         }
         root.add(inner, BorderLayout.CENTER);
         d.setContentPane(root);
@@ -4678,26 +4718,12 @@ final class RoundedDialog {
         return c != null && c.getAlpha() == 255 && (c.getRed() * 299 + c.getGreen() * 587 + c.getBlue() * 114) / 1000 > 140;
     }
 
-    private static Color readableText(Color fg) {
-        if (fg == null) {
-            return GradientBackground.TEXT;
-        }
-        int lum = (fg.getRed() * 299 + fg.getGreen() * 587 + fg.getBlue() * 114) / 1000;
-        if (lum < 110) {
-            return GradientBackground.TEXT;        // black / dark text -> near white
-        }
-        if (lum < 170 && Math.abs(fg.getRed() - fg.getBlue()) < 30) {
-            return GradientBackground.TEXT_SOFT;   // gray captions -> soft white
-        }
-        return fg;
-    }
-
-    private static void theme(Component c) {
+    // controls a component (ex. yesbtn, yung lang maapektuhan)
+    private static void styleComponent(Component c) {
         if (c instanceof JLabel) {
-            c.setForeground(readableText(c.getForeground()));
+
         } else if (c instanceof AbstractButton) {
             AbstractButton b = (AbstractButton) c;
-            b.setForeground(readableText(b.getForeground()));
             if (b instanceof JButton) {
                 if (isLight(b.getBackground())) {
                     b.setBackground(new Color(0, 0, 0, 0));   // glass pill is drawn by GlassButtonUI
@@ -4724,26 +4750,28 @@ final class RoundedDialog {
 
     // Themes a component and everything below it, and keeps theming rows added later
     // (the tenant lists are rebuilt after every approve / decline / remove)
-    private static void themeTree(Component c) {
+    // controls components and its children
+    private static void styleComponentTree(Component c) {
         if (c instanceof javax.swing.text.JTextComponent || c instanceof JComboBox
                 || c instanceof JList || c instanceof JScrollBar) {
             return;
         }
-        theme(c);
+
+        styleComponent(c);
         if (c instanceof JComponent) {
             JComponent jc = (JComponent) c;
             if (jc.getClientProperty("dialogThemeWatch") == null) {
                 jc.putClientProperty("dialogThemeWatch", Boolean.TRUE);
                 jc.addContainerListener(new ContainerAdapter() {
                     @Override public void componentAdded(ContainerEvent e) {
-                        themeTree(e.getChild());
+                        styleComponentTree(e.getChild());
                     }
                 });
             }
         }
         if (c instanceof Container) {
             for (Component child : ((Container) c).getComponents()) {
-                themeTree(child);
+                styleComponentTree(child);
             }
         }
     }
@@ -5723,7 +5751,6 @@ final class GlassButtons {
         applyButton.setBorder(new EmptyBorder(0, 12, 0, 12));
         applyButton.setFocusPainted(false);
         applyButton.setRolloverEnabled(true);
-        applyButton.setForeground(Color.BLACK);
         applyButton.revalidate();
         applyButton.repaint();
     }
