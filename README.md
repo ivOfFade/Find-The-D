@@ -82,9 +82,6 @@ Find The D puts these functions in one application. Tenants can find, compare, a
     </td>
     
   </tr>
-</table>
-
-<table>
   <tr>
     <td align="left">
       <img src="LManage.png" width="250"><br>
@@ -99,11 +96,11 @@ Find The D puts these functions in one application. Tenants can find, compare, a
       Posting a Dorm
     </td>
   </tr>
-</table>
     <td align="left">
       <img src="LPostA.png" width="250"><br>
       Posting Announcement
     </td>
+</table>
 
 ### Tenant
 
