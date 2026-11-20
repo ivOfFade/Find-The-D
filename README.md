@@ -176,6 +176,39 @@ Data is saved to a file, so everything is still there the next time you open the
 | Dorm | A dorm posted by a landlord | dormName, location, owner, tenants[], availableSlots | addTenant(), removeTenant(), updateDetails(), displayInfo() |
 
 
+## Limitations
+- No payment or transaction feature for paying rent through the app.
+- Transactions between tenants and landlords to secure a dorm are not supported.
+- Landlords can view complaints but cannot respond to them through the system.
+
+
+## Future Enhancements
+- In-app payment of rent
+- Landlord replies to complaints
+
+## Development Schedule
+
+| Week | Activity | Expected Output |
+| :--- | :--- | :--- |
+| 1 | Planning and requirements | Project Proposal |
+| 2 | System and class design | Class/UML Diagram |
+| 3 | Initial coding | Basic classes |
+| 4-5 | Feature development | Working features |
+| 6 | OOP implementation | Completed OOP features |
+| 7 | Testing and debugging | Tested application |
+| 8 | Documentation and presentation | Final project |
+
+## Team
+
+College of Informatics and Computing Sciences
+
+| Member | Assigned Tasks |
+| :--- | :--- |
+| Cusi, Princess Arrianne M. | README, testing documentation, screenshots |
+| Dalisay, Rizialyn A. | Requirements, class design, UML diagrams |
+| Driz, Neil Mathew L. | Java classes, methods, OOP features |
+| Oatis, Dylan Luke P. | Tasks, deadlines, communication with instructor |
+
 
 
 
