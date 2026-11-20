@@ -80,7 +80,6 @@ Find The D puts these functions in one application. Tenants can find, compare, a
       <img src="LNotip.png" width="250"><br>
       Landlord Notification
     </td>
-    
   </tr>
   <tr>
     <td align="left">
@@ -121,6 +120,33 @@ Find The D puts these functions in one application. Tenants can find, compare, a
   </tr>
 </table>
 
+
+## Usage
+
+### First Launch
+- Choose I'm a Landlord or I'm a Tenant.
+- Register with your name, age, mobile number, email, and password (landlords can also add a Facebook account).
+- Log in with your email and password.
+
+### As a Tenant
+- Open Browse and filter dorms by amenities and budget.
+- Click Apply on a dorm, or mark your interest.
+- Once approved, open My Dorm to view announcements and your dormmates.
+- Use Post Complaint to send a concern to your landlord.
+### As a Landlord
+- Use Menu to view your totals and open Manage on any dorm.
+- Use My Dorm → Post New Dorm to add a listing.
+- Use Approve Tenant or Manage Tenants to handle applicants and current tenants.
+- Use Notification to read complaints and Post Announcement to message your tenants.
+
+Data is saved to a file, so everything is still there the next time you open the app.
+
+
+## Program Flow
+
+<p align="center">
+  <img src="Flow.png" alt="Flow" width="500">
+</p>
 
 
 
