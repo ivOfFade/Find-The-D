@@ -145,7 +145,7 @@ Data is saved to a file, so everything is still there the next time you open the
 ## Program Flow
 
 <p align="center">
-  <img src="Flow.png" alt="Flow" width="500">
+  <img src="Flow.png" alt="Flow" width="500"><br> Flow
 </p>
 
 
