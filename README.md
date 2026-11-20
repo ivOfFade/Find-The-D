@@ -151,10 +151,29 @@ Data is saved to a file, so everything is still there the next time you open the
 
 
 
+## Java and OOP Concepts
+
+| Concept | How It Is Used |
+| :--- | :--- |
+| *Classes and Objects* | Tenants, landlords, dorms, rooms, complaints, and announcements are each a class. Each new dorm or complaint is a new object. |
+| *Methods* | Each class has its own actions, e.g. applyToDorm(), postDorm(), makeAnnouncement(), updateDetails(). |
+| *Encapsulation* | Passwords and the identity of a tenant who files an anonymous complaint are private and only reachable through controlled methods. |
+| *Inheritance* | Tenant and Landlord inherit shared attributes and actions from Person. |
+| *Polymorphism* | Both roles have a dashboard, but each shows different content depending on the user type. |
+| *Abstraction* | Users apply, view, or post without needing to know how data is stored and updated in the background. |
+| *Exception Handling* | Clear messages for empty fields, wrong login details, duplicate emails, or applying to a dorm with no slots. |
+| *Arrays / Data Handling* | Arrays store accounts, complaints, and announcements; data is saved to a file for persistence. |
 
 
 
+## Class Overview
 
+| Class | Purpose | Main Attributes | Main Methods |
+| :--- | :--- | :--- | :--- |
+| Person | Parent of Tenant and Landlord | name, age, contactNum | displayInfo() |
+| Tenant | A tenant looking for or staying in a dorm | program, currentDorm | viewMyDorm(), complain(), lookForDorm(), applyToDorm() |
+| Landlord | The dorm owner | handledDorms[] | postDorm(), manageDorm(), makeAnnouncement(), viewComplaints() |
+| Dorm | A dorm posted by a landlord | dormName, location, owner, tenants[], availableSlots | addTenant(), removeTenant(), updateDetails(), displayInfo() |
 
 
 
