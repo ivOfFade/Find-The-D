@@ -39,11 +39,11 @@ Find The D puts these functions in one application. Tenants can find, compare, a
 <table>
   <tr>
     <td align="center">
-      <img src="Role.png" width="350"><br>
+      <img src="./docs/screenshots/Role.png" width="350"><br>
       Role Selection
     </td>
     <td align="center">
-      <img src="LogIn.png" width="350"><br>
+      <img src="./docs/screenshots/LogIn.png" width="350"><br>
       LogIn
     </td>
   </tr>
@@ -53,11 +53,11 @@ Find The D puts these functions in one application. Tenants can find, compare, a
 <table>
   <tr>
     <td align="center">
-      <img src="LRegistration.png" width="350"><br>
+      <img src="./docs/screenshots/LRegistration.png" width="350"><br>
       Landlord Registration
     </td>
     <td align="center">
-      <img src="TRegistration.png" width="350"><br>
+      <img src="./docs/screenshots/TRegistration.png" width="350"><br>
       Tenant Registration
     </td>
   </tr>
@@ -69,34 +69,34 @@ Find The D puts these functions in one application. Tenants can find, compare, a
 <table>
   <tr>
     <td align="center">
-      <img src="LMenu.png" width="250"><br>
+      <img src="./docs/screenshots/LMenu.png" width="250"><br>
       Landlord Menu
     </td>
     <td align="center">
-      <img src="LFeed.png" width="250"><br>
+      <img src="./docs/screenshots/LFeed.png" width="250"><br>
       Landlord Dorm Feed
     </td>
     <td align="center">
-      <img src="LNotip.png" width="250"><br>
+      <img src="./docs/screenshots/LNotip.png" width="250"><br>
       Landlord Notification
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="LManage.png" width="250"><br>
+      <img src="./docs/screenshots/LManage.png" width="250"><br>
       Manage Tenants
     </td>
     <td align="center">
-      <img src="LManage2.png" width="250"><br>
+      <img src="./docs/screenshots/LManage2.png" width="250"><br>
       Accept Tenants
     </td>
     <td align="center">
-      <img src="LPostD.png" width="250"><br>
+      <img src="./docs/screenshots/LPostD.png" width="250"><br>
       Posting a Dorm
     </td>
   </tr>
     <td align="center">
-      <img src="LPostA.png" width="250"><br>
+      <img src="./docs/screenshots/LPostA.png" width="250"><br>
       Posting Announcement
     </td>
 </table>
@@ -106,15 +106,15 @@ Find The D puts these functions in one application. Tenants can find, compare, a
 <table>
   <tr>
     <td align="center">
-      <img src="TFeed.png" width="350"><br>
+      <img src="./docs/screenshots/TFeed.png" width="350"><br>
       Tenant Browsing Feed
     </td>
     <td align="center">
-      <img src="TDorm.png" width="350"><br>
+      <img src="./docs/screenshots/TDorm.png" width="350"><br>
       Dorm 
     </td>
     <td align="center">
-      <img src="TPostC.png" width="350"><br>
+      <img src="./docs/screenshots/TPostC.png" width="350"><br>
       Post a Complaint 
     </td>
   </tr>
@@ -145,7 +145,7 @@ Data is saved to a file, so everything is still there the next time you open the
 ## Program Flow
 
 <p align="center">
-  <img src="Flow.png" alt="Flow" width="500"><br> Flow
+  <img src="./docs/screenshots/Flow.png" alt="Flow" width="500"><br> Flow
 </p>
 
 
