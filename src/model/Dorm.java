@@ -2,11 +2,11 @@ package model;
 
 import exception.InvalidInputException;
 import exception.NoAvailableSlotsException;
-import util.Validator;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import util.Validator;
 
 public class Dorm {
 
