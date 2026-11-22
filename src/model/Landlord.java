@@ -3,10 +3,11 @@ package model;
 import enums.DashboardType;
 import enums.Role;
 import exception.InvalidInputException;
+import exception.NoAvailableSlotsException;
 import exception.UnauthorizedActionException;
-import util.Validator;
 import java.util.ArrayList;
 import java.util.List;
+import util.Validator;
 
 public class Landlord extends Person {
 
@@ -149,7 +150,10 @@ public class Landlord extends Person {
   }
 
   public void acceptApplication(Application application)
-    throws InvalidInputException, UnauthorizedActionException {
+    throws
+      InvalidInputException,
+      UnauthorizedActionException,
+      NoAvailableSlotsException {
     Validator.requiredReference(application, "Application");
     requireOwnership(application.getDorm());
     application.accept(this);
