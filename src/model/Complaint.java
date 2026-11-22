@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class Complaint {
 
-    private final int complaintId;
+    private int complaintId;
     private final Dorm dorm;
     private final String message;
     private final LocalDateTime datePosted;
@@ -86,8 +86,21 @@ public class Complaint {
         return complaintId;
     }
 
+    public void assignComplaintId(int generatedId)
+        throws InvalidInputException {
+        Validator.condition(
+            complaintId == 0,
+            "Complaint ID is already assigned."
+        );
+        complaintId = Validator.savedId(generatedId);
+    }
+
     public Dorm getDorm() {
         return dorm;
+    }
+
+    public Tenant getSender() {
+        return sender;
     }
 
     public String getMessage() {

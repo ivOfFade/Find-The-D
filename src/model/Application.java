@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public class Application {
 
-    private final int applicationId;
+    private int applicationId;
     private final Tenant tenant;
     private final Dorm dorm;
     private ApplicationStatus status;
@@ -167,6 +167,15 @@ public class Application {
     // Getters
     public int getApplicationId() {
         return applicationId;
+    }
+
+    public void assignApplicationId(int generatedId)
+        throws InvalidInputException {
+        Validator.condition(
+            applicationId == 0,
+            "Application ID is already assigned."
+        );
+        applicationId = Validator.savedId(generatedId);
     }
 
     public Tenant getTenant() {

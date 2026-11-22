@@ -17,6 +17,7 @@
 ## Connection
 JDBC URL: jdbc:postgresql://localhost:5432/findtheddb
 Use your own local Postgres username and password. Do not commit them.
+For the Java application, copy `.env.example` to `.env` and set `DB_URL`, `DB_USER`, and `DB_PASSWORD`.
 
 ## Resetting
 To start over, drop and recreate the database:

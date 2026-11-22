@@ -1,3 +1,5 @@
+package ui;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -89,7 +91,17 @@ public class FindTheDUI extends JFrame {
         gbcLeft.anchor = GridBagConstraints.CENTER;
 
         if (LOGO == null) {
-            ImageIcon originalIcon = new ImageIcon("Logo.png");
+            java.net.URL logoResource = FindTheDUI.class.getResource("logo.png");
+            ImageIcon originalIcon;
+            if (logoResource != null) {
+                originalIcon = new ImageIcon(logoResource);
+            } else {
+                File logoFile = new File("src/ui/logo.png");
+                if (!logoFile.isFile()) {
+                    throw new IllegalStateException("Missing UI logo resource.");
+                }
+                originalIcon = new ImageIcon(logoFile.getAbsolutePath());
+            }
             LOGO = new ImageIcon(originalIcon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH));
         }
 
