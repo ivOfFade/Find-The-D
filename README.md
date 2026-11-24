@@ -168,12 +168,25 @@ Data is saved to a file, so everything is still there the next time you open the
 
 ## Class Overview
 
+<details>
+<summary><b> Class Overview</b> (click to expand)</summary>
+
+<br>
+
 | Class | Purpose | Main Attributes | Main Methods |
 | :--- | :--- | :--- | :--- |
-| Person | Parent of Tenant and Landlord | name, age, contactNum | displayInfo() |
-| Tenant | A tenant looking for or staying in a dorm | program, currentDorm | viewMyDorm(), complain(), lookForDorm(), applyToDorm() |
-| Landlord | The dorm owner | handledDorms[] | postDorm(), manageDorm(), makeAnnouncement(), viewComplaints() |
-| Dorm | A dorm posted by a landlord | dormName, location, owner, tenants[], availableSlots | addTenant(), removeTenant(), updateDetails(), displayInfo() |
+| `Person` | Parent of `Tenant` and `Landlord` | `name`, `age`, `contactNum` | `displayInfo()` |
+| `Tenant` | A tenant looking for or staying in a dorm | `program`, `currentDorm` | `viewMyDorm()`, `complain()`, `lookForDorm()`, `applyToDorm()` |
+| `Landlord` | The dorm owner | `handledDorms[]` | `postDorm()`, `manageDorm()`, `makeAnnouncement()`, `viewComplaints()` |
+| `Dorm` | A dorm posted by a landlord | `dormName`, `location`, `owner`, `tenants[]`, `availableSlots` | `addTenant()`, `removeTenant()`, `updateDetails()`, `displayInfo()` |
+
+```
+Person
+├── Tenant
+└── Landlord ── manages ──▶ Dorm ── houses ──▶ Tenant
+```
+
+</details>
 
 
 ## Limitations
@@ -186,7 +199,12 @@ Data is saved to a file, so everything is still there the next time you open the
 - In-app payment of rent
 - Landlord replies to complaints
 
-## Development Schedule
+##  Development Schedule
+
+<details>
+<summary><b>8-week roadmap</b> (click to expand)</summary>
+
+<br>
 
 | Week | Activity | Expected Output |
 | :--- | :--- | :--- |
@@ -195,8 +213,10 @@ Data is saved to a file, so everything is still there the next time you open the
 | 3 | Initial coding | Basic classes |
 | 4-5 | Feature development | Working features |
 | 6 | OOP implementation | Completed OOP features |
-| 7 | Testing and debugging | Tested application |
+| 7 | Testing and debugging | Tested system |
 | 8 | Documentation and presentation | Final project |
+
+</details>
 
 ## Team
 
@@ -208,6 +228,19 @@ College of Informatics and Computing Sciences
 | Dalisay, Rizialyn A. | Requirements, class design, UML diagrams |
 | Driz, Neil Mathew L. | Java classes, methods, OOP features |
 | Oatis, Dylan Luke P. | Tasks, deadlines, communication with instructor |
+
+<div align="center">
+
+## Thank You!
+
+Thanks for checking out **Find The D**.
+We hope it makes finding and managing a dorm a little easier.
+
+*Built with Java, Swing, and a lot of teamwork.* 
+
+**Feedback and suggestions are always welcome!**
+
+</div>
 
 
 
