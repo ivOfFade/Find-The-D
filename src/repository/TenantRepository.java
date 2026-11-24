@@ -76,6 +76,19 @@ public class TenantRepository implements RepositoryInterface<Tenant, Integer> {
         return residents;
 }
 
+    public List<Tenant> loadInterested(Connection connection, int dormId) throws SQLException {
+        List<Tenant> interested = new ArrayList<>();
+        String sql = "SELECT p.* FROM persons p JOIN interested_dorms i "
+            + "ON i.tenant_id = p.person_id WHERE i.dorm_id = ? ORDER BY p.person_id";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, dormId);
+            try (ResultSet rows = statement.executeQuery()) {
+                while (rows.next()) interested.add(mapBasic(rows));
+            }
+        }
+        return interested;
+    }
+
     @Override
     public void save(Tenant t) throws SQLException {
         try (Connection conn = DatabaseConnection.getConnection()) {
