@@ -1,13 +1,17 @@
 package service;
 
+import enums.EstablishmentType;
 import exception.InvalidInputException;
 import exception.UnauthorizedActionException;
 import model.Dorm;
 import model.DormDetails;
+import model.Establishment;
 import model.Landlord;
 import model.Tenant;
+import model.PlusCode;
 import util.DatabaseConnection;
 import util.Validator;
+import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
@@ -29,12 +33,20 @@ public class ListingService {
     }
 
     public Dorm postDorm(Landlord landlord, DormDetails details)
-        throws SQLException, InvalidInputException, UnauthorizedActionException {
+        throws SQLException, InvalidInputException, UnauthorizedActionException,
+               IOException, InterruptedException {
         requireCurrentLandlord(landlord);
+        Dorm dorm = new Dorm(currentLandlord, details);
+        List<Establishment> nearby = dorm.getPlusCode() == null
+            ? List.of()
+            : new NearbyEstablishmentService().findNearby(dorm);
+        dorm.replaceNearbyEstablishments(nearby);
+        if (dorm.getPlusCode() != null) {
+            dorm.markNearbySearchCompleted();
+        }
         try (Connection connection = DatabaseConnection.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                Dorm dorm = new Dorm(currentLandlord, details);
                 Dorm saved = insertDorm(connection, dorm);
                 connection.commit();
                 return saved;
@@ -143,8 +155,38 @@ public class ListingService {
             row.getString("plus_code"), row.getString("description"), row.getInt("total_slots"),
             row.getDouble("rate"), readStrings(connection, "dorm_amenities", "amenity", id),
             row.getString("rules"), readStrings(connection, "dorm_photos", "photo_url", id));
-        return new Dorm(id, owner, details, row.getTimestamp("date_posted").toLocalDateTime(),
+        Dorm dorm = new Dorm(id, owner, details, row.getTimestamp("date_posted").toLocalDateTime(),
             readResidents(connection, id));
+        dorm.replaceNearbyEstablishments(readNearbyEstablishments(connection, id));
+        if (row.getBoolean("nearby_search_completed")) {
+            dorm.markNearbySearchCompleted();
+        }
+        for (Tenant tenant : readInterestedTenants(connection, id)) {
+            dorm.addInterest(tenant);
+        }
+        return dorm;
+    }
+
+    private List<Establishment> readNearbyEstablishments(Connection connection, int dormId)
+        throws SQLException, InvalidInputException {
+        List<Establishment> establishments = new ArrayList<>();
+        String sql = "SELECT establishment_name, type, plus_code, distance_meters "
+            + "FROM dorm_nearby_establishments WHERE dorm_id = ? "
+            + "ORDER BY distance_meters, establishment_name";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, dormId);
+            try (ResultSet rows = statement.executeQuery()) {
+                while (rows.next()) {
+                    establishments.add(new Establishment(
+                        rows.getString("establishment_name"),
+                        EstablishmentType.valueOf(rows.getString("type")),
+                        new PlusCode(rows.getString("plus_code")),
+                        rows.getInt("distance_meters")
+                    ));
+                }
+            }
+        }
+        return establishments;
     }
 
     private List<String> readStrings(Connection connection, String table, String column, int dormId)
@@ -163,18 +205,21 @@ public class ListingService {
 
     private Dorm insertDorm(Connection connection, Dorm dorm) throws SQLException, InvalidInputException {
         String sql = "INSERT INTO dorms (owner_id, dorm_name, location, plus_code, description, "
-            + "total_slots, available_slots, rate, rules, date_posted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+            + "total_slots, available_slots, rate, rules, date_posted, nearby_search_completed) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
             + "RETURNING dorm_id";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, dorm.getOwner().getPersonId());
             setDetails(statement, dorm, 2);
             statement.setTimestamp(10, Timestamp.valueOf(dorm.getDatePosted()));
+            statement.setBoolean(11, dorm.isNearbySearchCompleted());
             try (ResultSet row = statement.executeQuery()) {
                 row.next();
                 dorm.assignDormId(row.getInt(1));
             }
         }
         replaceLists(connection, dorm);
+        replaceNearbyEstablishments(connection, dorm);
         return dorm;
     }
 
@@ -204,6 +249,23 @@ public class ListingService {
     private void replaceLists(Connection connection, Dorm dorm) throws SQLException {
         replaceStrings(connection, "dorm_amenities", "amenity", dorm.getDormId(), dorm.getAmenities());
         replaceStrings(connection, "dorm_photos", "photo_url", dorm.getDormId(), dorm.getPhotos());
+    }
+
+    private void replaceNearbyEstablishments(Connection connection, Dorm dorm) throws SQLException {
+        String sql = "INSERT INTO dorm_nearby_establishments "
+            + "(dorm_id, establishment_name, type, plus_code, distance_meters) "
+            + "VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            for (Establishment establishment : dorm.getNearbyEstablishments()) {
+                statement.setInt(1, dorm.getDormId());
+                statement.setString(2, establishment.getName());
+                statement.setString(3, establishment.getType().name());
+                statement.setString(4, establishment.getPlusCode().getCode());
+                statement.setInt(5, establishment.getDistanceMeters());
+                statement.addBatch();
+            }
+            statement.executeBatch();
+        }
     }
 
     private void replaceStrings(Connection connection, String table, String column, int dormId,
@@ -251,6 +313,20 @@ public class ListingService {
         throws SQLException, InvalidInputException {
         String sql = "SELECT p.* FROM persons p JOIN tenants t ON p.person_id = t.person_id "
             + "WHERE t.current_dorm_id = ? ORDER BY p.person_id";
+        List<Tenant> tenants = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, dormId);
+            try (ResultSet rows = statement.executeQuery()) {
+                while (rows.next()) tenants.add(readTenant(rows));
+            }
+        }
+        return tenants;
+    }
+
+    private List<Tenant> readInterestedTenants(Connection connection, int dormId)
+        throws SQLException, InvalidInputException {
+        String sql = "SELECT p.* FROM persons p JOIN interested_dorms i "
+            + "ON i.tenant_id = p.person_id WHERE i.dorm_id = ? ORDER BY p.person_id";
         List<Tenant> tenants = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, dormId);

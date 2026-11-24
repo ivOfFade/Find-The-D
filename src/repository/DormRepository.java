@@ -82,13 +82,17 @@ public class DormRepository implements RepositoryInterface<Dorm, Integer> {
                 photos
             );
 
-            return new Dorm(
+            Dorm dorm = new Dorm(
                 dormId,
                 owner,
                 details,
                 rs.getTimestamp("date_posted").toLocalDateTime(),
                 residents
             );
+            for (Tenant tenant : new TenantRepository().loadInterested(conn, dormId)) {
+                dorm.addInterest(tenant);
+            }
+            return dorm;
         } catch (InvalidInputException e) {
             throw new SQLException("Invalid dorm data.", e);
         }
