@@ -2,53 +2,94 @@ package service;
 
 import exception.InvalidInputException;
 import exception.UnauthorizedActionException;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 import model.Announcement;
 import model.Dorm;
 import model.Landlord;
+import model.Tenant;
+import repository.AnnouncementRepository;
 import repository.DormRepository;
-import util.DatabaseConnection;
+import repository.TenantRepository;
 import util.Validator;
-import java.sql.*;
 
 public class AnnouncementService {
 
-    public Announcement publish(Landlord landlord, Dorm dorm, String message)
-        throws SQLException, InvalidInputException, UnauthorizedActionException {
-        ListingService.requireLandlord(landlord);
-        Validator.requiredReference(dorm, "Dorm");
-        Validator.savedId(dorm.getDormId());
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            connection.setAutoCommit(false);
-            try {
-                Dorm owned = new DormRepository().findOwnedDorm(connection, dorm.getDormId(), landlord, true);
-                Announcement announcement = new Announcement(owned, landlord, message);
-                Announcement saved = insertAnnouncement(connection, announcement);
-                owned.addAnnouncement(saved);
-                connection.commit();
-                return saved;
-            } catch (SQLException | InvalidInputException | UnauthorizedActionException | RuntimeException exception) {
-                connection.rollback();
-                throw exception;
-            }
-        }
+    private final AnnouncementRepository announcementRepository;
+    private final DormRepository dormRepository;
+    private final TenantRepository tenantRepository;
+
+    public AnnouncementService() {
+        announcementRepository = new AnnouncementRepository();
+        dormRepository = new DormRepository();
+        tenantRepository = new TenantRepository();
     }
 
-    private Announcement insertAnnouncement(Connection connection, Announcement announcement)
-        throws SQLException, InvalidInputException, UnauthorizedActionException {
-        String sql = "INSERT INTO announcements (dorm_id, author_id, message) "
-            + "SELECT dorm_id, owner_id, ? FROM dorms WHERE dorm_id = ? AND owner_id = ? "
-            + "RETURNING announcement_id, date_posted";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, announcement.getMessage());
-            statement.setInt(2, announcement.getDorm().getDormId());
-            statement.setInt(3, announcement.getAuthor().getPersonId());
-            try (ResultSet row = statement.executeQuery()) {
-                if (!row.next()) throw new UnauthorizedActionException("Dorm is not in your listings.");
-                return new Announcement(row.getInt(1), announcement.getDorm(), announcement.getAuthor(),
-                    announcement.getMessage(), row.getTimestamp(2).toLocalDateTime());
-            }
-        }
+    public Announcement postAnnouncement(
+        Landlord landlord,
+        int dormId,
+        String message
+    ) throws
+        InvalidInputException,
+        UnauthorizedActionException,
+        SQLException {
+        Validator.requiredReference(landlord, "Landlord");
+        Validator.savedId(landlord.getPersonId());
+        Validator.savedId(dormId);
+
+        Dorm dorm = dormRepository.findById(dormId).orElseThrow(
+        () -> new UnauthorizedActionException(
+            "Dorm does not exist or is not owned by this landlord."
+        )
+        );
+
+        Announcement announcement = new Announcement(dorm, landlord, message);
+        announcementRepository.save(announcement);
+
+        dorm.addAnnouncement(announcement);
+        return announcement;
     }
 
-    // Sender-free complaints.
+    public List<Announcement> viewAnnouncements(Tenant tenant)
+        throws InvalidInputException, SQLException {
+        Validator.requiredReference(tenant, "Tenant");
+        Validator.savedId(tenant.getPersonId());
+
+        Tenant currentTenant = tenantRepository.findById(
+        tenant.getPersonId()
+        ).orElseThrow(
+        () -> new InvalidInputException("Tenant was not found.")
+        );
+
+        Dorm currentDorm = currentTenant.getCurrentDorm();
+        if (currentDorm == null) {
+        return Collections.emptyList();
+        }
+
+        return announcementRepository.findByDormId(currentDorm.getDormId());
+    }
+
+    public List<Announcement> viewAnnouncements(
+        Landlord landlord,
+        int dormId
+        ) throws InvalidInputException, UnauthorizedActionException, SQLException {
+        Validator.requiredReference(landlord, "Landlord");
+        Validator.savedId(landlord.getPersonId());
+        Validator.savedId(dormId);
+
+        Dorm dorm = dormRepository.findById(dormId).orElseThrow(
+            () -> new UnauthorizedActionException(
+            "Dorm does not exist or is not owned by this landlord."
+            )
+        );
+
+        if (!landlord.ownsDorm(dorm)) {
+            throw new UnauthorizedActionException(
+            "Dorm is not owned by this landlord."
+            );
+        }
+
+        return announcementRepository.findByDormId(dormId);
+    }
 }
