@@ -1,10 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
 
 // A check box row for the multi-pick lists (stays open so several can be ticked)
 class OneUiCheckItem extends JCheckBox {

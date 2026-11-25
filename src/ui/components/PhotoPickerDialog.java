@@ -1,10 +1,7 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.awt.color.*;
 
 // Shows the photo picker in a modal window and returns the pictures the user ticked (empty if cancelled)
 class PhotoPickerDialog {

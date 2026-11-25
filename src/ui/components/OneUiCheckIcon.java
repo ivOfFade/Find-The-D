@@ -1,10 +1,5 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
 
 // Round tick-box used by the check lists (blue circle with a white tick when ticked)
 class OneUiCheckIcon implements Icon {

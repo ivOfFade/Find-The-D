@@ -1,10 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
 
 // The floating list: a rounded white card with a soft shadow that opens right under its field
 class OneUiPopup extends JPopupMenu {

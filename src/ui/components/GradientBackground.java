@@ -1,10 +1,5 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
 
 // Every GradientPanel uses this renderer, so the same background appears throughout the app.
 final class GradientBackground {

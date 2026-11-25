@@ -1,10 +1,5 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
 
 // Panel that paints the gradient as its background (drawn small and scaled up, so resizing stays fast).
 class GradientPanel extends JPanel {

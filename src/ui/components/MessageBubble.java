@@ -3,8 +3,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
+
 
 class MessageBubble extends RoundedPanel {
     // Colours: edit the hex codes here
