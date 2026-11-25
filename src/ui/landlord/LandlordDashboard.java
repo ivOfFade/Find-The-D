@@ -1292,7 +1292,18 @@ class LandlordDashboard extends JPanel {
                         refreshNotification();
                     }), cg);
             }
-            complaintsCardsPanel.add(content, filterCards[i]);
+            JScrollPane complaintsScroll = new JScrollPane(content);
+            ModernScrollBarUI.apply(complaintsScroll);
+            complaintsScroll.setBorder(null);
+            complaintsScroll.setHorizontalScrollBarPolicy(
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+            );
+            GradientBackground.makeTransparent(complaintsScroll);
+            complaintsScroll.setPreferredSize(new Dimension(0, 0));
+            complaintsScroll.setMinimumSize(new Dimension(0, 0));
+            complaintsScroll.getVerticalScrollBar().setUnitIncrement(16);
+
+            complaintsCardsPanel.add(complaintsScroll, filterCards[i]);
             // selectedDorm = dorm;
         }
         CompactDropdown dormFilter = new CompactDropdown(filterDorms, 170, 28,
@@ -1355,7 +1366,18 @@ class LandlordDashboard extends JPanel {
                 : new MessageBubble(dormName, DormService.stamp(an.getDatePosted()), "", false, an.getMessage(), remove);
             annBodyPanel.add(bubble, annBodyGbc);
         }
-        announcementOuterBox.add(annBodyPanel, BorderLayout.CENTER);
+        JScrollPane announcementsScroll = new JScrollPane(annBodyPanel);
+            ModernScrollBarUI.apply(announcementsScroll);
+            announcementsScroll.setBorder(null);
+            announcementsScroll.setHorizontalScrollBarPolicy(
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+            );
+            GradientBackground.makeTransparent(announcementsScroll);
+            announcementsScroll.setPreferredSize(new Dimension(0, 0));
+            announcementsScroll.setMinimumSize(new Dimension(0, 0));
+            announcementsScroll.getVerticalScrollBar().setUnitIncrement(16);
+
+            announcementOuterBox.add(announcementsScroll, BorderLayout.CENTER);
 
         gbc.gridy = 1;
         container.add(announcementOuterBox, gbc);
