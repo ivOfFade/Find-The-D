@@ -11,6 +11,7 @@ import model.Announcement;
 import model.Application;
 import model.Dorm;
 import model.DormDetails;
+import model.Establishment;
 import model.Landlord;
 import model.Person;
 import model.Tenant;
@@ -20,6 +21,9 @@ import repository.DormRepository;
 import repository.TenantRepository;
 import util.Validator;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -284,9 +288,30 @@ public final class DormService {
     }
   }
 
+  public static void removeAnnouncement(Landlord landlord, Announcement announcement) {
+    try {
+      ListingService.requireLandlord(landlord);
+      Validator.requiredReference(announcement, "Announcement");
+      Validator.savedId(announcement.getAnnouncementId());
+      ANNOUNCEMENT_REPO.delete(announcement.getAnnouncementId());
+    } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
+      throw failure(exception);
+    }
+  }
+
   public static List<Map<String, String>> complaints(Landlord landlord, Dorm dorm) {
     try {
       return COMPLAINTS.getComplaints(landlord, dorm);
+    } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
+      throw failure(exception);
+    }
+  }
+
+  public static void removeComplaint(Landlord landlord, int complaintId) {
+    try {
+      ListingService.requireLandlord(landlord);
+      Validator.savedId(complaintId);
+      new repository.ComplaintRepository().delete(complaintId);
     } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
       throw failure(exception);
     }
@@ -355,5 +380,88 @@ public final class DormService {
       message == null || message.isBlank() ? "The operation could not be completed." : message,
       exception
     );
+  }
+
+  public static String twoDigits(int value) {
+    return String.format(Locale.ROOT, "%02d", Math.max(0, value));
+  }
+
+  public static int parseWhole(String text, String fieldName) {
+    try {
+      int value = Integer.parseInt(text == null ? "" : text.trim());
+      if (value < 0) throw new NumberFormatException();
+      return value;
+    } catch (NumberFormatException exception) {
+      throw new ServiceOperationException(fieldName + " must be a whole number.", exception);
+    }
+  }
+
+  public static double parseMoney(String text) {
+    try {
+      double value = Double.parseDouble(text == null ? "" : text.trim());
+      if (value < 0) throw new NumberFormatException();
+      return value;
+    } catch (NumberFormatException exception) {
+      throw new ServiceOperationException("Monthly Rate must be a valid amount.", exception);
+    }
+  }
+
+  public static String dateText(LocalDateTime dateTime) {
+    if (dateTime == null) return "";
+    return dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+  }
+
+  public static String timeText(LocalDateTime dateTime) {
+    if (dateTime == null) return "";
+    return dateTime.toLocalTime().format(DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH));
+  }
+
+  public static String stamp(LocalDateTime dateTime) {
+    if (dateTime == null) return "";
+    return dateText(dateTime) + " " + timeText(dateTime);
+  }
+
+  public static boolean isToday(LocalDateTime dateTime) {
+    return dateTime != null && dateTime.toLocalDate().equals(LocalDate.now());
+  }
+
+  public static String money(double value) {
+    if (value == Math.rint(value)) {
+      return "PHP " + String.format("%,.0f", value);
+    }
+    return "PHP " + String.format("%,.2f", value);
+  }
+
+  public static String slotsText(Dorm dorm) {
+    if (dorm == null) {
+      return "0 slot";
+    }
+    int slots = dorm.getAvailableSlots();
+    return slots + (slots == 1 ? " slot" : " slots");
+  }
+
+  public static String nearbyName(Dorm dorm) {
+    Establishment e = firstNearby(dorm);
+    return e == null ? "N/A" : e.getName();
+  }
+
+  public static String nearbyType(Dorm dorm) {
+    Establishment e = firstNearby(dorm);
+    return e == null ? "N/A" : e.getType().name();
+  }
+
+  public static String facebook(Landlord owner) {
+    if (owner == null || owner.getEmail() == null || owner.getEmail().isBlank()) {
+      return "N/A";
+    }
+    return owner.getEmail();
+  }
+
+  private static Establishment firstNearby(Dorm dorm) {
+    if (dorm == null) {
+      return null;
+    }
+    List<Establishment> nearby = dorm.getNearbyEstablishments();
+    return nearby == null || nearby.isEmpty() ? null : nearby.get(0);
   }
 }
