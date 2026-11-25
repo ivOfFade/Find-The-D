@@ -13,6 +13,10 @@ public class TenantRepository implements RepositoryInterface<Tenant, Integer> {
 
     // called when a tenant still dont have a current dorm
     private Tenant mapBasic(ResultSet rs) throws SQLException {
+        return readTenant(rs);
+    }
+
+    public static Tenant readTenant(ResultSet rs) throws SQLException {
         try {
             return new Tenant(
                 rs.getInt("person_id"),
