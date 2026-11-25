@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 
 // One photo box in the Post New Dorm form: empty grey square until a picture is uploaded.
 // The picture fills the box (cropped to fit); clicking a filled box removes the picture.
