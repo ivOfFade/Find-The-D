@@ -343,7 +343,7 @@ public class DormRepository implements RepositoryInterface<Dorm, Integer> {
         throws SQLException, InvalidInputException {
         List<Dorm> dorms = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM dorms WHERE owner_id = ? ORDER BY dorm_id")) {
+                "SELECT * FROM dorms WHERE owner_id = ? ORDER BY date_posted DESC, dorm_id DESC")) {
             ps.setInt(1, owner.getPersonId());
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) dorms.add(map(conn, rs));
