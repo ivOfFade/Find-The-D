@@ -4,7 +4,19 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.awt.color.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import exception.DormAppException;
+import exception.ServiceOperationException;
+import model.Announcement;
+import model.Application;
+import model.Dorm;
+import model.DormDetails;
+import model.Landlord;
+import model.Tenant;
+import service.DormService;
 
 // Landlord page
 class LandlordDashboard extends JPanel {
@@ -173,12 +185,13 @@ class LandlordDashboard extends JPanel {
 
     // Re-reads the shared dorm data and redraws the metric cards and the Dorm List rows
     private void refreshOverview() {
-        totalDormsValue.setText(DormService.twoDigits(landlord.getMyDorms().size()));
+        List<Dorm> dorms = DormService.myDorms(landlord);
+        totalDormsValue.setText(DormService.twoDigits(dorms.size()));
         totalTenantsValue.setText(DormService.twoDigits(DormService.totalTenants(landlord)));
         complaintsValue.setText(DormService.twoDigits(DormService.totalComplaints(landlord)));
 
         dormRowsPanel.removeAll();
-        for (Dorm dorm : landlord.getMyDorms()) {
+        for (Dorm dorm : dorms) {
             dormRowsPanel.add(createDormRow(dorm));
             dormRowsPanel.add(Box.createVerticalStrut(4));
         }
@@ -237,7 +250,7 @@ class LandlordDashboard extends JPanel {
     private void populateMyFeed() {
         myFeedPanel.removeAll();
         boolean first = true;
-        for (Dorm dorm : landlord.getMyDorms()) {
+        for (Dorm dorm : DormService.myDorms(landlord)) {
             if (!first) {
                 myFeedPanel.add(Box.createVerticalStrut(14));
             }
@@ -276,7 +289,7 @@ class LandlordDashboard extends JPanel {
     private void confirmDeleteDorm(Dorm dorm) {
         showActionConfirmationDialog(null, "Delete Dorm", () -> {
             try {
-                landlord.removeDorm(dorm);
+                DormService.removeDorm(landlord, dorm);
             } catch (DormAppException ex) {
                 RoundedDialog.showMessage(this, "Message", ex.getMessage());
                 return;
@@ -447,8 +460,8 @@ class LandlordDashboard extends JPanel {
             addManageSectionHeader(body, "Approve/Decline");
         }
         boolean hasApplicants = false;
-        for (Dorm dorm : landlord.getMyDorms()) {
-            if ((onlyDorm != null && !dorm.equals(onlyDorm)) || DormService.pending(dorm).isEmpty()) {
+        for (Dorm dorm : DormService.myDorms(landlord)) {
+            if ((onlyDorm != null && dorm.getDormId() != onlyDorm.getDormId()) || DormService.pending(dorm).isEmpty()) {
                 continue;
             }
             hasApplicants = true;
@@ -475,8 +488,8 @@ class LandlordDashboard extends JPanel {
             body.add(Box.createVerticalStrut(10));
             addManageSectionHeader(body, "Tenant List");
             boolean hasTenants = false;
-            for (Dorm dorm : landlord.getMyDorms()) {
-                if (!dorm.equals(onlyDorm) || !dorm.hasTenants()) {
+            for (Dorm dorm : DormService.myDorms(landlord)) {
+                if (dorm.getDormId() != onlyDorm.getDormId() || !dorm.hasTenants()) {
                     continue;
                 }
                 hasTenants = true;
@@ -783,7 +796,7 @@ class LandlordDashboard extends JPanel {
             }
             amenitiesField.setValue(sb.length() == 0 ? null : sb.toString());
         };
-        for (String amenity : EstablishmentType.AMENITIES) {
+        for (String amenity : new String[]{"Wi-Fi", "Laundry", "Kitchen", "Parking", "Security", "Air Conditioning", "Study Area", "Water Supply"}) {
             OneUiCheckItem cb = new OneUiCheckItem(amenity);
             cb.addActionListener(e -> updateAmenitiesSummary.run());  // popup stays open for more picks
             amenityChecks.add(cb);
@@ -992,27 +1005,36 @@ class LandlordDashboard extends JPanel {
 
         postBtn.addActionListener(e -> {
             try {
-                DormDetails details = new DormDetails();
-                details.dormName = nameField.getText();
-                details.location = locationField.getText();
-                details.plusCode = plusCodeField.getText();
-                details.description = descriptionField.getText();
-                details.rules = rulesField.getText();
-                details.totalSlots = DormService.parseWhole(slotField.getText(), "Available Slot");
-                details.rate = DormService.parseMoney(rateField.getText());
+                List<String> amenities = new ArrayList<>();
                 for (JCheckBox cb : amenityChecks) {
                     if (cb.isSelected()) {
-                        details.amenities.add(cb.getText());
+                        amenities.add(cb.getText());
                     }
                 }
+                List<String> photos = new ArrayList<>();
                 for (PhotoThumb t : photoThumbs) {
                     if (t.hasPhoto()) {
-                        details.photos.add(t.getFile().getPath());
+                        photos.add(t.getFile().getPath());
                     }
                 }
-                DormService.postDorm(landlord, details, estNameField.getText(), estTypeField.getText());
-            } catch (DormAppException ex) {
+                DormDetails details = new DormDetails(
+                    nameField.getText(),
+                    locationField.getText(),
+                    plusCodeField.getText(),
+                    descriptionField.getText(),
+                    DormService.parseWhole(slotField.getText(), "Available Slot"),
+                    DormService.parseMoney(rateField.getText()),
+                    amenities,
+                    rulesField.getText(),
+                    photos
+                );
+                DormService.postDorm(landlord, details);
+            } catch (RuntimeException ex) {
                 RoundedDialog.showMessage(dialog, "Message", ex.getMessage());
+                return;
+            } catch (Exception ex) {
+                RoundedDialog.showMessage(dialog, "Message",
+                    ex.getMessage() == null ? "Could not post dorm." : ex.getMessage());
                 return;
             }
             dialog.dispose();
@@ -1079,7 +1101,7 @@ class LandlordDashboard extends JPanel {
 
         gbc.gridy = 1; gbc.insets = new Insets(0, 0, 15, 0);
         DropdownField dormCombo = new DropdownField("Select a Dorm...", 0, 38);
-        for (Dorm dorm : landlord.getMyDorms()) {
+        for (Dorm dorm : DormService.myDorms(landlord)) {
             dormCombo.addChoice(dorm.getDormName());
         }
         mainPanel.add(dormCombo, gbc);
@@ -1125,16 +1147,16 @@ class LandlordDashboard extends JPanel {
         postBtn.addActionListener(e -> {
             try {
                 Dorm target = null;
-                for (Dorm d : landlord.getMyDorms()) {
+                for (Dorm d : DormService.myDorms(landlord)) {
                     if (d.getDormName().equals(dormCombo.getValue())) {
                         target = d;
                     }
                 }
                 if (target == null) {
-                    throw new InvalidInputException("Please select a dorm.");
+                    throw new ServiceOperationException("Please select a dorm.", null);
                 }
-                landlord.makeAnnouncement(target, msgArea.getText());
-            } catch (DormAppException ex) {
+                DormService.publishAnnouncement(landlord, target, msgArea.getText());
+            } catch (RuntimeException ex) {
                 RoundedDialog.showMessage(dialog, "Message", ex.getMessage());
                 return;
             }
@@ -1230,7 +1252,7 @@ class LandlordDashboard extends JPanel {
         compTitle.setForeground(notifTitleColor);
         compHeaderPanel.add(compTitle, BorderLayout.WEST);
 
-        java.util.List<Dorm> myDorms = landlord.getMyDorms();
+        java.util.List<Dorm> myDorms = DormService.myDorms(landlord);
         Dorm selectedDorm = null;
         String[] filterDorms = new String[myDorms.size()];
         String[] filterCards = new String[myDorms.size()];
@@ -1244,7 +1266,7 @@ class LandlordDashboard extends JPanel {
             cg.gridx = 0; cg.weightx = 1.0;
             cg.fill = GridBagConstraints.HORIZONTAL; cg.anchor = GridBagConstraints.NORTHWEST;
             cg.insets = new Insets(10, 0, 0, 0);
-            java.util.List<Complaint> list = landlord.viewComplaints(dorm);
+            java.util.List<Map<String, String>> list = DormService.complaints(landlord, dorm);
             if (list.isEmpty()) {
                 JLabel none = new JLabel("No complaints for " + dorm.getDormName() + ".");
                 none.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 13));
@@ -1253,13 +1275,18 @@ class LandlordDashboard extends JPanel {
                 content.add(none, cg);
             }
             int row = 0;
-            for (int c = list.size() - 1; c >= 0; c--) {      // newest first
-                Complaint cp = list.get(c);
+            for (int c = 0; c < list.size(); c++) {      // already newest first
+                Map<String, String> cp = list.get(c);
+                LocalDateTime postedAt = LocalDateTime.parse(cp.get("datePosted"));
+                int complaintId = Integer.parseInt(cp.get("complaintId"));
                 cg.gridy = row++;
-                content.add(new MessageBubble(dorm.getDormName() + " - " + cp.getSenderName(),
-                    DormService.dateText(cp.getDatePosted()), DormService.timeText(cp.getDatePosted()),
-                    false, cp.getMessage(),
-                    () -> landlord.removeComplaint(dorm, cp)), cg);
+                content.add(new MessageBubble(dorm.getDormName() + " - Anonymous",
+                    DormService.dateText(postedAt), DormService.timeText(postedAt),
+                    false, cp.get("message"),
+                    () -> {
+                        DormService.removeComplaint(landlord, complaintId);
+                        refreshNotification();
+                    }), cg);
             }
             complaintsCardsPanel.add(content, filterCards[i]);
             selectedDorm = dorm;
@@ -1308,17 +1335,16 @@ class LandlordDashboard extends JPanel {
         annBodyGbc.gridx = 0; annBodyGbc.weightx = 1.0;
         annBodyGbc.fill = GridBagConstraints.HORIZONTAL; annBodyGbc.anchor = GridBagConstraints.NORTHWEST;
         
-        java.util.List<Announcement> posted = new java.util.ArrayList<>();
-        for (Dorm dorm : landlord.getMyDorms()) {
-            posted.addAll(dorm.getAnnouncements());
-        }
-               posted.sort((a, b) -> b.getDatePosted().compareTo(a.getDatePosted()));   // newest first
+        java.util.List<Announcement> posted = DormService.landlordAnnouncements(landlord);
         for (int n = 0; n < posted.size(); n++) {
             Announcement an = posted.get(n);
             annBodyGbc.gridy = n;
             annBodyGbc.insets = new Insets(n == 0 ? 10 : 0, 0, n == posted.size() - 1 ? 0 : 10, 0);
             String dormName = an.getDorm().getDormName();
-            Runnable remove = () -> landlord.removeAnnouncement(an.getDorm(), an);
+            Runnable remove = () -> {
+                DormService.removeAnnouncement(landlord, an);
+                refreshNotification();
+            };
 
             MessageBubble bubble = DormService.isToday(an.getDatePosted())
                 ? new MessageBubble(dormName, "", DormService.timeText(an.getDatePosted()), true, an.getMessage(), remove)
@@ -1404,3 +1430,4 @@ class LandlordDashboard extends JPanel {
         return lbl;
     }
 }
+
