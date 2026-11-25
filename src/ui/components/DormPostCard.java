@@ -5,6 +5,9 @@ import java.awt.event.*;
 import java.io.File;
 import model.Dorm;
 import service.DormService;
+import enums.EstablishmentType;
+import model.Establishment;
+import java.util.EnumMap;
 
 // Reusable Facebook-style dorm post (used in the tenant Browse feed and the landlord My Dorm feed).
 // actionComponent is optional: pass an "Apply" button for tenants, or null for the landlord.
@@ -39,8 +42,7 @@ class DormPostCard extends RoundedPanel {
       dorm.getRules(),
       DormService.money(dorm.getRate()),
       DormService.slotsText(dorm),
-      DormService.nearbyName(dorm),
-      DormService.nearbyType(dorm),
+      dorm.getNearbyEstablishments(),
       dorm.getOwner().getContactNum(),
       DormService.facebook(dorm.getOwner()),
       dorm.getInterestedCount(),
@@ -75,8 +77,7 @@ class DormPostCard extends RoundedPanel {
     String dormRules,
     String monthly,
     String availableSlot,
-    String nearbyName,
-    String nearbyType,
+    java.util.List<Establishment> nearbyEstablishments,
     String contactNumber,
     String facebookAccount,
     int initialLikes,
@@ -201,13 +202,43 @@ class DormPostCard extends RoundedPanel {
     detailsPanel.add(createDetailField("Dorm Rules : " + dormRules));
     detailsPanel.add(createDetailField("Available Slot : " + availableSlot));
     detailsPanel.add(createDetailField("Monthly Rate : " + monthly));
-    detailsPanel.add(createDetailField("Nearby Establishment"));
-    detailsPanel.add(createDetailField("    Name : " + nearbyName));
-    detailsPanel.add(createDetailField("    Type : " + nearbyType));
-    detailsPanel.add(createDetailField("Contact Number : " + contactNumber));
-    detailsPanel.add(
-      createDetailField("Facebook Account : " + facebookAccount)
-    );
+
+    detailsPanel.add(createDetailField("Nearby Establishments:"));
+    EnumMap<EstablishmentType, Establishment> closest =
+        new EnumMap<>(EstablishmentType.class);
+
+    for (Establishment establishment : nearbyEstablishments) {
+      Establishment current = closest.get(establishment.getType());
+      if (current == null
+          || establishment.getDistanceMeters() < current.getDistanceMeters()) {
+        closest.put(establishment.getType(), establishment);
+      }
+    }
+
+    EstablishmentType[] displayedTypes = {
+    EstablishmentType.STORE,
+    EstablishmentType.LAUNDRY,
+    EstablishmentType.GROCERY,
+    EstablishmentType.SCHOOL,
+    EstablishmentType.PHARMACY,
+    EstablishmentType.OTHER
+    };
+
+    for (EstablishmentType type : displayedTypes) {
+      Establishment establishment = closest.get(type);
+      String text;
+
+      if (establishment == null) {
+        text = type + ": No nearby place found";
+      } else {
+        text = type + ": " + establishment.getName()
+            + " (" + establishment.getDistanceMeters() + " m)";
+      }
+
+      JComponent row = createDetailField(text);
+      row.setBorder(new EmptyBorder(0, 20, 0, 0));
+      detailsPanel.add(row);
+    }
     detailsPanel.add(seeLessLink);
     body.add(Box.createVerticalStrut(3));
 
