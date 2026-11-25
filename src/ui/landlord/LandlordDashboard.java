@@ -1253,7 +1253,7 @@ class LandlordDashboard extends JPanel {
         compHeaderPanel.add(compTitle, BorderLayout.WEST);
 
         java.util.List<Dorm> myDorms = DormService.myDorms(landlord);
-        Dorm selectedDorm = null;
+        // Dorm selectedDorm = null;
         String[] filterDorms = new String[myDorms.size()];
         String[] filterCards = new String[myDorms.size()];
         for (int i = 0; i < myDorms.size(); i++) {
@@ -1289,7 +1289,7 @@ class LandlordDashboard extends JPanel {
                     }), cg);
             }
             complaintsCardsPanel.add(content, filterCards[i]);
-            selectedDorm = dorm;
+            // selectedDorm = dorm;
         }
         CompactDropdown dormFilter = new CompactDropdown(filterDorms, 170, 28,
             NOTIF_DROPDOWN_BG, NOTIF_DROPDOWN_BORDER, NOTIF_DROPDOWN_TEXT, NOTIF_DROPDOWN_HOVER,

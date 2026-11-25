@@ -1,4 +1,4 @@
-import javax.swing.*;
+
 import java.awt.*;
 
 // Mockup-style field border: flat fill with a darker inset edge along the top and left
