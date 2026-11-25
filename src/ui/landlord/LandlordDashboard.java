@@ -1004,6 +1004,10 @@ class LandlordDashboard extends JPanel {
         cancelBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         postBtn.addActionListener(e -> {
+            if (plusCodeField.getText().isBlank()) {
+                RoundedDialog.showMessage(dialog, "Message", "Full Plus Code is required.");
+                return;
+            }
             try {
                 List<String> amenities = new ArrayList<>();
                 for (JCheckBox cb : amenityChecks) {
