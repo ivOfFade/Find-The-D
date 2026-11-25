@@ -36,7 +36,7 @@ class DormPostCard extends RoundedPanel {
       DormService.dateText(dorm.getDatePosted()),
       dorm.getDormName(),
       dorm.getLocation(),
-      dorm.getPlusCode().getCode(),
+      dorm.getPlusCode() == null ? "N/A" : dorm.getPlusCode().getCode(),
       dorm.getDescription(),
       dorm.getAmenities().toArray(new String[0]),
       dorm.getRules(),
