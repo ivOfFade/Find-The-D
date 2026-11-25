@@ -441,6 +441,40 @@ public class DormRepository implements RepositoryInterface<Dorm, Integer> {
         }
     }
 
+    public void removeTenantFromDorm(Landlord owner, int dormId, int tenantId)
+        throws SQLException, InvalidInputException, UnauthorizedActionException {
+        requireLandlord(owner);
+        Validator.savedId(dormId);
+        Validator.savedId(tenantId);
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                findOwnedDorm(conn, dormId, owner, true);
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "UPDATE tenants SET current_dorm_id = NULL WHERE person_id = ? AND current_dorm_id = ?")) {
+                    ps.setInt(1, tenantId);
+                    ps.setInt(2, dormId);
+                    if (ps.executeUpdate() != 1) {
+                        throw new InvalidInputException("Tenant is no longer assigned to this dorm.");
+                    }
+                }
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "UPDATE dorms SET available_slots = total_slots - "
+                        + "(SELECT COUNT(*) FROM tenants WHERE current_dorm_id = ?) WHERE dorm_id = ?")) {
+                    ps.setInt(1, dormId);
+                    ps.setInt(2, dormId);
+                    if (ps.executeUpdate() != 1) {
+                        throw new SQLException("Dorm listing no longer exists.");
+                    }
+                }
+                conn.commit();
+            } catch (SQLException | InvalidInputException | UnauthorizedActionException | RuntimeException e) {
+                conn.rollback();
+                throw e;
+            }
+        }
+    }
+
     private Dorm map(Connection conn, ResultSet rs, Landlord owner)
         throws SQLException, InvalidInputException {
         int dormId = rs.getInt("dorm_id");
