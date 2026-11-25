@@ -21,6 +21,7 @@ public class Dorm {
   private double rate;
   private String rules;
   private LocalDateTime datePosted;
+  private boolean nearbySearchCompleted;
 
   private final ArrayList<Tenant> tenants = new ArrayList<>();
   private final ArrayList<String> amenities = new ArrayList<>();
@@ -28,6 +29,7 @@ public class Dorm {
   private final ArrayList<Tenant> interestedTenants = new ArrayList<>();
   private final ArrayList<Announcement> announcements = new ArrayList<>();
   private final ArrayList<Complaint> complaints = new ArrayList<>();
+  private final ArrayList<Establishment> nearbyEstablishments = new ArrayList<>();
 
   public Dorm(Landlord owner, DormDetails details)
     throws InvalidInputException {
@@ -291,6 +293,28 @@ public class Dorm {
 
   public List<Complaint> getComplaints() {
     return Collections.unmodifiableList(new ArrayList<>(complaints));
+  }
+
+  public List<Establishment> getNearbyEstablishments() {
+    return Collections.unmodifiableList(new ArrayList<>(nearbyEstablishments));
+  }
+
+  public boolean isNearbySearchCompleted() {
+    return nearbySearchCompleted;
+  }
+
+  public void markNearbySearchCompleted() {
+    nearbySearchCompleted = true;
+  }
+
+  public void replaceNearbyEstablishments(List<Establishment> establishments)
+    throws InvalidInputException {
+    Validator.requiredReference(establishments, "Nearby establishments");
+    for (Establishment establishment : establishments) {
+      Validator.requiredReference(establishment, "Nearby establishment");
+    }
+    nearbyEstablishments.clear();
+    nearbyEstablishments.addAll(establishments);
   }
 
   static boolean sameIdentity(Dorm first, Dorm second) {

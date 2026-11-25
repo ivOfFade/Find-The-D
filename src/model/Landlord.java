@@ -55,6 +55,16 @@ public class Landlord extends Person {
     return new ArrayList<>(handledDorms);
   }
 
+  public void replaceOwnedDorms(List<Dorm> dorms)
+    throws InvalidInputException, UnauthorizedActionException {
+    Validator.requiredReference(dorms, "Dorm listings");
+    for (Dorm dorm : dorms) {
+      requireOwnership(dorm);
+    }
+    handledDorms.clear();
+    handledDorms.addAll(dorms);
+  }
+
   @Override
   public DashboardType getDashboardType() {
     return DashboardType.LANDLORD_DASHBOARD;

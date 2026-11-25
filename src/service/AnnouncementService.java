@@ -5,6 +5,7 @@ import exception.UnauthorizedActionException;
 import model.Announcement;
 import model.Dorm;
 import model.Landlord;
+import repository.DormRepository;
 import util.DatabaseConnection;
 import util.Validator;
 import java.sql.*;
@@ -19,7 +20,7 @@ public class AnnouncementService {
         try (Connection connection = DatabaseConnection.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                Dorm owned = new ListingService(landlord).findOwnedDorm(connection, dorm.getDormId(), landlord, true);
+                Dorm owned = new DormRepository().findOwnedDorm(connection, dorm.getDormId(), landlord, true);
                 Announcement announcement = new Announcement(owned, landlord, message);
                 Announcement saved = insertAnnouncement(connection, announcement);
                 owned.addAnnouncement(saved);

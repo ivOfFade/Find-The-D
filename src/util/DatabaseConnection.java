@@ -21,9 +21,16 @@ public final class DatabaseConnection {
     }
 
     public static Connection getConnection() throws SQLException {
-        String url = Env.require("DB_URL");
-        String user = Env.require("DB_USER");
-        String password = Env.require("DB_PASSWORD");
+        String url;
+        String user;
+        String password;
+        try {
+            url = Env.require("DB_URL");
+            user = Env.require("DB_USER");
+            password = Env.require("DB_PASSWORD");
+        } catch (IllegalStateException exception) {
+            throw new SQLException(exception.getMessage(), exception);
+        }
         return DriverManager.getConnection(url, user, password);
     }
 
