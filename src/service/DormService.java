@@ -9,7 +9,6 @@ import exception.ServiceOperationException;
 import exception.UnauthorizedActionException;
 import model.Announcement;
 import model.Application;
-import model.Complaint;
 import model.Dorm;
 import model.DormDetails;
 import model.Landlord;
@@ -197,7 +196,7 @@ public final class DormService {
 
   public static List<Application> pending(Dorm dorm) {
     try {
-      return APPLICATIONS.reviewApplications(dorm.getOwner(), dorm);
+      return APPLICATIONS.viewPendingApplications(dorm.getOwner(), dorm.getDormId());
     } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
       throw failure(exception);
     }
@@ -279,7 +278,7 @@ public final class DormService {
 
   public static void publishAnnouncement(Landlord landlord, Dorm dorm, String message) {
     try {
-      ANNOUNCEMENTS.publish(landlord, dorm, message);
+      ANNOUNCEMENTS.postAnnouncement(landlord, dorm.getDormId(), message);
     } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
       throw failure(exception);
     }
@@ -307,19 +306,19 @@ public final class DormService {
   }
 
   public static int totalTenants(Landlord landlord) {
-    return summary(landlord).get("occupiedSlots");
+    try {
+      return DASHBOARD.getSummary(landlord).getOccupiedSlots();
+    } catch (SQLException | InvalidInputException exception) {
+      throw failure(exception);
+    }
   }
 
   public static int totalComplaints(Landlord landlord) {
-    return summary(landlord).get("complaintCount");
-  }
-
-  private static Map<String, Integer> summary(Landlord landlord) {
-    try {
-      return DASHBOARD.getSummary(landlord);
-    } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
-      throw failure(exception);
+    int total = 0;
+    for (Dorm dorm : myDorms(landlord)) {
+      total += complaints(landlord, dorm).size();
     }
+    return total;
   }
 
   private static void refreshCurrentLandlord() throws SQLException, InvalidInputException,
