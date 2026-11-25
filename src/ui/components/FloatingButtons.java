@@ -1,10 +1,6 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
 
 // Gives every JButton in the app the floating shadow as soon as it is shown, including buttons
 // created later inside dialogs. Set a "noShadow" client property on a button to opt out.

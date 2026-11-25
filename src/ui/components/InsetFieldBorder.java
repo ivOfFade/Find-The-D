@@ -1,10 +1,5 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
 
 // Mockup-style field border: flat fill with a darker inset edge along the top and left
 class InsetFieldBorder extends javax.swing.border.AbstractBorder {

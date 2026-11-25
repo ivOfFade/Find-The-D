@@ -1,10 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.File;
-import java.awt.color.*;
 
 // Modern in-app photo picker: browse folders, see picture thumbnails, tick several, press Add Photos.
 // Used instead of the plain system file chooser so it matches the rest of the system.

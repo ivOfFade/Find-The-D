@@ -1,10 +1,6 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.File;
-import java.awt.color.*;
 
 // One photo in the post's grid: the picture cropped to fill the tile, with "+N" on top when
 // the post has more photos than the grid can show

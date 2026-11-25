@@ -1,10 +1,5 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
 
 // ======================= One UI style (shared by every dropdown) =======================
 // Soft rounded fields, a thin chevron, a floating rounded list with a gentle shadow, and pill-shaped

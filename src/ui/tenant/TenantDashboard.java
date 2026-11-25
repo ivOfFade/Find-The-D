@@ -3,8 +3,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
+import enums.ApplicationStatus;
+import enums.EstablishmentType;
+import exception.DormAppException;
+import model.Announcement;
+import model.Application;
+import model.Dorm;
+import model.DormFilter;
+import model.Landlord;
+import model.Tenant;
+import service.DormService;
 
 // Tenant Page
 class TenantDashboard extends JPanel {
