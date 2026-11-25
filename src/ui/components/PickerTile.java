@@ -1,10 +1,7 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.awt.color.*;
 
 // One tile in the photo picker: a folder, or a picture thumbnail with its file name.
 // Selected pictures get a dark frame and a tick; the tick box also appears when hovering.

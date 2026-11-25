@@ -1,10 +1,6 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
 
 // Gives the small message / confirmation dialogs rounded corners (radius 10).
 // Call RoundedDialog.apply(dialog) after the dialog's content is added and before setVisible(true).

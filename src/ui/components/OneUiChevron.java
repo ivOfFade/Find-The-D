@@ -1,10 +1,5 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
 
 // Thin rounded chevron (points down, or up while the list is open)
 class OneUiChevron extends JComponent {

@@ -3,8 +3,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.awt.color.*;
+import exception.DormAppException;
+import service.DormService;
 
 // Login page
 class LoginWindow extends GradientPanel {
