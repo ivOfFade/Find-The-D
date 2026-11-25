@@ -1,9 +1,11 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import exception.ServiceOperationException;
+
 import java.awt.*;
 import java.awt.event.*;
-import exception.DormAppException;
 import service.DormService;
 
 // Login page
@@ -47,7 +49,8 @@ class LoginWindow extends GradientPanel {
             try {
                 DormService.login(fieldValue(emailField, "Email"), fieldValue(passwordField, "Password"), userRole);
                 FindTheDUI.showDashboard(userRole);
-            } catch (DormAppException ex) {
+            } catch (ServiceOperationException ex) {
+                ex.printStackTrace();
                 RoundedDialog.showMessage(loginButton, "Message", ex.getMessage());
             }
         });
@@ -67,6 +70,19 @@ class LoginWindow extends GradientPanel {
             }
         });
         rightPanel.add(registerLabel, gbc);
+
+        gbc.gridy = 4;
+        gbc.insets = new Insets(16, 0, 0, 0);
+        JButton backButton = new JButton("\u2190 Back");
+        backButton.setPreferredSize(new Dimension(300, 36));
+        backButton.setFont(new Font("Georgia", Font.PLAIN, 14));
+        backButton.setBackground(new Color(0x73, 0x73, 0x73));
+        backButton.setForeground(Color.WHITE);
+        backButton.setFocusPainted(false);
+        backButton.setBorder(new EmptyBorder(0, 0, 0, 0));
+        backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        backButton.addActionListener(e -> FindTheDUI.showWelcome());
+        rightPanel.add(backButton, gbc);
 
         add(rightPanel);
         rightPanel.revalidate();
