@@ -7,6 +7,8 @@ import model.Application;
 import model.Dorm;
 import model.Landlord;
 import model.Tenant;
+import repository.DormRepository;
+import repository.TenantRepository;
 import util.DatabaseConnection;
 import util.Validator;
 import java.sql.*;
@@ -22,7 +24,7 @@ public class ApplicationReviewService {
         Validator.requiredReference(dorm, "Dorm");
         Validator.savedId(dorm.getDormId());
         try (Connection connection = DatabaseConnection.getConnection()) {
-            Dorm owned = new ListingService(landlord).findOwnedDorm(connection, dorm.getDormId(), landlord, false);
+            Dorm owned = new DormRepository().findOwnedDorm(connection, dorm.getDormId(), landlord, false);
             return findPendingApplications(connection, landlord, owned);
         }
     }
@@ -81,7 +83,7 @@ public class ApplicationReviewService {
         lockDorms(connection, initial.getDorm().getDormId(), previousId);
 
         if (previousId != 0) {
-            Dorm previous = new ListingService(landlord).findPreviousDorm(connection, previousId);
+            Dorm previous = new DormRepository().findPreviousDorm(connection, previousId);
             if (previous == null) {
                 throw new SQLException("Tenant's current dorm no longer exists.");
             }
@@ -111,7 +113,7 @@ public class ApplicationReviewService {
             statement.setInt(1, landlord.getPersonId());
             statement.setInt(2, dorm.getDormId());
             try (ResultSet rows = statement.executeQuery()) {
-                while (rows.next()) pending.add(readApplication(rows, dorm, ListingService.readTenant(rows)));
+                while (rows.next()) pending.add(readApplication(rows, dorm, TenantRepository.readTenant(rows)));
             }
         }
         return List.copyOf(pending);
@@ -128,8 +130,8 @@ public class ApplicationReviewService {
             statement.setInt(2, landlord.getPersonId());
             try (ResultSet row = statement.executeQuery()) {
                 if (!row.next()) throw new UnauthorizedActionException("Application is not in your listings.");
-                Dorm dorm = new ListingService(landlord).findOwnedDorm(connection, row.getInt("dorm_id"), landlord, false);
-                Tenant tenant = restoredTenant == null ? ListingService.readTenant(row) : restoredTenant;
+                Dorm dorm = new DormRepository().findOwnedDorm(connection, row.getInt("dorm_id"), landlord, false);
+                Tenant tenant = restoredTenant == null ? TenantRepository.readTenant(row) : restoredTenant;
                 if (tenant.getPersonId() != row.getInt("tenant_id")) {
                     throw new SQLException("Application tenant changed while reviewing.");
                 }
