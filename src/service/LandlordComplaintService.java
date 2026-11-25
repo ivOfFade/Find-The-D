@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.ArrayList;
 import model.Dorm;
 import model.Landlord;
+import repository.DormRepository;
 import util.DatabaseConnection;
 import util.Validator;
 import java.sql.*;
@@ -19,7 +20,7 @@ public class LandlordComplaintService {
         Validator.requiredReference(dorm, "Dorm");
         Validator.savedId(dorm.getDormId());
         try (Connection connection = DatabaseConnection.getConnection()) {
-            new ListingService(landlord).findOwnedDorm(connection, dorm.getDormId(), landlord, false);
+            new DormRepository().findOwnedDorm(connection, dorm.getDormId(), landlord, false);
             return findComplaints(connection, dorm.getDormId(), landlord.getPersonId());
         }
     }

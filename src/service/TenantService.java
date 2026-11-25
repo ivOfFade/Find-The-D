@@ -124,7 +124,7 @@ public final class TenantService {
     try (Connection connection = DatabaseConnection.getConnection()) {
       connection.setAutoCommit(false);
       try {
-        new ListingService(landlord).findOwnedDorm(connection, dorm.getDormId(), landlord, true);
+        new repository.DormRepository().findOwnedDorm(connection, dorm.getDormId(), landlord, true);
         try (PreparedStatement statement = connection.prepareStatement(
           "UPDATE tenants SET current_dorm_id = NULL WHERE person_id = ? AND current_dorm_id = ?")) {
           statement.setInt(1, tenant.getPersonId());
