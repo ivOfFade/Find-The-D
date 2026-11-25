@@ -93,6 +93,31 @@ public class TenantRepository implements RepositoryInterface<Tenant, Integer> {
         return interested;
     }
 
+    public Set<Integer> findInterestedDormIds(int tenantId) throws SQLException {
+        Set<Integer> result = new HashSet<>();
+        String sql = "SELECT dorm_id FROM interested_dorms WHERE tenant_id = ? ORDER BY dorm_id";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, tenantId);
+            try (ResultSet rows = statement.executeQuery()) {
+                while (rows.next()) result.add(rows.getInt("dorm_id"));
+            }
+        }
+        return Set.copyOf(result);
+    }
+
+    public void setInterested(int tenantId, int dormId, boolean interested) throws SQLException {
+        String sql = interested
+            ? "INSERT INTO interested_dorms (tenant_id, dorm_id) VALUES (?, ?) ON CONFLICT DO NOTHING"
+            : "DELETE FROM interested_dorms WHERE tenant_id = ? AND dorm_id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, tenantId);
+            statement.setInt(2, dormId);
+            statement.executeUpdate();
+        }
+    }
+
     @Override
     public void save(Tenant t) throws SQLException {
         try (Connection conn = DatabaseConnection.getConnection()) {

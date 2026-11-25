@@ -7,32 +7,37 @@ import exception.InvalidInputException;
 import exception.NoAvailableSlotsException;
 import exception.ServiceOperationException;
 import exception.UnauthorizedActionException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import model.Announcement;
 import model.Application;
+import model.Complaint;
 import model.Dorm;
 import model.DormDetails;
 import model.Landlord;
 import model.Person;
 import model.Tenant;
 import repository.AnnouncementRepository;
+import repository.ApplicationRepository;
+import repository.DormRepository;
+import repository.TenantRepository;
+import util.Validator;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 public final class DormService {
 
   private static final AuthService AUTH = new AuthService();
-  private static final TenantService TENANTS = new TenantService();
-  private static final ApplicationReviewService APPLICATIONS =
-    new ApplicationReviewService();
-  private static final AnnouncementService ANNOUNCEMENTS =
-    new AnnouncementService();
-  private static final LandlordComplaintService COMPLAINTS =
-    new LandlordComplaintService();
+  private static final ApplicationReviewService APPLICATIONS = new ApplicationReviewService();
+  private static final AnnouncementService ANNOUNCEMENTS = new AnnouncementService();
+  private static final ComplaintService COMPLAINTS = new ComplaintService();
   private static final DashboardService DASHBOARD = new DashboardService();
+  private static final DormRepository DORMS = new DormRepository();
+  private static final TenantRepository TENANTS = new TenantRepository();
+  private static final ApplicationRepository APPLICATION_REPO = new ApplicationRepository();
+  private static final AnnouncementRepository ANNOUNCEMENT_REPO = new AnnouncementRepository();
 
   private DormService() {}
 
@@ -47,22 +52,10 @@ public final class DormService {
   ) {
     Role parsedRole = parseRole(role);
     try {
-      AUTH.register(
-        parsedRole,
-        name,
-        age,
-        contactNum,
-        email,
-        password,
-        otherContact
-      );
+      AUTH.register(parsedRole, name, age, contactNum, email, password, otherContact);
       refreshCurrentLandlord();
-    } catch (
-      SQLException
-      | InvalidInputException
-      | AuthenticationException
-      | UnauthorizedActionException exception
-    ) {
+    } catch (SQLException | InvalidInputException | AuthenticationException
+             | UnauthorizedActionException exception) {
       throw failure(exception);
     }
   }
@@ -72,12 +65,8 @@ public final class DormService {
     try {
       AUTH.login(email, password, parsedRole);
       refreshCurrentLandlord();
-    } catch (
-      SQLException
-      | AuthenticationException
-      | InvalidInputException
-      | UnauthorizedActionException exception
-    ) {
+    } catch (SQLException | AuthenticationException | InvalidInputException
+             | UnauthorizedActionException exception) {
       throw failure(exception);
     }
   }
@@ -93,10 +82,7 @@ public final class DormService {
   public static Tenant currentTenant() {
     Person user = currentUser();
     if (!(user instanceof Tenant)) {
-      throw new ServiceOperationException(
-        "Sign in with a tenant account.",
-        null
-      );
+      throw new ServiceOperationException("Sign in with a tenant account.", null);
     }
     return (Tenant) user;
   }
@@ -104,10 +90,7 @@ public final class DormService {
   public static Landlord currentLandlord() {
     Person user = currentUser();
     if (!(user instanceof Landlord)) {
-      throw new ServiceOperationException(
-        "Sign in with a landlord account.",
-        null
-      );
+      throw new ServiceOperationException("Sign in with a landlord account.", null);
     }
     refreshLandlord((Landlord) user);
     return (Landlord) user;
@@ -123,7 +106,7 @@ public final class DormService {
 
   public static List<Dorm> listings() {
     try {
-      return TENANTS.getListings();
+      return DORMS.findAll();
     } catch (SQLException exception) {
       throw failure(exception);
     }
@@ -131,7 +114,8 @@ public final class DormService {
 
   public static List<Application> getApplications(Tenant tenant) {
     try {
-      return TENANTS.getApplications(tenant);
+      requireSavedTenant(tenant);
+      return APPLICATION_REPO.findByTenantId(tenant.getPersonId());
     } catch (SQLException | InvalidInputException exception) {
       throw failure(exception);
     }
@@ -139,31 +123,43 @@ public final class DormService {
 
   public static Set<Integer> getInterestedDormIds(Tenant tenant) {
     try {
-      return TENANTS.getInterestedDormIds(tenant);
+      requireSavedTenant(tenant);
+      return TENANTS.findInterestedDormIds(tenant.getPersonId());
     } catch (SQLException | InvalidInputException exception) {
       throw failure(exception);
     }
   }
 
-  public static void setInterested(
-    Tenant tenant,
-    Dorm dorm,
-    boolean interested
-  ) {
+  public static void setInterested(Tenant tenant, Dorm dorm, boolean interested) {
     try {
-      TENANTS.setInterested(tenant, dorm, interested);
+      requireSavedTenant(tenant);
+      Validator.requiredReference(dorm, "Dorm");
+      Validator.savedId(dorm.getDormId());
+      Tenant savedTenant = TENANTS.findById(tenant.getPersonId())
+        .orElseThrow(() -> new SQLException("Tenant account no longer exists."));
+      Dorm currentDorm = savedTenant.getCurrentDorm();
+      Validator.condition(
+        !interested || currentDorm == null || currentDorm.getDormId() != dorm.getDormId(),
+        "A resident cannot mark their current dorm as interested."
+      );
+      TENANTS.setInterested(savedTenant.getPersonId(), dorm.getDormId(), interested);
     } catch (SQLException | InvalidInputException exception) {
       throw failure(exception);
     }
   }
 
-  public static Application apply(
-    Tenant tenant,
-    Dorm dorm,
-    boolean confirmTransfer
-  ) {
+  public static Application apply(Tenant tenant, Dorm dorm, boolean confirmTransfer) {
     try {
-      return TENANTS.apply(tenant, dorm, confirmTransfer);
+      requireSavedTenant(tenant);
+      Validator.requiredReference(dorm, "Dorm");
+      Validator.savedId(dorm.getDormId());
+      Tenant savedTenant = TENANTS.findById(tenant.getPersonId())
+        .orElseThrow(() -> new SQLException("Tenant account no longer exists."));
+      Dorm savedDorm = DORMS.findById(dorm.getDormId())
+        .orElseThrow(() -> new SQLException("Dorm listing no longer exists."));
+      Application application = savedTenant.applyToDorm(savedDorm, confirmTransfer);
+      APPLICATION_REPO.save(application);
+      return application;
     } catch (SQLException | InvalidInputException exception) {
       throw failure(exception);
     }
@@ -171,24 +167,20 @@ public final class DormService {
 
   public static List<Announcement> tenantAnnouncements(Tenant tenant) {
     try {
-      return TENANTS.getAnnouncements(tenant);
+      requireSavedTenant(tenant);
+      Tenant savedTenant = TENANTS.findById(tenant.getPersonId())
+        .orElseThrow(() -> new SQLException("Tenant account no longer exists."));
+      Dorm currentDorm = savedTenant.getCurrentDorm();
+      return currentDorm == null ? List.of() : ANNOUNCEMENT_REPO.findByDormId(currentDorm.getDormId());
     } catch (SQLException | InvalidInputException exception) {
       throw failure(exception);
     }
   }
 
-  public static void submitComplaint(
-    Tenant tenant,
-    String message,
-    boolean anonymous
-  ) {
+  public static void submitComplaint(Tenant tenant, String message, boolean anonymous) {
     try {
-      TENANTS.submitComplaint(tenant, message, anonymous);
-    } catch (
-      SQLException
-      | InvalidInputException
-      | DormNotFoundException exception
-    ) {
+      COMPLAINTS.submitComplaint(tenant, message, anonymous);
+    } catch (SQLException | InvalidInputException | DormNotFoundException exception) {
       throw failure(exception);
     }
   }
@@ -198,11 +190,7 @@ public final class DormService {
       List<Dorm> dorms = new ListingService(landlord).getMyDorms(landlord);
       landlord.replaceOwnedDorms(dorms);
       return dorms;
-    } catch (
-      SQLException
-      | InvalidInputException
-      | UnauthorizedActionException exception
-    ) {
+    } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
       throw failure(exception);
     }
   }
@@ -210,56 +198,39 @@ public final class DormService {
   public static List<Application> pending(Dorm dorm) {
     try {
       return APPLICATIONS.reviewApplications(dorm.getOwner(), dorm);
-    } catch (
-      SQLException
-      | InvalidInputException
-      | UnauthorizedActionException exception
-    ) {
+    } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
       throw failure(exception);
     }
   }
 
   public static void approve(Application application) {
     try {
-      APPLICATIONS.acceptApplication(
-        application.getDorm().getOwner(),
-        application.getApplicationId()
-      );
+      APPLICATIONS.acceptApplication(application.getDorm().getOwner(), application.getApplicationId());
       refreshLandlord(application.getDorm().getOwner());
-    } catch (
-      SQLException
-      | InvalidInputException
-      | UnauthorizedActionException
-      | NoAvailableSlotsException exception
-    ) {
+    } catch (SQLException | InvalidInputException | UnauthorizedActionException
+             | NoAvailableSlotsException exception) {
       throw failure(exception);
     }
   }
 
   public static void decline(Application application) {
     try {
-      APPLICATIONS.rejectApplication(
-        application.getDorm().getOwner(),
-        application.getApplicationId()
-      );
-    } catch (
-      SQLException
-      | InvalidInputException
-      | UnauthorizedActionException exception
-    ) {
+      APPLICATIONS.rejectApplication(application.getDorm().getOwner(), application.getApplicationId());
+    } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
       throw failure(exception);
     }
   }
 
   public static void removeTenant(Dorm dorm, Tenant tenant) {
     try {
-      TENANTS.removeTenant(dorm.getOwner(), dorm, tenant);
+      ListingService.requireLandlord(dorm.getOwner());
+      Validator.requiredReference(tenant, "Tenant");
+      Validator.savedId(tenant.getPersonId());
+      Validator.requiredReference(dorm, "Dorm");
+      Validator.savedId(dorm.getDormId());
+      DORMS.removeTenantFromDorm(dorm.getOwner(), dorm.getDormId(), tenant.getPersonId());
       refreshLandlord(dorm.getOwner());
-    } catch (
-      SQLException
-      | InvalidInputException
-      | UnauthorizedActionException exception
-    ) {
+    } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
       throw failure(exception);
     }
   }
@@ -268,12 +239,8 @@ public final class DormService {
     try {
       new ListingService(landlord).postDorm(landlord, details);
       refreshLandlord(landlord);
-    } catch (
-      SQLException
-      | InvalidInputException
-      | UnauthorizedActionException
-      | java.io.IOException exception
-    ) {
+    } catch (SQLException | InvalidInputException | UnauthorizedActionException
+             | java.io.IOException exception) {
       throw failure(exception);
     } catch (InterruptedException exception) {
       Thread.currentThread().interrupt();
@@ -294,20 +261,8 @@ public final class DormService {
     List<String> photos
   ) {
     try {
-      postDorm(
-        landlord,
-        new DormDetails(
-          name,
-          location,
-          plusCode,
-          description,
-          totalSlots,
-          rate,
-          amenities,
-          rules,
-          photos
-        )
-      );
+      postDorm(landlord, new DormDetails(
+        name, location, plusCode, description, totalSlots, rate, amenities, rules, photos));
     } catch (InvalidInputException exception) {
       throw failure(exception);
     }
@@ -317,42 +272,23 @@ public final class DormService {
     try {
       new ListingService(landlord).removeDorm(dorm.getDormId());
       refreshLandlord(landlord);
-    } catch (
-      SQLException
-      | InvalidInputException
-      | UnauthorizedActionException exception
-    ) {
+    } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
       throw failure(exception);
     }
   }
 
-  public static void publishAnnouncement(
-    Landlord landlord,
-    Dorm dorm,
-    String message
-  ) {
+  public static void publishAnnouncement(Landlord landlord, Dorm dorm, String message) {
     try {
       ANNOUNCEMENTS.publish(landlord, dorm, message);
-    } catch (
-      SQLException
-      | InvalidInputException
-      | UnauthorizedActionException exception
-    ) {
+    } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
       throw failure(exception);
     }
   }
 
-  public static List<Map<String, String>> complaints(
-    Landlord landlord,
-    Dorm dorm
-  ) {
+  public static List<Map<String, String>> complaints(Landlord landlord, Dorm dorm) {
     try {
       return COMPLAINTS.getComplaints(landlord, dorm);
-    } catch (
-      SQLException
-      | InvalidInputException
-      | UnauthorizedActionException exception
-    ) {
+    } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
       throw failure(exception);
     }
   }
@@ -361,16 +297,12 @@ public final class DormService {
     List<Announcement> result = new ArrayList<>();
     for (Dorm dorm : myDorms(landlord)) {
       try {
-        result.addAll(
-          new AnnouncementRepository().findByDormId(dorm.getDormId())
-        );
+        result.addAll(ANNOUNCEMENT_REPO.findByDormId(dorm.getDormId()));
       } catch (SQLException exception) {
         throw failure(exception);
       }
     }
-    result.sort((first, second) ->
-      second.getDatePosted().compareTo(first.getDatePosted())
-    );
+    result.sort((first, second) -> second.getDatePosted().compareTo(first.getDatePosted()));
     return result;
   }
 
@@ -385,17 +317,13 @@ public final class DormService {
   private static Map<String, Integer> summary(Landlord landlord) {
     try {
       return DASHBOARD.getSummary(landlord);
-    } catch (
-      SQLException
-      | InvalidInputException
-      | UnauthorizedActionException exception
-    ) {
+    } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
       throw failure(exception);
     }
   }
 
-  private static void refreshCurrentLandlord()
-    throws SQLException, InvalidInputException, UnauthorizedActionException {
+  private static void refreshCurrentLandlord() throws SQLException, InvalidInputException,
+    UnauthorizedActionException {
     Person user = AUTH.currentUser();
     if (user instanceof Landlord) {
       refreshLandlord((Landlord) user);
@@ -409,10 +337,7 @@ public final class DormService {
       }
       return Role.valueOf(role.trim().toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException exception) {
-      throw new ServiceOperationException(
-        "Choose a valid account type.",
-        exception
-      );
+      throw new ServiceOperationException("Choose a valid account type.", exception);
     }
   }
 
@@ -420,12 +345,15 @@ public final class DormService {
     myDorms(landlord);
   }
 
+  private static void requireSavedTenant(Tenant tenant) throws InvalidInputException {
+    Validator.requiredReference(tenant, "Tenant");
+    Validator.savedId(tenant.getPersonId());
+  }
+
   private static ServiceOperationException failure(Exception exception) {
     String message = exception.getMessage();
     return new ServiceOperationException(
-      message == null || message.isBlank()
-        ? "The operation could not be completed."
-        : message,
+      message == null || message.isBlank() ? "The operation could not be completed." : message,
       exception
     );
   }
