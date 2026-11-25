@@ -1,8 +1,10 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import exception.ServiceOperationException;
+
 import java.awt.*;
 import java.awt.event.*;
-import exception.DormAppException;
 import service.DormService;
 
 // Register page
@@ -69,7 +71,7 @@ class RegisterWindow extends GradientPanel {
         registerButton.setBorder(new EmptyBorder(0, 0, 0, 0));
         registerButton.addActionListener(e -> {
             try {
-                int age = DormService.parseWhole(LoginWindow.fieldValue(ageField, "Age*"), "Age");
+                int age = Integer.parseInt(LoginWindow.fieldValue(ageField, "Age*").trim());
                 DormService.register(role,
                     LoginWindow.fieldValue(nameField, "Name*"), age,
                     LoginWindow.fieldValue(phoneField, "Mobile Number*"),
@@ -77,7 +79,9 @@ class RegisterWindow extends GradientPanel {
                     LoginWindow.fieldValue(pwField, "Password*"),
                     facebookField == null ? null : LoginWindow.fieldValue(facebookField, "Facebook Account"));
                 FindTheDUI.showDashboard(role);
-            } catch (DormAppException ex) {
+            } catch (NumberFormatException ex) {
+                RoundedDialog.showMessage(registerButton, "Message", "Please enter a valid age.");
+            } catch (ServiceOperationException ex) {
                 RoundedDialog.showMessage(registerButton, "Message", ex.getMessage());
             }
         });
