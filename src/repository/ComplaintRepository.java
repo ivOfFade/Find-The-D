@@ -150,6 +150,48 @@ public class ComplaintRepository implements RepositoryInterface<Complaint, Integ
         return complaints;
     }
 
+    public List<Map<String, String>> findForOwner(int dormId, int ownerId)
+        throws SQLException {
+
+        String sql =
+            "SELECT c.complaint_id, c.message, c.date_posted, " +
+            "CASE " +
+            "  WHEN c.anonymous THEN 'Anonymous' " +
+            "  WHEN p.person_id IS NULL THEN 'Deleted tenant' " +
+            "  ELSE p.name " +
+            "END AS sender_name " +
+            "FROM complaints c " +
+            "JOIN dorms d ON c.dorm_id = d.dorm_id " +
+            "LEFT JOIN persons p ON c.sender_id = p.person_id " +
+            "WHERE d.dorm_id = ? AND d.owner_id = ? " +
+            "ORDER BY c.date_posted DESC, c.complaint_id DESC";
+
+        List<Map<String, String>> complaints = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, dormId);
+            ps.setInt(2, ownerId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    complaints.add(Map.of(
+                        "complaintId", Integer.toString(
+                            rs.getInt("complaint_id")
+                        ),
+                        "senderName", rs.getString("sender_name"),
+                        "message", rs.getString("message"),
+                        "datePosted", rs.getTimestamp("date_posted")
+                            .toLocalDateTime().toString()
+                    ));
+                }
+            }
+        }
+
+        return List.copyOf(complaints);
+    }
+
     @Override
     public void update(Complaint c) throws SQLException {
         if (c.getComplaintId() <= 0) {

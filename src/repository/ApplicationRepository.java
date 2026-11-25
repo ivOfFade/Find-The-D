@@ -9,6 +9,7 @@ import util.DatabaseConnection;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import exception.NoAvailableSlotsException;
 
 public class ApplicationRepository implements RepositoryInterface<Application, Integer> {
 
@@ -201,6 +202,149 @@ public class ApplicationRepository implements RepositoryInterface<Application, I
 
         return applications;
     }
+
+    public int[] lockApplication(Connection conn, int applicationId)
+        throws InvalidInputException, SQLException {
+
+        String sql =
+            "SELECT tenant_id, dorm_id FROM applications " +
+            "WHERE application_id = ? FOR UPDATE";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, applicationId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    throw new InvalidInputException("Application was not found.");
+                }
+
+                return new int[] {
+                    rs.getInt("tenant_id"),
+                    rs.getInt("dorm_id")
+                };
+            }
+        }
+    }
+
+    public Integer lockTenant(Connection conn, int tenantId)
+            throws SQLException {
+
+        String sql =
+            "SELECT current_dorm_id FROM tenants " +
+            "WHERE person_id = ? FOR UPDATE";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, tenantId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    throw new SQLException("Tenant was not found: " + tenantId);
+                }
+
+                int dormId = rs.getInt("current_dorm_id");
+                return rs.wasNull() ? null : dormId;
+            }
+        }
+    }
+
+    public void lockDorms(
+            Connection conn,
+            int dormId,
+            Integer previousDormId
+    ) throws SQLException {
+
+        String sql =
+            "SELECT dorm_id FROM dorms " +
+            "WHERE dorm_id IN (?, ?) ORDER BY dorm_id FOR UPDATE";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, dormId);
+            ps.setInt(2, previousDormId == null ? dormId : previousDormId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                int count = 0;
+
+                while (rs.next()) {
+                    count++;
+                }
+
+                int expected =
+                    previousDormId == null || previousDormId == dormId ? 1 : 2;
+
+                if (count != expected) {
+                    throw new SQLException(
+                        "A dorm involved in the application was not found."
+                    );
+                }
+            }
+        }
+    }
+
+    public void reserveSlot(Connection conn, int dormId)
+            throws NoAvailableSlotsException, SQLException {
+
+        String sql =
+            "UPDATE dorms SET available_slots = available_slots - 1 " +
+            "WHERE dorm_id = ? AND available_slots > 0";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, dormId);
+
+            if (ps.executeUpdate() != 1) {
+                throw new NoAvailableSlotsException("Dorm is full.");
+            }
+        }
+    }
+
+    public void releaseSlot(Connection conn, int dormId)
+            throws SQLException {
+
+        String sql =
+            "UPDATE dorms SET available_slots = available_slots + 1 " +
+            "WHERE dorm_id = ? AND available_slots < total_slots";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, dormId);
+
+            if (ps.executeUpdate() != 1) {
+                throw new SQLException(
+                    "Could not release the previous dorm's slot."
+                );
+            }
+        }
+    }
+
+    public void moveTenant(Connection conn, int tenantId, int dormId)
+            throws SQLException {
+
+        String sql =
+            "UPDATE tenants SET current_dorm_id = ? WHERE person_id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, dormId);
+            ps.setInt(2, tenantId);
+
+            if (ps.executeUpdate() != 1) {
+                throw new SQLException(
+                    "Could not update the tenant's current dorm."
+                );
+            }
+        }
+    }
+
+    public void removeInterest(Connection conn, int tenantId, int dormId)
+            throws SQLException {
+
+        String sql =
+            "DELETE FROM interested_dorms WHERE tenant_id = ? AND dorm_id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, tenantId);
+            ps.setInt(2, dormId);
+            ps.executeUpdate();
+        }
+    }
+
 
     @Override
     public void update(Application a) throws SQLException {
