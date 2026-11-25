@@ -3,16 +3,17 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
-import enums.ApplicationStatus;
-import enums.EstablishmentType;
-import exception.DormAppException;
-import model.Announcement;
-import model.Application;
-import model.Dorm;
-import model.DormFilter;
-import model.Landlord;
-import model.Tenant;
+import java.time.format.DateTimeFormatter;
+
 import service.DormService;
+import enums.ApplicationStatus;
+import exception.ServiceOperationException;
+
+import model.Tenant;
+import model.Dorm;
+import model.Application;
+import model.Announcement;
+
 
 // Tenant Page
 class TenantDashboard extends JPanel {
@@ -21,6 +22,7 @@ class TenantDashboard extends JPanel {
     }
 
     private final Tenant tenant = DormService.currentTenant();
+    private java.util.Set<Integer> interestedDormIds = new java.util.HashSet<>();
     private JPanel browseCard;
     private JPanel myDormCard;
 
@@ -137,6 +139,8 @@ class TenantDashboard extends JPanel {
 
     // ---------- Browse view (dorm feed + filters) ----------
     private JPanel createBrowseCardView() {
+        interestedDormIds = DormService.getInterestedDormIds(tenant);
+
         JPanel browsePanel = new GradientPanel(new BorderLayout());
 
         // Feed: a vertical list of dorm posts inside a scroll pane
@@ -145,7 +149,7 @@ class TenantDashboard extends JPanel {
         feedPanel.setOpaque(false);
 
         boolean firstPost = true;
-        for (Dorm dorm : Landlord.listings()) {
+        for (Dorm dorm : DormService.listings()) {
             if (!firstPost) {
                 feedPanel.add(Box.createVerticalStrut(14));
             }
@@ -222,21 +226,38 @@ class TenantDashboard extends JPanel {
         applyBtn.addActionListener(e -> {
             if (showConfirmDialog(owner(), "Apply")) {
                 try {
-                    DormService.apply(dorm);     // shows up in the landlord's Approve Tenant list
+                    boolean confirmTransfer = false;
+
+                    if (tenant.hasDorm()
+                            && tenant.getCurrentDorm().getDormId() != dorm.getDormId()) {
+                        int choice = JOptionPane.showConfirmDialog(
+                            owner(),
+                            "If accepted, you will transfer from your current dorm. Continue?",
+                            "Confirm Transfer",
+                            JOptionPane.YES_NO_OPTION
+                        );
+
+                        if (choice != JOptionPane.YES_OPTION) {
+                            return;
+                        }
+
+                        confirmTransfer = true;
+                    }
+                    DormService.apply(tenant, dorm, confirmTransfer);
                     applyBtn.setText("Applied");
                     applyBtn.setEnabled(false);
-                } catch (DormAppException ex) {
+                } catch (ServiceOperationException ex) {
                     RoundedDialog.showMessage(owner(), "Message", ex.getMessage());
                 }
             }
         });
 
-        DormPostCard postCard = new DormPostCard(dorm, applyBtn, tenant.getInterestedDorms().contains(dorm));
+        DormPostCard postCard = new DormPostCard(dorm, applyBtn, interestedDormIds.contains(dorm.getDormId()));
         postCard.setInterestListener(on -> {
-            if (on) {
-                tenant.markInterested(dorm);
-            } else {
-                tenant.removeInterest(dorm);
+            try {
+                DormService.setInterested(tenant, dorm, on);
+            } catch (ServiceOperationException ex) {
+                RoundedDialog.showMessage(owner(), "Message", ex.getMessage());
             }
         });
         postCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));   // let it stretch with the feed
@@ -301,7 +322,7 @@ class TenantDashboard extends JPanel {
 
     // One announcement: title above, gray text box with shadow, timestamp below on the right
     private JPanel createAnnouncementEntry(Announcement announcement) {
-        String timestamp = DormService.stamp(announcement.getDatePosted());
+        String timestamp = announcement.getDatePosted().format(DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a"));
         JPanel entry = new JPanel();
         entry.setLayout(new BoxLayout(entry, BoxLayout.Y_AXIS));
         entry.setOpaque(false);
@@ -403,9 +424,9 @@ class TenantDashboard extends JPanel {
             // Ask for confirmation before posting
             if (showConfirmDialog(dialog, "Post Complain")) {
                 try {
-                    tenant.complain(complaintArea.getText(), anonymousBox.isSelected());
+                    DormService.submitComplaint(tenant, complaintArea.getText(), anonymousBox.isSelected());
                     dialog.dispose();
-                } catch (DormAppException ex) {
+                } catch (ServiceOperationException ex) {
                     showCustomWarningDialog(dialog, ex.getMessage());
                 }
             }
@@ -569,15 +590,11 @@ class TenantDashboard extends JPanel {
     }
 
     // What the two dropdowns currently ask for, turned into the dorm filter the domain expects
-    private DormFilter currentFilter(java.util.List<String> wanted, int budget) {
-        DormFilter filter = new DormFilter();
-        for (String amenity : wanted) {
-            filter.requireAmenity(amenity);
-        }
-        if (budget >= 0) {
-            filter.rateBetween(BUDGET_MIN[budget], BUDGET_MAX[budget]);
-        }
-        return filter;
+    private boolean matchesFilters(Dorm dorm, java.util.List<String> wanted, int budget) {
+        return dorm.getAmenities().containsAll(wanted)
+            && (budget < 0
+                || (dorm.getRate() >= BUDGET_MIN[budget]
+                    && dorm.getRate() <= BUDGET_MAX[budget]));
     }
 
     // Two slim dropdown fields (same style as the landlord's Post New Dorm form). The feed updates right away.
@@ -620,7 +637,11 @@ class TenantDashboard extends JPanel {
 
         // Amenities: list of check boxes, stays open so several can be ticked
         JPopupMenu amenityPopup = amenitiesField.getPopup();
-        for (String amenity : EstablishmentType.AMENITIES) {
+        java.util.Set<String> amenities = new java.util.TreeSet<>();
+        for (FeedEntry entry : feedEntries) {
+            amenities.addAll(entry.dorm.getAmenities());
+        }
+        for (String amenity : amenities) {
             OneUiCheckItem cb = new OneUiCheckItem(amenity);
             cb.addActionListener(e -> refresh.run());
             amenityChecks.add(cb);
@@ -688,11 +709,9 @@ class TenantDashboard extends JPanel {
     private void applyFeedFilters(JPanel feedPanel, java.util.List<String> wanted, int budget, JLabel resultsLabel) {
         feedPanel.removeAll();
         // The tenant searches the listings; the cards that survive are the ones we put back on screen
-        java.util.ArrayList<Dorm> listings = Landlord.listings();
-        java.util.ArrayList<Dorm> matching = tenant.lookForDorm(listings, currentFilter(wanted, budget));
         int shown = 0;
         for (FeedEntry entry : feedEntries) {
-            if (!matching.contains(entry.dorm)) {
+            if (!matchesFilters(entry.dorm, wanted, budget)) {
                 continue;
             }
             if (shown > 0) {
