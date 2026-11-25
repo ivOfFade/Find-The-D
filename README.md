@@ -30,7 +30,7 @@ Find The D puts these functions in one application. Tenants can find, compare, a
 ### System Features
 - Role-based accounts (Tenant / Landlord) with registration and login
 - Input validation with clear error messages
-- Persistent data storage in a file
+- Persistent storage in PostgreSQL
 - Interactive Swing GUI
 
 ## Screenshots
@@ -139,7 +139,20 @@ Find The D puts these functions in one application. Tenants can find, compare, a
 - Use Approve Tenant or Manage Tenants to handle applicants and current tenants.
 - Use Notification to read complaints and Post Announcement to message your tenants.
 
-Data is saved to a file, so everything is still there the next time you open the app.
+Accounts, listings, applications, interests, announcements, and complaints are stored in PostgreSQL and remain available after the app closes.
+
+## UI Source Layout
+
+The Swing interface is organized into Java packages under `src/ui`:
+
+- `ui.FindTheDUI` is the application entry point.
+- `ui.screens` contains welcome, login, and registration screens.
+- `ui.tenant` and `ui.landlord` contain the role-specific dashboards.
+- `ui.components` contains shared Swing widgets, buttons, dialogs, and photo controls.
+- `model`, `service`, `repository`, `enums`, `exception`, and `util` contain the shared backend domain, database, and business logic used by the UI.
+- `logo.png` is the UI logo resource.
+
+Run the application with `Main` as the main class.
 
 
 ## Program Flow
@@ -162,7 +175,7 @@ Data is saved to a file, so everything is still there the next time you open the
 | *Polymorphism* | Both roles have a dashboard, but each shows different content depending on the user type. |
 | *Abstraction* | Users apply, view, or post without needing to know how data is stored and updated in the background. |
 | *Exception Handling* | Clear messages for empty fields, wrong login details, duplicate emails, or applying to a dorm with no slots. |
-| *Arrays / Data Handling* | Arrays store accounts, complaints, and announcements; data is saved to a file for persistence. |
+| *Data Handling* | PostgreSQL stores accounts, listings, applications, interests, announcements, and complaints. |
 
 
 
