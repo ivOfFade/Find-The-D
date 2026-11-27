@@ -39,12 +39,12 @@ class LoginWindow extends GradientPanel {
         setupFieldStyles(emailField, "Email", false);
         rightPanel.add(emailField, gbc);
 
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         JPasswordField passwordField = new JPasswordField("Password");
         setupFieldStyles(passwordField, "Password", true);
         rightPanel.add(passwordField, gbc);
 
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         JButton loginButton = new JButton("Log In");
         loginButton.setPreferredSize(new Dimension(300, 45));
         loginButton.setFont(new Font("Georgia", Font.PLAIN, 16));
@@ -64,7 +64,7 @@ class LoginWindow extends GradientPanel {
         });
         rightPanel.add(loginButton, gbc);
 
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.insets = new Insets(12, 0, 0, 0); 
         JLabel registerLabel = new JLabel("<html><div style='text-align:center;'><u>No Account? Register here</u></div></html>", SwingConstants.CENTER);
         registerLabel.setFont(new Font("Georgia", Font.PLAIN, 12));
@@ -79,7 +79,7 @@ class LoginWindow extends GradientPanel {
         });
         rightPanel.add(registerLabel, gbc);
 
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.insets = new Insets(16, 0, 0, 0);
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
