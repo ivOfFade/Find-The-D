@@ -348,14 +348,43 @@ When a landlord posts a dorm with a Plus Code, the app asks Geoapify's Places AP
 
 <div align="center">
 
-|  |  |  |  |
-| :---: | :---: | :---: | :---: |
-| **Dylan** | **Neil** | **Shasha** | **Arrianne** |
-| Backend Core & Shared Models | Backend Landlord & Code Review | Tenant Frontend & Sketches | Landlord Frontend & Sketches |
-| [@OasisTree](https://github.com/OasisTree) | [@nylspace](https://github.com/nylspace) | [@rd-ev](https://github.com/rd-ev) | [@khunarrianne](https://github.com/khunarrianne) |
+<table>
+<tr>
+<td align="center" width="25%">
+<a href="https://github.com/OasisTree">
+<img src="https://github.com/OasisTree.png" width="100" style="border-radius:50%" alt="Dylan"><br>
+<b>Dylan</b>
+</a><br>
+Backend Core & Shared Models<br><br>
+</td>
+
+<td align="center" width="25%">
+<a href="https://github.com/nylspace">
+<img src="https://github.com/nylspace.png" width="100" style="border-radius:50%" alt="Neil"><br>
+<b>Neil</b>
+</a><br>
+Backend Landlord & Code Review<br><br>
+</td>
+
+<td align="center" width="25%">
+<a href="https://github.com/rd-ev">
+<img src="https://github.com/rd-ev.png" width="100" style="border-radius:50%" alt="Rizialyn"><br>
+<b>Shasha</b>
+</a><br>
+Tenant Frontend & Sketches<br><br>
+</td>
+
+<td align="center" width="25%">
+<a href="https://github.com/khunarrianne">
+<img src="https://github.com/khunarrianne.png" width="100" style="border-radius:50%" alt="Arrianne"><br>
+<b>Arrianne</b>
+</a><br>
+Landlord Frontend & Sketches<br><br>
+</td>
+</tr>
+</table>
 
 </div>
-
 ---
 
 ## Acknowledgement
