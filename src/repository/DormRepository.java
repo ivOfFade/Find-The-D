@@ -251,6 +251,25 @@ public class DormRepository implements RepositoryInterface<Dorm, Integer> {
         return dorms;
     }
 
+    public List<Integer> findFeedOrder(boolean mostPopular) throws SQLException {
+        List<Integer> dormIds = new ArrayList<>();
+        String sql = mostPopular
+            ? "SELECT d.dorm_id FROM dorms d "
+                + "LEFT JOIN interested_dorms i ON i.dorm_id = d.dorm_id "
+                + "GROUP BY d.dorm_id, d.date_posted "
+                + "ORDER BY COUNT(i.tenant_id) DESC, d.date_posted DESC, d.dorm_id DESC"
+            : "SELECT dorm_id FROM dorms ORDER BY date_posted DESC, dorm_id DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                dormIds.add(rs.getInt("dorm_id"));
+            }
+        }
+        return dormIds;
+    }
+
     @Override
     public void update(Dorm d) throws SQLException {
         if (d.getDormId() <= 0) {
