@@ -70,19 +70,21 @@ Find The D puts these functions in one application. Tenants can find, compare, a
 </table>
 
 </div>
+
 ---
+
 ##  What It Can Do
 
-| | Feature | The Magic Behind It |
+|| Feature | The Magic Behind It |
 | :---: | --- | --- |
-|  | **Smart Registration** | Validates name, email, password strength, age (16–120), and Philippine mobile numbers before you get in. |
-|  | **Dorm Discovery** | A filter bar that helps you skip the noise and find the right fit faster. |
-|  | **Rich Dorm Pages** | Rate, amenities, house rules, photos, open slots, landlord contact, plus a map with nearby establishments. |
-|  | **Slot Tracking** | Finalizing a dorm updates availability automatically. When slots hit zero, the app says no (politely). |
-|  | **Plus Code Locations** | Uses full Open Location Codes and decodes them into map coordinates. |
-|  | **Targeted Announcements** | Up to 1000 characters, delivered only to tenants of that dorm. |
-|  | **Anonymous Complaints** | Tick the box and the sender is never stored. Not hidden, *never stored*. |
-|  | **Rock-solid Validation** | Custom exceptions catch bad input before it can cause trouble. |
+|| **Smart Registration** | Validates name, email, password strength, age (16–120), and Philippine mobile numbers before you get in. |
+|| **Dorm Discovery** | A filter bar that helps you skip the noise and find the right fit faster. |
+|| **Rich Dorm Pages** | Rate, amenities, house rules, photos, open slots, landlord contact, plus a map with nearby establishments. |
+|| **Slot Tracking** | Finalizing a dorm updates availability automatically. When slots hit zero, the app says no (politely). |
+|| **Plus Code Locations** | Uses full Open Location Codes and decodes them into map coordinates. |
+|| **Targeted Announcements** | Up to 1000 characters, delivered only to tenants of that dorm. |
+|| **Anonymous Complaints** | Tick the box and the sender is never stored. Not hidden, *never stored*. |
+|| **Rock-solid Validation** | Custom exceptions catch bad input before it can cause trouble. |
 
 ---
 
