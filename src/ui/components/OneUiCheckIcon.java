@@ -1,8 +1,9 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
+import javax.swing.*;
 
 // Round tick-box used by the check lists (blue circle with a white tick when ticked)
-class OneUiCheckIcon implements Icon {
+public class OneUiCheckIcon implements Icon {
     private static final int SIZE = 20;
 
     @Override public int getIconWidth() { return SIZE; }

@@ -1,11 +1,12 @@
+package ui.components;
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import java.awt.*;
-import java.awt.event.*;
+import ui.Main;
 
-
-class MessageBubble extends RoundedPanel {
+public class MessageBubble extends RoundedPanel {
     // Colours: edit the hex codes here
     private static final Color BUBBLE_BG   = new Color(255, 255, 255, 30);
     private static final Color TITLE_TEXT  = Color.BLACK;

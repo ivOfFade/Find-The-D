@@ -1,17 +1,18 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+package ui.components;
+import enums.EstablishmentType;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import model.Dorm;
-import service.DormService;
-import enums.EstablishmentType;
-import model.Establishment;
 import java.util.EnumMap;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import model.Dorm;
+import model.Establishment;
+import service.DormService;
 
 // Reusable Facebook-style dorm post (used in the tenant Browse feed and the landlord My Dorm feed).
 // actionComponent is optional: pass an "Apply" button for tenants, or null for the landlord.
-class DormPostCard extends RoundedPanel {
+public class DormPostCard extends RoundedPanel {
 
   private java.util.function.Consumer<Boolean> interestListener;
 

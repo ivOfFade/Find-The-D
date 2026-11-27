@@ -1,5 +1,8 @@
+package ui;
+
 public class Main {
-    public static void main(String[] args) {
-        FindTheDUI.main(args);
-    }
+
+  public static void main(String[] args) {
+    FindTheDUI.main(args);
+  }
 }

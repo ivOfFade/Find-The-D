@@ -1,8 +1,9 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
+import javax.swing.*;
 
 // Dark rounded square with a simple "picture" icon (sun + mountains)
-class ImagePlaceholder extends JComponent {
+public class ImagePlaceholder extends JComponent {
     public ImagePlaceholder() {
         setPreferredSize(new Dimension(153, 123));
     }

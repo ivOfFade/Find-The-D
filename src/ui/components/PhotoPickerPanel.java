@@ -1,11 +1,12 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+package ui.components;
 import java.awt.*;
 import java.io.File;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 // Modern in-app photo picker: browse folders, see picture thumbnails, tick several, press Add Photos.
 // Used instead of the plain system file chooser so it matches the rest of the system.
-class PhotoPickerPanel extends JPanel {
+public class PhotoPickerPanel extends JPanel {
     private static final Color PAGE_BG = Color.decode("#32568f");
     private static final int COLUMNS = 5;
     private static File lastDir;

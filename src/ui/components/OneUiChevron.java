@@ -1,8 +1,9 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
+import javax.swing.*;
 
 // Thin rounded chevron (points down, or up while the list is open)
-class OneUiChevron extends JComponent {
+public class OneUiChevron extends JComponent {
     private Color color;
     private boolean up;
 
@@ -11,7 +12,7 @@ class OneUiChevron extends JComponent {
         repaint();
     }
 
-    OneUiChevron(Color color) {
+    public OneUiChevron(Color color) {
         this.color = color;
         setPreferredSize(new Dimension(30, 20));
     }

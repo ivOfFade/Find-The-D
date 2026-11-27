@@ -1,3 +1,4 @@
+package ui.components;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -5,7 +6,7 @@ import javax.swing.border.EmptyBorder;
 
 // Small dropdown (label + chevron) in the One UI style that opens a rounded list of choices underneath it.
 // onSelect receives the index of the chosen item. Colours are passed in so they are easy to edit.
-class CompactDropdown extends JPanel {
+public class CompactDropdown extends JPanel {
 
   private final JLabel textLabel = new JLabel();
   private final OneUiPopup popup = new OneUiPopup();
@@ -15,7 +16,7 @@ class CompactDropdown extends JPanel {
   private long closedAt = 0;
   private boolean hovering;
 
-  CompactDropdown(
+  public CompactDropdown(
     String[] items,
     int width,
     int height,

@@ -1,9 +1,10 @@
+package ui.components;
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 
 // c = component, p = parent
-final class GlassButtons {
+final public class GlassButtons {
     private GlassButtons() { }
 
     static boolean isOnGradient(Component c) {
@@ -17,7 +18,7 @@ final class GlassButtons {
     }
 
     // Appy Button
-    static void apply(JButton applyButton) {
+    public static void apply(JButton applyButton) {
         if (applyButton.getUI() instanceof GlassButtonUI) {
             return;
         }

@@ -1,8 +1,9 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
+import javax.swing.*;
 
 // Thin, rounded, minimalist scroll bar (no arrow buttons, transparent track)
-class ModernScrollBarUI extends javax.swing.plaf.basic.BasicScrollBarUI {
+public class ModernScrollBarUI extends javax.swing.plaf.basic.BasicScrollBarUI {
     private static final int THICKNESS = 10;
     private static final Color THUMB_NORMAL = new Color(0xB4, 0xB4, 0xB4);
     private static final Color THUMB_HOVER = new Color(0x8C, 0x8C, 0x8C);

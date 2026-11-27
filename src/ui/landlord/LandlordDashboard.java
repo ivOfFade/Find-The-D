@@ -1,6 +1,7 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+package ui.landlord;
+import ui.components.*;
+import exception.DormAppException;
+import exception.ServiceOperationException;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -8,8 +9,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import exception.DormAppException;
-import exception.ServiceOperationException;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import model.Announcement;
 import model.Application;
 import model.Dorm;
@@ -17,9 +19,24 @@ import model.DormDetails;
 import model.Landlord;
 import model.Tenant;
 import service.DormService;
+import ui.components.CompactDropdown;
+import ui.components.DormPostCard;
+import ui.components.DropdownField;
+import ui.components.DropShadowBorder;
+import ui.components.FlatButton;
+import ui.components.GradientPanel;
+import ui.components.InsetFieldBorder;
+import ui.components.MessageBubble;
+import ui.components.ModernScrollBarUI;
+import ui.components.OneUiCheckItem;
+import ui.components.PhotoPickerDialog;
+import ui.components.PhotoThumb;
+import ui.components.RoundedPanel;
+import ui.components.SidebarItem;
+import ui.FindTheDUI;
 
 // Landlord page
-class LandlordDashboard extends JPanel {
+public class LandlordDashboard extends JPanel {
     private Window owner() {
         return SwingUtilities.getWindowAncestor(this);
     }

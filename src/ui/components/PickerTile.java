@@ -1,11 +1,12 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import javax.swing.*;
 
 // One tile in the photo picker: a folder, or a picture thumbnail with its file name.
 // Selected pictures get a dark frame and a tick; the tick box also appears when hovering.
-class PickerTile extends JComponent {
+public class PickerTile extends JComponent {
     static final int W = 120;
     static final int IMG_H = 100;
     static final int H = 126;
@@ -17,7 +18,7 @@ class PickerTile extends JComponent {
     private boolean selected;
     private boolean hover;
 
-    PickerTile(File file, boolean folder, java.util.function.Consumer<PickerTile> onClick) {
+    public PickerTile(File file, boolean folder, java.util.function.Consumer<PickerTile> onClick) {
         this.file = file;
         this.folder = folder;
         setPreferredSize(new Dimension(W, H));
@@ -43,8 +44,7 @@ class PickerTile extends JComponent {
             }
         });
     }
-
-    void setSelected(boolean selected) {
+    public void setSelected(boolean selected) {
         this.selected = selected;
         repaint();
     }

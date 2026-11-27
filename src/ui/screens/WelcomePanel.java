@@ -1,10 +1,14 @@
+package ui.screens;
+import ui.components.*;
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import java.awt.*;
+import ui.components.GradientPanel;
+import ui.FindTheDUI;
 
 // choosing whether youre a landlord or tenant page
-class WelcomePanel extends GradientPanel {
+public class WelcomePanel extends GradientPanel {
     public WelcomePanel() {
         setLayout(new GridLayout(1, 2));
 

@@ -1,28 +1,28 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
 
 // Gives the small message / confirmation dialogs rounded corners (radius 10).
 // Call RoundedDialog.apply(dialog) after the dialog's content is added and before setVisible(true).
-final class RoundedDialog {
-    static final int RADIUS = 10;
+final public class RoundedDialog {
+    public static final int RADIUS = 10;
     private static final Color HEADER_BG = new Color(0xBC, 0xBC, 0xBC);
     private static final Color OUTLINE = new Color(255, 255, 255, 60);
 
     // Modern dialog theme: solid black header over a nearly flat blue -> purple body
-    static final Color DIALOG_HEADER = new Color(0x0B, 0x0B, 0x10);
-    static final Color DIALOG_BLUE   = Color.decode("#32568f");
+    public static final Color DIALOG_HEADER = new Color(0x0B, 0x0B, 0x10);
+    public static final Color DIALOG_BLUE = Color.decode("#32568f");
     static final Color DIALOG_PURPLE = Color.decode("#6c8ab9");
     static final Color DIALOG_LINE   = new Color(255, 255, 255, 60);
 
     private RoundedDialog() {}
-
-    static void apply(JDialog d) {
+    public static void apply(JDialog d) {
         apply(d, DIALOG_BLUE, OUTLINE, true);
     }
 
     // Same, with a custom background and outline colour (e.g. the dark photo viewer)
-    static void apply(JDialog d, Color background, Color outline) {
+    public static void apply(JDialog d, Color background, Color outline) {
         apply(d, background, outline, false);
     }
 
@@ -68,7 +68,7 @@ final class RoundedDialog {
     }
 
     // Replacement for JOptionPane.showMessageDialog with the same rounded look
-    static void showMessage(Component parent, String title, String message) {
+    public static void showMessage(Component parent, String title, String message) {
         Window owner = parent instanceof Window ? (Window) parent : SwingUtilities.getWindowAncestor(parent);
         JDialog dialog = new JDialog(owner, title, Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setSize(480, 210);

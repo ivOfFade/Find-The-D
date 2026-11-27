@@ -1,11 +1,12 @@
+package ui.components;
 import java.awt.*;
 import javax.swing.*;
 
 // Small translucent pill (amenity tags on a post)
 // g = graphics, g2 = graphics 2d
-class GlassChip extends JLabel {
+public class GlassChip extends JLabel {
 
-  GlassChip(String text) {
+  public GlassChip(String text) {
     super(text, SwingConstants.CENTER);
     setOpaque(false);
   }

@@ -1,11 +1,12 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
+import javax.swing.*;
 
 // One photo in the viewer: the whole picture, fitted inside the available space
-class PhotoSlide extends JComponent {
+public class PhotoSlide extends JComponent {
     private final java.awt.image.BufferedImage image;
 
-    PhotoSlide(java.awt.image.BufferedImage image) {
+    public PhotoSlide(java.awt.image.BufferedImage image) {
         this.image = image;
     }
 

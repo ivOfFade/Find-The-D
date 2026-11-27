@@ -1,9 +1,9 @@
-
+package ui.components;
 import java.awt.*;
 
 // Mockup-style field border: flat fill with a darker inset edge along the top and left
-class InsetFieldBorder extends javax.swing.border.AbstractBorder {
-    static final Color FILL = new Color(0xC6, 0xC6, 0xC6);
+public class InsetFieldBorder extends javax.swing.border.AbstractBorder {
+    public static final Color FILL = new Color(0xC6, 0xC6, 0xC6);
 
     @Override
     public Insets getBorderInsets(Component c) {

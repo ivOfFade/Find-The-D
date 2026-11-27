@@ -1,10 +1,11 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
 
 // The photo area of the viewer: draws the current photo, slides to the next/previous one,
 // and paints the arrows, counter and dots on top.
-class PhotoSlidePane extends JComponent {
+public class PhotoSlidePane extends JComponent {
     // ----- Colours: edit the hex codes here -----
     private static final Color BG          = Color.decode("#111111");
     private static final Color ARROW_FILL  = Color.decode("#F2F2F2");
@@ -26,7 +27,7 @@ class PhotoSlidePane extends JComponent {
     private final javax.swing.Timer timer;
     private int pressX = -1;
 
-    PhotoSlidePane(java.util.List<? extends JComponent> slides, int start) {
+    public PhotoSlidePane(java.util.List<? extends JComponent> slides, int start) {
         this.slides = slides;
         this.index = Math.max(0, Math.min(start, slides.size() - 1));
         this.previous = index;

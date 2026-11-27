@@ -1,20 +1,19 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
+import javax.swing.*;
 
 // Every GradientPanel uses this renderer, so the same background appears throughout the app.
-final class GradientBackground {
+final public class GradientBackground {
     private GradientBackground() { }
 
     // Deep blue/navy base with soft purple and magenta light blooms.
     static final Color BASE   = new Color(0x9BAFD9);
     static final Color WHITE = new Color(0x9BAFD9);
     static final Color BLUE   = new Color(0x103783);
-
-    static final Color GLASS      = new Color(0x9BAFD9);
-    static final Color GLASS_LINE = new Color(0x9BAFD9);
-
-    static final Color TEXT      = new Color(0xF7, 0xF2, 0xFF);
-    static final Color TEXT_SOFT = new Color(0xDC, 0xD0, 0xF5);
+    public static final Color GLASS = new Color(0x9BAFD9);
+    public static final Color GLASS_LINE = new Color(0x9BAFD9);
+    public static final Color TEXT = new Color(0xF7, 0xF2, 0xFF);
+    public static final Color TEXT_SOFT = new Color(0xDC, 0xD0, 0xF5);
 
     // Smooth blend: a long diagonal sweep of deep navy -> royal blue -> violet -> navy, with large
     // Gaussian-faded colour pools on top. There are no hard-edged shapes, so nothing shows a seam.
@@ -85,7 +84,7 @@ final class GradientBackground {
     }
 
     // Lets the gradient behind a scroll pane show through it.
-    static void makeTransparent(JScrollPane scrollPane) {
+    public static void makeTransparent(JScrollPane scrollPane) {
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         scrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);

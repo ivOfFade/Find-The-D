@@ -1,15 +1,16 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+package ui.components;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 // Instagram-style photo viewer: dark window, big photo, arrows (or drag / arrow keys) to swipe
 // left and right, dots and a counter showing where you are.
-class PhotoViewerDialog {
+public class PhotoViewerDialog {
     // ----- Colours: edit the hex codes here -----
     static final Color BG      = Color.decode("#32568f");
     static final Color BAR     = Color.decode("#32568f");
-    static final Color TEXT    = Color.decode("#FFFFFF");
+    public static final Color TEXT = Color.decode("#FFFFFF");
     static final Color OUTLINE = Color.decode("#333333");
 
     static void show(Window owner, String title, java.util.List<? extends JComponent> slides, int start) {

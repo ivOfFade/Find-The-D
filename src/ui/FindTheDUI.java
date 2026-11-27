@@ -1,7 +1,14 @@
+package ui;
+import ui.components.*;
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 import service.DormService;
+import ui.landlord.LandlordDashboard;
+import ui.screens.LoginWindow;
+import ui.screens.RegisterWindow;
+import ui.screens.WelcomePanel;
+import ui.tenant.TenantDashboard;
 
 public class FindTheDUI extends JFrame {
 

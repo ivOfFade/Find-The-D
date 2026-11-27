@@ -1,13 +1,14 @@
+package ui.components;
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 
 // The floating list: a rounded white card with a soft shadow that opens right under its field
-class OneUiPopup extends JPopupMenu {
+public class OneUiPopup extends JPopupMenu {
     private static final int SIDE = 6, TOP = 4, BOTTOM = 10;   // room around the card for the shadow
     private static final int PAD = 6;                          // space between the card edge and its rows
 
-    OneUiPopup() {
+    public OneUiPopup() {
         setOpaque(false);
         setBorder(new EmptyBorder(TOP + PAD, SIDE + PAD, BOTTOM + PAD, SIDE + PAD));
         setLightWeightPopupEnabled(true);

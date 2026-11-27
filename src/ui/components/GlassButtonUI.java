@@ -1,8 +1,9 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
+import javax.swing.*;
 
 // Translucent rounded button look, used for every button that sits on the gradient
-class GlassButtonUI extends javax.swing.plaf.basic.BasicButtonUI {
+public class GlassButtonUI extends javax.swing.plaf.basic.BasicButtonUI {
     private static final int ARC = 14;
 
     @Override

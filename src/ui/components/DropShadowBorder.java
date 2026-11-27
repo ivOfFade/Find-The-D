@@ -1,11 +1,12 @@
+package ui.components;
 import java.awt.*;
 
 // Raised look: a drop shadow along the bottom and right, plus an optional thin outline
-class DropShadowBorder extends javax.swing.border.AbstractBorder {
+public class DropShadowBorder extends javax.swing.border.AbstractBorder {
 
   private final Color outline;
 
-  DropShadowBorder(Color shadow, Color outline) {
+  public DropShadowBorder(Color shadow, Color outline) {
     this.outline = outline;
   }
 

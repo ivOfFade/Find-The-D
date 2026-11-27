@@ -1,14 +1,15 @@
+package ui.components;
 import java.awt.*;
 import javax.swing.*;
 
 // Soft "floating" drop shadow under the bottom/right edge of a button. Wraps whatever border the
 // button already has (outline, padding...) and adds room for the shadow next to it.
-class ButtonShadowBorder extends javax.swing.border.AbstractBorder {
+public class ButtonShadowBorder extends javax.swing.border.AbstractBorder {
 
   static final int SIZE = 8; // room reserved for the shadow (offset + blur)
   private final javax.swing.border.Border inner;
 
-  ButtonShadowBorder(javax.swing.border.Border inner) {
+  public ButtonShadowBorder(javax.swing.border.Border inner) {
     this.inner = inner;
   }
 

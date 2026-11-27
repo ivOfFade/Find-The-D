@@ -1,8 +1,9 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
+import javax.swing.*;
 
 // Small house icon (the "\u2302" interest symbol); filled when the tenant has marked interest
-class HouseIcon extends JComponent {
+public class HouseIcon extends JComponent {
     private boolean interested = false;
     private boolean interactive = true;
 

@@ -1,15 +1,17 @@
+package ui.screens;
+import ui.components.*;
+import exception.ServiceOperationException;
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
-import exception.ServiceOperationException;
-
-import java.awt.*;
-import java.awt.event.*;
 import service.DormService;
+import ui.components.GradientPanel;
+import ui.FindTheDUI;
 
 // Login page
-class LoginWindow extends GradientPanel {
+public class LoginWindow extends GradientPanel {
     private String userRole;
 
     public LoginWindow(String role) {
