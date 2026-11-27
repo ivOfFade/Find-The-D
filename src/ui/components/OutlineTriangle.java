@@ -1,8 +1,9 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
+import javax.swing.*;
 
 // Small outlined down-pointing triangle (the dropdown arrow in the mockup)
-class OutlineTriangle extends JComponent {
+public class OutlineTriangle extends JComponent {
     public OutlineTriangle() {
         setPreferredSize(new Dimension(40, 20));
     }

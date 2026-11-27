@@ -1,8 +1,9 @@
+package ui.components;
 import java.awt.*;
 import javax.swing.*;
 
 // Round avatar with the poster's initial
-class AvatarCircle extends JComponent {
+public class AvatarCircle extends JComponent {
 
   private final String letter;
 

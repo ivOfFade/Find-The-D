@@ -1,8 +1,9 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
+import javax.swing.*;
 
 // Minimalist square check box icon: outlined rounded square, dark fill + white tick when selected
-class SquareCheckIcon implements Icon {
+public class SquareCheckIcon implements Icon {
     private static final int SIZE = 16;
 
     @Override

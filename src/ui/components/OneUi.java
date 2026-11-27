@@ -1,10 +1,10 @@
-
+package ui.components;
 import java.awt.*;
 
 // ======================= One UI style (shared by every dropdown) =======================
 // Soft rounded fields, a thin chevron, a floating rounded list with a gentle shadow, and pill-shaped
 // row highlights. Change the colours here and every dropdown in the app follows.
-final class OneUi {
+final public class OneUi {
     private OneUi() { }
 
     static final Color FIELD_BG    = new Color(0xF5, 0xF5, 0xF5);
@@ -12,7 +12,7 @@ final class OneUi {
     static final Color FIELD_LINE  = new Color(0xD8, 0xD8, 0xD8);
     static final Color POPUP_BG    = new Color(0xFC, 0xFC, 0xFC);
     static final Color ROW_HOVER   = new Color(0xEE, 0xEE, 0xEE);
-    static final Color TEXT        = new Color(0x1C, 0x1C, 0x1C);
+    public static final Color TEXT = new Color(0x1C, 0x1C, 0x1C);
     static final Color HINT        = new Color(0x80, 0x80, 0x80);
     static final Color ACCENT      = new Color(0x3E, 0x91, 0xFF);   // One UI blue (ticks, chosen item)
 

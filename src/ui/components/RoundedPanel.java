@@ -1,22 +1,22 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
+import javax.swing.*;
 
 // Panel with 8px rounded corners: paints its own background (and optional outline) so
 // any box-style container can use it in place of a plain JPanel
-class RoundedPanel extends JPanel {
-    static final int RADIUS = 8;
+public class RoundedPanel extends JPanel {
+    public static final int RADIUS = 8;
     private Color outline;
 
-    RoundedPanel() {
+    public RoundedPanel() {
         setOpaque(false);
     }
 
-    RoundedPanel(LayoutManager layout) {
+    public RoundedPanel(LayoutManager layout) {
         super(layout);
         setOpaque(false);
     }
-
-    void setOutline(Color outline) {
+    public void setOutline(Color outline) {
         this.outline = outline;
         repaint();
     }

@@ -1,13 +1,14 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+package ui.components;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 // A check box row for the multi-pick lists (stays open so several can be ticked)
-class OneUiCheckItem extends JCheckBox {
+public class OneUiCheckItem extends JCheckBox {
     private boolean hovering;
 
-    OneUiCheckItem(String text) {
+    public OneUiCheckItem(String text) {
         super(text);
         setOpaque(false);
         setContentAreaFilled(false);

@@ -1,22 +1,32 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+package ui.tenant;
+import ui.components.*;
+import enums.ApplicationStatus;
+import exception.ServiceOperationException;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.format.DateTimeFormatter;
-
-import service.DormService;
-import enums.ApplicationStatus;
-import exception.ServiceOperationException;
-
-import model.Tenant;
-import model.Dorm;
-import model.Application;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import model.Announcement;
-
+import model.Application;
+import model.Dorm;
+import model.Tenant;
+import service.DormService;
+import ui.components.DormPostCard;
+import ui.components.DropdownField;
+import ui.components.DropShadowBorder;
+import ui.components.FlatButton;
+import ui.components.GradientPanel;
+import ui.components.ModernScrollBarUI;
+import ui.components.OneUiCheckItem;
+import ui.components.OneUiItem;
+import ui.components.RoundedPanel;
+import ui.components.SidebarItem;
+import ui.FindTheDUI;
 
 // Tenant Page
-class TenantDashboard extends JPanel {
+public class TenantDashboard extends JPanel {
     private Window owner() {
         return SwingUtilities.getWindowAncestor(this);
     }

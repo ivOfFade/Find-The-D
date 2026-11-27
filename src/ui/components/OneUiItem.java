@@ -1,18 +1,19 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+package ui.components;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 // One choice in a list: rounded pill highlight on hover, optional blue "chosen" look
-class OneUiItem extends JLabel {
+public class OneUiItem extends JLabel {
     private final Color hoverColor;
     private boolean hovering;
 
-    OneUiItem(String text, Runnable onPick) {
+    public OneUiItem(String text, Runnable onPick) {
         this(text, OneUi.ROW_HOVER, onPick);
     }
 
-    OneUiItem(String text, Color hoverColor, Runnable onPick) {
+    public OneUiItem(String text, Color hoverColor, Runnable onPick) {
         super(text);
         this.hoverColor = hoverColor;
         setOpaque(false);

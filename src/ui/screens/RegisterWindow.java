@@ -1,14 +1,16 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-
+package ui.screens;
+import ui.components.*;
 import exception.ServiceOperationException;
-
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import service.DormService;
+import ui.components.GradientPanel;
+import ui.FindTheDUI;
 
 // Register page
-class RegisterWindow extends GradientPanel {
+public class RegisterWindow extends GradientPanel {
     
     public RegisterWindow(String role) {
         setLayout(new GridLayout(1, 2));

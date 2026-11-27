@@ -1,10 +1,11 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
 
 // One photo box in the Post New Dorm form: empty grey square until a picture is uploaded.
 // The picture fills the box (cropped to fit); clicking a filled box removes the picture.
-class PhotoThumb extends JPanel {
+public class PhotoThumb extends JPanel {
     private java.awt.image.BufferedImage image;
     private java.io.File file;
     private Runnable onRemoved;

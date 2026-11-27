@@ -1,14 +1,15 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
 import java.io.File;
+import javax.swing.*;
 
 // One photo in the post's grid: the picture cropped to fill the tile, with "+N" on top when
 // the post has more photos than the grid can show
-class PhotoTile extends JComponent {
+public class PhotoTile extends JComponent {
     private final java.awt.image.BufferedImage image;
     private final int more;
 
-    PhotoTile(java.awt.image.BufferedImage image, int more) {
+    public PhotoTile(java.awt.image.BufferedImage image, int more) {
         this.image = image;
         this.more = more;
         setPreferredSize(new Dimension(153, 123));

@@ -1,25 +1,26 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+package ui.components;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 // Sidebar row: line icon + label. The open page gets a rounded highlight and bold text,
 // and rows light up slightly on hover.
-class SidebarItem extends JLabel {
+public class SidebarItem extends JLabel {
     // ----- Colours: edit the hex codes here -----
     // (dark theme: SIDEBAR_BG #0C1014, TEXT #F5F5F5, SELECTED_BG #262A31, HOVER_BG #181C22)
-    static final Color SIDEBAR_BG  = Color.decode("#0B0D13");
-    static final Color TEXT        = Color.decode("#F2F2FA");
-    static final Color SELECTED_BG = new Color(255, 255, 255, 38);
-    static final Color HOVER_BG    = new Color(255, 255, 255, 20);
+    public static final Color SIDEBAR_BG = Color.decode("#0B0D13");
+    public static final Color TEXT = Color.decode("#F2F2FA");
+    public static final Color SELECTED_BG = new Color(255, 255, 255, 38);
+    public static final Color HOVER_BG = new Color(255, 255, 255, 20);
     static final int   RADIUS      = 10;
 
-    enum Glyph { DASHBOARD, BUILDING, BELL, LOGOUT, HOME, SEARCH }
+    public enum Glyph { DASHBOARD, BUILDING, BELL, LOGOUT, HOME, SEARCH }
 
     private boolean selected;
     private boolean hover;
 
-    SidebarItem(String text, Glyph glyph) {
+    public SidebarItem(String text, Glyph glyph) {
         super(text);
         setIcon(new GlyphIcon(glyph));
         setIconTextGap(14);
@@ -33,8 +34,7 @@ class SidebarItem extends JLabel {
             @Override public void mouseExited(MouseEvent e) { hover = false; repaint(); }
         });
     }
-
-    void setSelected(boolean selected) {
+    public void setSelected(boolean selected) {
         this.selected = selected;
         setFont(getFont().deriveFont(selected ? Font.BOLD : Font.PLAIN));
         repaint();

@@ -1,13 +1,13 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
 
 // Gives every JButton in the app the floating shadow as soon as it is shown, including buttons
 // created later inside dialogs. Set a "noShadow" client property on a button to opt out.
-final class FloatingButtons {
+final public class FloatingButtons {
     private FloatingButtons() {}
-
-    static void install() {
+    public static void install() {
         Toolkit.getDefaultToolkit().addAWTEventListener(ev -> {
             if (!(ev instanceof HierarchyEvent)) {
                 return;

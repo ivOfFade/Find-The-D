@@ -1,10 +1,11 @@
+package ui.components;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 // Closed dropdown box in the One UI style (soft rounded field + chevron). Clicking opens its rounded list.
-class DropdownField extends JPanel {
+public class DropdownField extends JPanel {
 
   private final JLabel textLabel = new JLabel();
   private final OneUiPopup popup = new OneUiPopup();

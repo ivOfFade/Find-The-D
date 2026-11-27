@@ -1,10 +1,11 @@
+package ui.components;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 // see more/less
 // One field of a post, e.g. "Location : Sampaloc, Manila". The name before the colon is drawn in bold.
-class CollapsibleText extends JComponent {
+public class CollapsibleText extends JComponent {
 
   private final int maxCollapsedLines;
   private static final int PAD_TOP = 3; // gap between two fields is PAD_TOP + PAD_BOTTOM (half of the old 10)

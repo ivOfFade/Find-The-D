@@ -1,17 +1,18 @@
-import javax.swing.*;
+package ui.components;
 import java.awt.*;
+import javax.swing.*;
 
 // Panel that paints the gradient as its background (drawn small and scaled up, so resizing stays fast).
-class GradientPanel extends JPanel {
+public class GradientPanel extends JPanel {
     private static final int SCALE = 4;
     private java.awt.image.BufferedImage cache;
 
-    GradientPanel() {
+    public GradientPanel() {
         super();
         setOpaque(false);
     }
 
-    GradientPanel(LayoutManager layout) {
+    public GradientPanel(LayoutManager layout) {
         super(layout);
         setOpaque(false);
     }
