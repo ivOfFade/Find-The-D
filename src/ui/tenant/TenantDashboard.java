@@ -1,4 +1,5 @@
 package ui.tenant;
+
 import ui.components.*;
 import enums.ApplicationStatus;
 import exception.ServiceOperationException;
@@ -13,16 +14,6 @@ import model.Application;
 import model.Dorm;
 import model.Tenant;
 import service.DormService;
-import ui.components.DormPostCard;
-import ui.components.DropdownField;
-import ui.components.DropShadowBorder;
-import ui.components.FlatButton;
-import ui.components.GradientPanel;
-import ui.components.ModernScrollBarUI;
-import ui.components.OneUiCheckItem;
-import ui.components.OneUiItem;
-import ui.components.RoundedPanel;
-import ui.components.SidebarItem;
 import ui.FindTheDUI;
 
 // Tenant Page
@@ -38,10 +29,11 @@ public class TenantDashboard extends JPanel {
 
     private CardLayout cardLayout;
     private JPanel cardsContainer;
-    private JLabel linkMyDorm;      // hidden until the tenant applies to a dorm
-    private Component myDormGap;    // spacing under the My Dorm link (hidden with it)
+    private JLabel linkMyDorm; // hidden until the tenant applies to a dorm
+    private Component myDormGap; // spacing under the My Dorm link (hidden with it)
 
-    // Browse feed width: share of the available space, and the narrowest it will ever get
+    // Browse feed width: share of the available space, and the narrowest it will
+    // ever get
     private static final int FEED_WIDTH_PERCENT = 95;
     private static final int FEED_MIN_WIDTH = 492;
 
@@ -110,7 +102,8 @@ public class TenantDashboard extends JPanel {
         setUnderlined(linkBrowse, true);
     }
 
-    // Rebuilds Browse and My Dorm from the current data (slots, accepted applications, announcements)
+    // Rebuilds Browse and My Dorm from the current data (slots, accepted
+    // applications, announcements)
     private void refreshTenantViews() {
         cardsContainer.remove(browseCard);
         cardsContainer.remove(myDormCard);
@@ -130,7 +123,8 @@ public class TenantDashboard extends JPanel {
         cardsContainer.repaint();
     }
 
-    // ---------- Sidebar helpers ----------    // ---------- Sidebar helpers ----------
+    // ---------- Sidebar helpers ---------- // ---------- Sidebar helpers
+    // ----------
     private JLabel createSidebarLink(String text, SidebarItem.Glyph glyph) {
         return new SidebarItem(text, glyph);
     }
@@ -140,10 +134,10 @@ public class TenantDashboard extends JPanel {
             ((SidebarItem) label).setSelected(underlined);
             return;
         }
-        java.util.Map<java.awt.font.TextAttribute, Object> attrs =
-            new java.util.HashMap<java.awt.font.TextAttribute, Object>(label.getFont().getAttributes());
+        java.util.Map<java.awt.font.TextAttribute, Object> attrs = new java.util.HashMap<java.awt.font.TextAttribute, Object>(
+                label.getFont().getAttributes());
         attrs.put(java.awt.font.TextAttribute.UNDERLINE,
-            underlined ? java.awt.font.TextAttribute.UNDERLINE_ON : Integer.valueOf(-1));
+                underlined ? java.awt.font.TextAttribute.UNDERLINE_ON : Integer.valueOf(-1));
         label.setFont(label.getFont().deriveFont(attrs));
     }
 
@@ -178,7 +172,8 @@ public class TenantDashboard extends JPanel {
         JPanel feedHolder = new JPanel(new BorderLayout());
         feedHolder.setOpaque(false);
         feedHolder.add(feedPanel, BorderLayout.NORTH);
-        // The posts grow with the window (the full screen layout needs the room) and stay centred
+        // The posts grow with the window (the full screen layout needs the room) and
+        // stay centred
         feedHolder.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -241,11 +236,10 @@ public class TenantDashboard extends JPanel {
                     if (tenant.hasDorm()
                             && tenant.getCurrentDorm().getDormId() != dorm.getDormId()) {
                         int choice = JOptionPane.showConfirmDialog(
-                            owner(),
-                            "If accepted, you will transfer from your current dorm. Continue?",
-                            "Confirm Transfer",
-                            JOptionPane.YES_NO_OPTION
-                        );
+                                owner(),
+                                "If accepted, you will transfer from your current dorm. Continue?",
+                                "Confirm Transfer",
+                                JOptionPane.YES_NO_OPTION);
 
                         if (choice != JOptionPane.YES_OPTION) {
                             return;
@@ -270,7 +264,7 @@ public class TenantDashboard extends JPanel {
                 RoundedDialog.showMessage(owner(), "Message", ex.getMessage());
             }
         });
-        postCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));   // let it stretch with the feed
+        postCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE)); // let it stretch with the feed
         feedEntries.add(new FeedEntry(dorm, postCard));
         return postCard;
     }
@@ -288,7 +282,7 @@ public class TenantDashboard extends JPanel {
         outerBox.setBorder(new EmptyBorder(15, 30, 14, 24));
 
         java.util.List<Announcement> mine = tenant.viewAnnouncements();
-        for (int n = mine.size() - 1; n >= 0; n--) {       // newest first
+        for (int n = mine.size() - 1; n >= 0; n--) { // newest first
             if (n < mine.size() - 1) {
                 outerBox.add(Box.createVerticalStrut(8));
             }
@@ -297,7 +291,7 @@ public class TenantDashboard extends JPanel {
         if (mine.isEmpty()) {
             JLabel none = new JLabel("No announcements yet.");
             none.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
-            none.setForeground(GradientBackground.TEXT_SOFT);
+            none.setForeground(Color.BLACK);
             none.setAlignmentX(Component.LEFT_ALIGNMENT);
             outerBox.add(none);
         }
@@ -317,8 +311,8 @@ public class TenantDashboard extends JPanel {
         postComplainBtn.setOpaque(true);
         postComplainBtn.setFocusPainted(false);
         postComplainBtn.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(0, 0, 2, 2, new Color(0xA0, 0xA0, 0xA0)),
-            new LineBorder(new Color(0x77, 0x77, 0x77), 1)));
+                BorderFactory.createMatteBorder(0, 0, 2, 2, new Color(0xA0, 0xA0, 0xA0)),
+                new LineBorder(new Color(0x77, 0x77, 0x77), 1)));
         postComplainBtn.addActionListener(e -> showPostComplainDialog());
 
         JPanel bottomBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
@@ -330,7 +324,8 @@ public class TenantDashboard extends JPanel {
         return page;
     }
 
-    // One announcement: title above, gray text box with shadow, timestamp below on the right
+    // One announcement: title above, gray text box with shadow, timestamp below on
+    // the right
     private JPanel createAnnouncementEntry(Announcement announcement) {
         String timestamp = announcement.getDatePosted().format(DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a"));
         JPanel entry = new JPanel();
@@ -451,8 +446,8 @@ public class TenantDashboard extends JPanel {
         cancelBtn.setOpaque(true);
         cancelBtn.setFocusPainted(false);
         cancelBtn.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(0, 0, 3, 3, new Color(0x88, 0x88, 0x88)),
-            new LineBorder(new Color(0x55, 0x55, 0x55), 1)));
+                BorderFactory.createMatteBorder(0, 0, 3, 3, new Color(0x88, 0x88, 0x88)),
+                new LineBorder(new Color(0x55, 0x55, 0x55), 1)));
         cancelBtn.addActionListener(ev -> dialog.dispose());
 
         actions.add(postBtn);
@@ -487,7 +482,9 @@ public class TenantDashboard extends JPanel {
         JPanel bodyPanel = new JPanel(new GridBagLayout());
         bodyPanel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 1.0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(15, 25, 15, 25);
 
@@ -496,9 +493,10 @@ public class TenantDashboard extends JPanel {
         msgLabel.setForeground(Color.BLACK);
         bodyPanel.add(msgLabel, gbc);
 
-
         // "OK" button
-        gbc.gridy = 1; gbc.anchor = GridBagConstraints.EAST; gbc.insets = new Insets(25, 0, 0, 25);
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.insets = new Insets(25, 0, 0, 25);
         FlatButton okBtn = new FlatButton("OK");
         okBtn.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 15));
         okBtn.setForeground(Color.BLACK);
@@ -529,7 +527,7 @@ public class TenantDashboard extends JPanel {
         confirm.setResizable(false);
         confirm.setLocationRelativeTo(owner);
 
-        final boolean[] confirmed = {false};
+        final boolean[] confirmed = { false };
 
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBackground(new Color(0xF2, 0xF2, 0xF2));
@@ -564,8 +562,8 @@ public class TenantDashboard extends JPanel {
         noBtn.setOpaque(true);
         noBtn.setFocusPainted(false);
         noBtn.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(0, 0, 3, 3, new Color(0xB0, 0xB0, 0xB0)),
-            new LineBorder(new Color(0x55, 0x55, 0x55), 1)));
+                BorderFactory.createMatteBorder(0, 0, 3, 3, new Color(0xB0, 0xB0, 0xB0)),
+                new LineBorder(new Color(0x55, 0x55, 0x55), 1)));
         noBtn.addActionListener(ev -> confirm.dispose());
 
         actionWrapper.add(yesButton);
@@ -581,10 +579,9 @@ public class TenantDashboard extends JPanel {
 
     // ---------- Filters (Amenities + Budget) ----------
     private static final String[] BUDGET_LABELS = {
-        "Under \u20B13,000", "\u20B13,000 - \u20B15,000", "\u20B15,000 - \u20B18,000",
-        "\u20B18,000 - \u20B110,000", "\u20B110,000+"};
-    private static final int[] BUDGET_MIN = {0, 3000, 5000, 8000, 10000};
-    private static final int[] BUDGET_MAX = {2999, 5000, 8000, 10000, Integer.MAX_VALUE};
+            "Under 3,000", "3,000 - 5,000", "5,000 - 8,000", "8,000 - 10,000", "10,000+" };
+    private static final int[] BUDGET_MIN = { 0, 3000, 5000, 8000, 10000 };
+    private static final int[] BUDGET_MAX = { 2999, 5000, 8000, 10000, Integer.MAX_VALUE };
 
     private final java.util.List<FeedEntry> feedEntries = new java.util.ArrayList<>();
 
@@ -599,25 +596,29 @@ public class TenantDashboard extends JPanel {
         }
     }
 
-    // What the two dropdowns currently ask for, turned into the dorm filter the domain expects
+    // What the two dropdowns currently ask for, turned into the dorm filter the
+    // domain expects
     private boolean matchesFilters(Dorm dorm, java.util.List<String> wanted, int budget) {
         return dorm.getAmenities().containsAll(wanted)
-            && (budget < 0
-                || (dorm.getRate() >= BUDGET_MIN[budget]
-                    && dorm.getRate() <= BUDGET_MAX[budget]));
+                && (budget < 0
+                        || (dorm.getRate() >= BUDGET_MIN[budget]
+                                && dorm.getRate() <= BUDGET_MAX[budget]));
     }
 
-    // Two slim dropdown fields (same style as the landlord's Post New Dorm form). The feed updates right away.
+    // Two slim dropdown fields (same style as the landlord's Post New Dorm form).
+    // The feed updates right away.
     private JPanel createFilterPanel(JPanel feedPanel) {
         final int fieldW = 190;
-        final int[] budget = {-1};                                  // -1 = any budget
+        final int[] budget = { -1 }; // -1 = any budget
         java.util.List<JCheckBox> amenityChecks = new java.util.ArrayList<>();
         java.util.List<JLabel> budgetRows = new java.util.ArrayList<>();
 
         DropdownField amenitiesField = new DropdownField("Amenities", fieldW);
         DropdownField budgetField = new DropdownField("Budget", fieldW);
+        DropdownField sortField = new DropdownField("Sort by", fieldW);
         amenitiesField.setGlass(true);
         budgetField.setGlass(true);
+        sortField.setGlass(true);
 
         JLabel resultsLabel = new JLabel(" ");
         resultsLabel.setFont(new Font("YU Gothic UI Light", Font.PLAIN, 12));
@@ -636,11 +637,14 @@ public class TenantDashboard extends JPanel {
                 }
             }
             amenitiesField.setValue(picked.isEmpty() ? null
-                : picked.size() == 1 ? picked.get(0) : picked.get(0) + " +" + (picked.size() - 1));
+                    : picked.size() == 1 ? picked.get(0) : picked.get(0) + " +" + (picked.size() - 1));
             budgetField.setValue(budget[0] < 0 ? null : BUDGET_LABELS[budget[0]]);
             for (int i = 0; i < budgetRows.size(); i++) {
-                budgetRows.get(i).setFont(new Font("Yu Gothic UI Light", i - 1 == budget[0] && budget[0] >= 0 ? Font.BOLD : Font.PLAIN, 13));
+                budgetRows.get(i).setFont(new Font("Yu Gothic UI Light",
+                        i - 1 == budget[0] && budget[0] >= 0 ? Font.BOLD : Font.PLAIN, 13));
             }
+            sortField.setValue("Recent posts");
+
             clearLink.setVisible(!picked.isEmpty() || budget[0] >= 0);
             applyFeedFilters(feedPanel, picked, budget[0], resultsLabel);
         };
@@ -674,6 +678,16 @@ public class TenantDashboard extends JPanel {
             budgetPopup.add(row);
         }
 
+        JPopupMenu sortPopup = sortField.getPopup();
+        String[] sortTexts = { "Recent posts", "Most popular" };
+        for (String text : sortTexts) {
+            OneUiItem row = new OneUiItem(text, () -> {
+                sortField.setValue(text);
+                sortPopup.setVisible(false);
+            });
+            sortPopup.add(row);
+        }
+
         clearLink.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -698,10 +712,13 @@ public class TenantDashboard extends JPanel {
         stack.setOpaque(false);
         amenitiesField.setAlignmentX(Component.LEFT_ALIGNMENT);
         budgetField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sortField.setAlignmentX(Component.LEFT_ALIGNMENT);
         infoRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         stack.add(amenitiesField);
         stack.add(Box.createVerticalStrut(10));
         stack.add(budgetField);
+        stack.add(Box.createVerticalStrut(10));
+        stack.add(sortField);
         stack.add(Box.createVerticalStrut(8));
         stack.add(infoRow);
 
@@ -718,7 +735,8 @@ public class TenantDashboard extends JPanel {
     // Rebuilds the feed so it only holds the dorms that match every picked filter
     private void applyFeedFilters(JPanel feedPanel, java.util.List<String> wanted, int budget, JLabel resultsLabel) {
         feedPanel.removeAll();
-        // The tenant searches the listings; the cards that survive are the ones we put back on screen
+        // The tenant searches the listings; the cards that survive are the ones we put
+        // back on screen
         int shown = 0;
         for (FeedEntry entry : feedEntries) {
             if (!matchesFilters(entry.dorm, wanted, budget)) {
@@ -739,7 +757,7 @@ public class TenantDashboard extends JPanel {
             feedPanel.add(empty);
         }
         resultsLabel.setText("Showing " + shown + " of " + feedEntries.size()
-            + (feedEntries.size() == 1 ? " dorm" : " dorms"));
+                + (feedEntries.size() == 1 ? " dorm" : " dorms"));
         feedPanel.revalidate();
         feedPanel.repaint();
     }
