@@ -385,9 +385,10 @@ Landlord Frontend & Sketches<br><br>
 </table>
 
 </div>
+
 ---
 
-## Acknowledgement
+## *Acknowledgement*
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A big, heartfelt **thank you** to our Object-Oriented Programming professor, **Ms. Fatima Marie P. Agdon**, for the guidance, patience, and feedback that shaped every class in this project. 
 
@@ -397,7 +398,7 @@ Landlord Frontend & Sketches<br><br>
 
 <div align="center">
 
-##  Thank You for Reading!
+##  **Thank You for Reading!**
 
 **Find The D** is our way of saying that finding a home shouldn't feel like a quest.
 If it makes even one student's search easier, it did its job. 
@@ -406,7 +407,7 @@ If it makes even one student's search easier, it did its job.
 
 
 **DISCLAIMER**
-This project is created for educational purposes under the Object-Oriented Programming course.
+This project is created for educational purposes under the Object-Oriented Programming course.<br>
 © 2026 Team Find The D. All rights reserved.
 
 </div>
