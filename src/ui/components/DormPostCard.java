@@ -368,7 +368,13 @@ class DormPostCard extends RoundedPanel {
   }
 
   private void rebuildPhotoGrid() {
-    int total = photoImages == null ? 4 : photoImages.size();
+    boolean hasPhotos = photoImages != null && !photoImages.isEmpty();
+    photoGrid.setVisible(hasPhotos);
+    if (!hasPhotos) {
+      photoGrid.removeAll();
+      return;
+    }
+    int total = photoImages.size();
     int shown = Math.min(4, total);
     photoGrid.removeAll();
     photoGrid.setLayout(
@@ -380,13 +386,11 @@ class DormPostCard extends RoundedPanel {
     );
     for (int i = 0; i < shown; i++) {
       final int start = i;
-      JComponent tile =
-        photoImages == null
-          ? new ImagePlaceholder()
-          : new PhotoTile(
-              photoImages.get(i),
-              (i == shown - 1 && total > shown) ? total - shown : 0
-            );
+      JComponent tile = new PhotoTile(
+        photoImages.get(i),
+        (i == shown - 1 && total > shown) ? total - shown : 0
+      );
+
       tile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
       tile.setToolTipText("Click to view bigger");
       tile.addMouseListener(
