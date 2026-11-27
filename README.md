@@ -352,7 +352,7 @@ When a landlord posts a dorm with a Plus Code, the app asks Geoapify's Places AP
 | :---: | :---: | :---: | :---: |
 | **Dylan** | **Neil** | **Shasha** | **Arrianne** |
 | Backend Core & Shared Models | Backend Landlord & Code Review | Tenant Frontend & Sketches | Landlord Frontend & Sketches |
-| [@OasisTree](https://github.com/OasisTree) | [@nylspace](https://github.com/nylspace) | [@rd-ev](https://github.com/) | [@khunarrianne](https://github.com/khunarrianne) |
+| [@OasisTree](https://github.com/OasisTree) | [@nylspace](https://github.com/nylspace) | [@rd-ev](https://github.com/rd-ev) | [@khunarrianne](https://github.com/khunarrianne) |
 
 </div>
 
