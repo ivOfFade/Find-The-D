@@ -77,10 +77,19 @@ public class Tenant extends Person {
 
     Application application = new Application(this, dorm, confirmTransfer);
 
+    applications.clear();
     applications.add(application);
 
     // Current dorm and available slots remain unchanged.
     return application;
+  }
+
+  public void replaceApplications(Application application) {
+    if (application == null) {
+      throw new IllegalArgumentException("Application is required.");
+    }
+    applications.clear();
+    applications.add(application);
   }
 
   public Dorm viewMyDorm() throws DormNotFoundException {

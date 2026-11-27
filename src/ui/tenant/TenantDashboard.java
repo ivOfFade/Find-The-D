@@ -1,7 +1,6 @@
 package ui.tenant;
 
 import ui.components.*;
-import enums.ApplicationStatus;
 import exception.ServiceOperationException;
 import java.awt.*;
 import java.awt.event.*;
@@ -13,6 +12,7 @@ import model.Announcement;
 import model.Application;
 import model.Dorm;
 import model.Tenant;
+import enums.ApplicationStatus;
 import service.DormService;
 import ui.FindTheDUI;
 
@@ -24,6 +24,7 @@ public class TenantDashboard extends JPanel {
 
     private final Tenant tenant = DormService.currentTenant();
     private java.util.Set<Integer> interestedDormIds = new java.util.HashSet<>();
+    private Application currentApplication;
     private JPanel browseCard;
     private JPanel myDormCard;
 
@@ -39,6 +40,10 @@ public class TenantDashboard extends JPanel {
 
     public TenantDashboard() {
         setLayout(new BorderLayout());
+
+        // Keep the tenant's single current application so every listing button
+        // can reflect its state without querying the database for each card.
+        loadCurrentApplication();
 
         // ---------- Sidebar: My Dorm / Browse / Log Out ----------
         JPanel sidebarPanel = new JPanel();
@@ -72,7 +77,6 @@ public class TenantDashboard extends JPanel {
         linkMyDorm.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                refreshTenantViews();
                 cardLayout.show(cardsContainer, "MyDorm");
                 setUnderlined(linkMyDorm, true);
                 setUnderlined(linkBrowse, false);
@@ -81,7 +85,6 @@ public class TenantDashboard extends JPanel {
         linkBrowse.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                refreshTenantViews();
                 cardLayout.show(cardsContainer, "Browse");
                 setUnderlined(linkBrowse, true);
                 setUnderlined(linkMyDorm, false);
@@ -97,9 +100,20 @@ public class TenantDashboard extends JPanel {
         add(sidebarPanel, BorderLayout.WEST);
         add(cardsContainer, BorderLayout.CENTER);
 
-        // Tenants still land on Browse first (same as before)
-        cardLayout.show(cardsContainer, "Browse");
-        setUnderlined(linkBrowse, true);
+        String initialCard = tenant.hasDorm() ? "MyDorm" : "Browse";
+        cardLayout.show(cardsContainer, initialCard);
+        setUnderlined(linkMyDorm, tenant.hasDorm());
+        setUnderlined(linkBrowse, !tenant.hasDorm());
+    }
+
+    private void loadCurrentApplication() {
+        try {
+            java.util.List<Application> applications = DormService.getApplications(tenant);
+            currentApplication = applications.isEmpty() ? null : applications.get(0);
+        } catch (ServiceOperationException ex) {
+            currentApplication = null;
+            RoundedDialog.showMessage(owner(), "Message", ex.getMessage());
+        }
     }
 
     // Rebuilds Browse and My Dorm from the current data (slots, accepted
@@ -152,8 +166,12 @@ public class TenantDashboard extends JPanel {
         feedPanel.setLayout(new BoxLayout(feedPanel, BoxLayout.Y_AXIS));
         feedPanel.setOpaque(false);
 
+        Dorm currentDorm = tenant.getCurrentDorm();
         boolean firstPost = true;
         for (Dorm dorm : DormService.listings()) {
+            if (currentDorm != null && currentDorm.getDormId() == dorm.getDormId()) {
+                continue;
+            }
             if (!firstPost) {
                 feedPanel.add(Box.createVerticalStrut(14));
             }
@@ -218,19 +236,28 @@ public class TenantDashboard extends JPanel {
         applyBtn.setFocusPainted(false);
         applyBtn.setBorder(new LineBorder(new Color(0x55, 0x55, 0x55), 1));
         applyBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        for (Application a : tenant.getApplications()) {
-            if (a.getDorm().equals(dorm) && a.getStatus() == ApplicationStatus.PENDING) {
-                applyBtn.setText("Applied");
-                applyBtn.setEnabled(false);
-            }
-        }
         if (dorm.equals(tenant.getCurrentDorm())) {
             applyBtn.setText("Current");
             applyBtn.setEnabled(false);
+        } else if (isApplicationFor(dorm)) {
+            applyBtn.setText("Applied");
+            applyBtn.setEnabled(false);
         }
         applyBtn.addActionListener(e -> {
-            if (showConfirmDialog(owner(), "Apply")) {
-                try {
+            try {
+                boolean hasPreviousApplication = currentApplication != null;
+                int confirmation = JOptionPane.showConfirmDialog(
+                    owner(),
+                    hasPreviousApplication
+                        ? "Submitting a new application will remove your previous application. Continue?"
+                        : "Submit an application for this dorm?",
+                    hasPreviousApplication ? "Replace Previous Application" : "Apply",
+                    JOptionPane.YES_NO_OPTION,
+                    hasPreviousApplication
+                        ? JOptionPane.WARNING_MESSAGE
+                        : JOptionPane.QUESTION_MESSAGE
+                );
+                if (confirmation == JOptionPane.YES_OPTION) {
                     boolean confirmTransfer = false;
 
                     if (tenant.hasDorm()
@@ -247,12 +274,13 @@ public class TenantDashboard extends JPanel {
 
                         confirmTransfer = true;
                     }
-                    DormService.apply(tenant, dorm, confirmTransfer);
-                    applyBtn.setText("Applied");
                     applyBtn.setEnabled(false);
-                } catch (ServiceOperationException ex) {
-                    RoundedDialog.showMessage(owner(), "Message", ex.getMessage());
+                    currentApplication = DormService.apply(tenant, dorm, confirmTransfer);
+                    refreshTenantViews();
                 }
+            } catch (ServiceOperationException ex) {
+                applyBtn.setEnabled(true);
+                RoundedDialog.showMessage(owner(), "Message", ex.getMessage());
             }
         });
 
@@ -269,10 +297,30 @@ public class TenantDashboard extends JPanel {
         return postCard;
     }
 
+    private boolean isApplicationFor(Dorm dorm) {
+        return currentApplication != null
+            && currentApplication.getStatus() == ApplicationStatus.PENDING
+            && currentApplication.getDorm().getDormId() == dorm.getDormId();
+    }
+
     // ---------- My Dorm view (announcements + Post Complain) ----------
     private JPanel createMyDormCardView() {
         JPanel page = new GradientPanel(new BorderLayout());
         page.setBackground(new Color(0xE8, 0xE8, 0xE8));
+
+        Dorm currentDorm = tenant.getCurrentDorm();
+        if (currentDorm != null) {
+            JLabel dormTitle = new JLabel(currentDorm.getDormName());
+            dormTitle.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 26));
+            dormTitle.setForeground(GradientBackground.TEXT);
+            dormTitle.setBorder(new EmptyBorder(0, 0, 14, 0));
+
+            JPanel titleWrapper = new JPanel(new BorderLayout());
+            titleWrapper.setOpaque(false);
+            titleWrapper.setBorder(new EmptyBorder(28, 45, 0, 55));
+            titleWrapper.add(dormTitle, BorderLayout.WEST);
+            page.add(titleWrapper, BorderLayout.NORTH);
+        }
 
         // Outer "Announcement" box
         RoundedPanel outerBox = new RoundedPanel();

@@ -175,6 +175,27 @@ landlord.postDorm(newDorm);
 
 
 
+## How to Run
+
+### Requirements
+- Java JDK (with `javac` and `java` available on `PATH`)
+- PostgreSQL
+- The dependency jars in the `lib` folder (included in this repository)
+- A Geoapify API key for posting dorm listings with nearby-place results
+
+### Setup
+1. Follow [Database Setup](database/README.md) to create the PostgreSQL database, apply the schema, and optionally load the sample data.
+2. Create a `.env` file in the project root with `DB_URL`, `DB_USER`, `DB_PASSWORD`, and `GEOAPIFY_API_KEY`. See the database setup guide for the format. Keep this file private.
+3. From the project root, compile and launch the application:
+
+```powershell
+New-Item -ItemType Directory -Force out
+javac -encoding UTF-8 -cp "lib/*" -d out (Get-ChildItem -Recurse src -Filter *.java | ForEach-Object { $_.FullName })
+java -cp "out;lib/*" ui.Main
+```
+
+On macOS or Linux, replace the classpath separator `;` with `:` in the `java` command. The application entry point is `ui.Main`.
+
 ## UI Source Layout
 
 The Swing interface is organized into Java packages under `src/ui`:
@@ -329,6 +350,8 @@ When a landlord posts a dorm with a Plus Code, the app asks Geoapify's Places AP
 ```
 ---
 
+The core OOP examples are encapsulation through private model fields and validated accessors, inheritance through `Tenant` and `Landlord` extending `Person`, polymorphism through overridden methods such as `displayInfo()`, and abstraction through the abstract `Person` class and repository interfaces.
+
 
 ## Limitations 
 1. **Local data only:** Data lives in the project database and doesn't sync across devices.
@@ -405,12 +428,39 @@ If it makes even one student's search easier, it did its job.
 
 ⭐ *If you like the project, give it a star. It makes our day!* ⭐
 
+See the [UML class diagram](docs/uml/UML%20Diagram.pdf) and the more detailed [class design](docs/class-design/class-design.md) for the relationships and responsibilities of the project classes.
+
+## Project Structure
+
+```text
+database/       PostgreSQL schema, seed data, migrations, and setup guide
+docs/
+  screenshots/  Application screenshots
+  uml/          UML class diagram
+  class-design/ Detailed class and behavior design
+src/
+  enums/        Shared enumerations
+  exception/    Application exceptions
+  model/        Domain entities and value objects
+  repository/   PostgreSQL data access
+  service/      Application and business logic
+  ui/           Swing entry point, screens, and components
+  util/         Validation, environment, database, and file helpers
+lib/            Required Java dependency jars
+```
+
 
 **DISCLAIMER**
 This project is created for educational purposes under the Object-Oriented Programming course.<br>
 © 2026 Team Find The D. All rights reserved.
 
 </div>
+
+## Acknowledgments
+
+Thanks to our instructor and classmates for their feedback and guidance, and to the contributors of the open-source libraries used by this project. Nearby-place information is provided through Geoapify using OpenStreetMap data, with attribution shown in the application.
+
+Thank you for checking out Find The D!
 
 
 

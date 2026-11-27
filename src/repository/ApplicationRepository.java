@@ -106,6 +106,76 @@ public class ApplicationRepository implements RepositoryInterface<Application, I
         }
     }
 
+    /** Replaces every prior application for this tenant and saves the new one atomically. */
+    public void replaceForTenant(Application application) throws SQLException {
+        if (application.getApplicationId() != 0
+                || application.getStatus() != ApplicationStatus.PENDING
+                || application.getDateReviewed() != null) {
+            throw new IllegalArgumentException(
+                "A replacement application must be new and pending."
+            );
+        }
+
+        int tenantId = application.getTenant().getPersonId();
+        String lockTenantSql =
+            "SELECT person_id FROM tenants WHERE person_id = ? FOR UPDATE";
+        String deleteSql = "DELETE FROM applications WHERE tenant_id = ?";
+        String insertSql = "INSERT INTO applications "
+            + "(tenant_id, dorm_id, transfer_confirmed) VALUES (?, ?, ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                try (PreparedStatement lock = conn.prepareStatement(lockTenantSql)) {
+                    lock.setInt(1, tenantId);
+                    try (ResultSet rows = lock.executeQuery()) {
+                        if (!rows.next()) {
+                            throw new SQLException("Tenant account no longer exists.");
+                        }
+                    }
+                }
+
+                try (PreparedStatement delete = conn.prepareStatement(deleteSql)) {
+                    delete.setInt(1, tenantId);
+                    delete.executeUpdate();
+                }
+
+                int applicationId;
+                try (PreparedStatement insert = conn.prepareStatement(
+                        insertSql, new String[] {"application_id"})) {
+                    insert.setInt(1, tenantId);
+                    insert.setInt(2, application.getDorm().getDormId());
+                    insert.setBoolean(3, application.isTransferConfirmed());
+                    if (insert.executeUpdate() != 1) {
+                        throw new SQLException("Application was not saved.");
+                    }
+                    try (ResultSet keys = insert.getGeneratedKeys()) {
+                        if (!keys.next()) {
+                            throw new SQLException("No application ID was returned.");
+                        }
+                        applicationId = keys.getInt(1);
+                    }
+                }
+
+                conn.commit();
+                application.assignApplicationId(applicationId);
+            } catch (SQLException | InvalidInputException | RuntimeException e) {
+                try {
+                    conn.rollback();
+                } catch (SQLException rollbackError) {
+                    e.addSuppressed(rollbackError);
+                }
+                if (e instanceof SQLException) {
+                    throw (SQLException) e;
+                }
+                if (e instanceof InvalidInputException) {
+                    throw new SQLException("Could not assign application ID.", (InvalidInputException) e);
+                }
+                throw (RuntimeException) e;
+            }
+        }
+    }
+
     @Override
     public Optional<Application> findById(Integer id) throws SQLException {
         String sql = SELECT + " WHERE a.application_id = ?";

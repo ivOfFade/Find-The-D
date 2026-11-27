@@ -110,7 +110,7 @@ CREATE TABLE interested_dorms (
 -- own model
 CREATE TABLE applications (
     application_id     INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    tenant_id          INT NOT NULL REFERENCES tenants(person_id) ON DELETE CASCADE,
+    tenant_id          INT NOT NULL UNIQUE REFERENCES tenants(person_id) ON DELETE CASCADE,
     dorm_id            INT NOT NULL REFERENCES dorms(dorm_id)          ON DELETE CASCADE,
     status             VARCHAR(10) NOT NULL DEFAULT 'PENDING'
                         CHECK (status IN ('PENDING', 'ACCEPTED', 'REJECTED')),
