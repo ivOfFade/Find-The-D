@@ -27,6 +27,14 @@ class LoginWindow extends GradientPanel {
         gbc.insets = new Insets(6, 0, 6, 0); 
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        JLabel roleLabel = new JLabel("Logging in as " + userRole);
+        roleLabel.setFont(new Font("Georgia", Font.BOLD, 15));
+        roleLabel.setForeground(Color.WHITE);
+        rightPanel.add(roleLabel, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new Insets(6, 0, 6, 0);
+
         JTextField emailField = new JTextField("Email");
         setupFieldStyles(emailField, "Email", false);
         rightPanel.add(emailField, gbc);
@@ -73,16 +81,20 @@ class LoginWindow extends GradientPanel {
 
         gbc.gridy = 4;
         gbc.insets = new Insets(16, 0, 0, 0);
-        JButton backButton = new JButton("\u2190 Back");
-        backButton.setPreferredSize(new Dimension(300, 36));
-        backButton.setFont(new Font("Georgia", Font.PLAIN, 14));
-        backButton.setBackground(new Color(0x73, 0x73, 0x73));
-        backButton.setForeground(Color.WHITE);
-        backButton.setFocusPainted(false);
-        backButton.setBorder(new EmptyBorder(0, 0, 0, 0));
-        backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        backButton.addActionListener(e -> FindTheDUI.showWelcome());
-        rightPanel.add(backButton, gbc);
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        JLabel backLabel = new JLabel("<html><u>\u2190 Back</u></html>");
+        backLabel.setFont(new Font("Georgia", Font.PLAIN, 12));
+        backLabel.setForeground(GradientBackground.TEXT_SOFT);
+        backLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        backLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                FindTheDUI.showWelcome();
+            }
+        });
+        rightPanel.add(backLabel, gbc);
+
 
         add(rightPanel);
         rightPanel.revalidate();
