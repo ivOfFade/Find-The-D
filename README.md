@@ -360,7 +360,7 @@ Backend Core & Shared Models<br><br>
 
 <td align="center" width="25%">
 <a href="https://github.com/nylspace">
-<img src="https://github.com/nylspace.png" width="100" style="border-radius:50%" alt="Neil"><br>
+<img src="https://images.weserv.nl/?url=github.com/nylspace.png&w=100&h=100&fit=cover&mask=circle" width="100" alt="Neil"><br>
 <b>Neil</b>
 </a><br>
 Backend Landlord & Code Review<br><br>
@@ -368,7 +368,7 @@ Backend Landlord & Code Review<br><br>
 
 <td align="center" width="25%">
 <a href="https://github.com/rd-ev">
-<img src="https://github.com/rd-ev.png" width="100" style="border-radius:50%" alt="Rizialyn"><br>
+<img src="https://images.weserv.nl/?url=github.com/rd-ev.png&w=100&h=100&fit=cover&mask=circle" width="100" alt="Shasha"><br>
 <b>Shasha</b>
 </a><br>
 Tenant Frontend & Sketches<br><br>
@@ -376,7 +376,7 @@ Tenant Frontend & Sketches<br><br>
 
 <td align="center" width="25%">
 <a href="https://github.com/khunarrianne">
-<img src="https://github.com/khunarrianne.png" width="100" style="border-radius:50%" alt="Arrianne"><br>
+<img src="https://images.weserv.nl/?url=github.com/khunarrianne.png&w=100&h=100&fit=cover&mask=circle" width="100" alt="Arrianne"><br>
 <b>Arrianne</b>
 </a><br>
 Landlord Frontend & Sketches<br><br>
