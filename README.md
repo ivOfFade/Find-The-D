@@ -13,7 +13,7 @@ A Java Swing desktop application for finding, comparing, and managing dormitorie
 ---
 <div align = "center">
 
-**[🏠 Overview](#overview) · [🏠 Features](#features) · [🏠 OOP](#java-and-oop-concepts) · [🏠 Structure](#project-structure) · [🏠 Run](#how-to-run) · [🏠 Screenshots](#️screenshot️) · [🏠 Team](#meet-the-team)**
+**[🏠 Overview](#overview)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Features](#features)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 OOP](#java-and-oop-concepts)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Structure](#project-structure)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Run](#how-to-run)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Screenshots](#️screenshot️) · [🏠 Team](#meet-the-team)&nbsp;&nbsp;&nbsp;&nbsp;**
 
 </div>
 
