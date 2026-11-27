@@ -115,6 +115,14 @@ public final class DormService {
     }
   }
 
+  public static List<Integer> listingOrder(boolean mostPopular) {
+    try {
+        return DORMS.findFeedOrder(mostPopular);
+    } catch (SQLException exception) {
+        throw failure(exception);
+    }
+  }
+
   public static List<Application> getApplications(Tenant tenant) {
     try {
       requireSavedTenant(tenant);
