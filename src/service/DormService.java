@@ -161,7 +161,8 @@ public final class DormService {
       Dorm savedDorm = DORMS.findById(dorm.getDormId())
         .orElseThrow(() -> new SQLException("Dorm listing no longer exists."));
       Application application = savedTenant.applyToDorm(savedDorm, confirmTransfer);
-      APPLICATION_REPO.save(application);
+      APPLICATION_REPO.replaceForTenant(application);
+      tenant.replaceApplications(application);
       return application;
     } catch (SQLException | InvalidInputException exception) {
       throw failure(exception);

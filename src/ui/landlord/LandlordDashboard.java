@@ -126,7 +126,7 @@ public class LandlordDashboard extends JPanel {
         add(cardsContainer, BorderLayout.CENTER);
         refreshOverview();
         cardLayout.show(cardsContainer, "Overview");
-        setUnderlined(menuHeader, true);   // Overview is the page shown first
+        setUnderlined(menuHeader, true);   // Menu/overview is the page shown first
     }
 
     // Overview
@@ -371,21 +371,8 @@ public class LandlordDashboard extends JPanel {
         rightActionsPanel.setOpaque(false);
         GridBagConstraints aGbc = new GridBagConstraints();
         
-        // Approve Tenant
-        aGbc.gridx = 0; aGbc.gridy = 0; aGbc.insets = new Insets(0, 0, 8, 0);
-        JButton approveTenantBtn = new JButton("Approve Tenant");
-        approveTenantBtn.setPreferredSize(new Dimension(180, 36));
-        approveTenantBtn.setMinimumSize(new Dimension(150, 36));
-        approveTenantBtn.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
-        approveTenantBtn.setBackground(new Color(0xBB, 0xBB, 0xBB));
-        approveTenantBtn.setForeground(Color.WHITE);
-        approveTenantBtn.setBorder(new LineBorder(Color.GRAY));
-        approveTenantBtn.setFocusPainted(false);
-        approveTenantBtn.addActionListener(e -> showApproveTenantDialog(null));
-        rightActionsPanel.add(approveTenantBtn, aGbc);
-        
         // Post new dorm
-        aGbc.gridy = 1; aGbc.insets = new Insets(0, 0, 0, 0);
+        aGbc.gridx = 0; aGbc.gridy = 0; aGbc.insets = new Insets(0, 0, 0, 0);
         JButton postNewDormBtn = new JButton("Post New Dorm");
         postNewDormBtn.setPreferredSize(new Dimension(180, 36));
         postNewDormBtn.setMinimumSize(new Dimension(150, 36));
@@ -408,7 +395,7 @@ public class LandlordDashboard extends JPanel {
     private void showApproveTenantDialog(Dorm onlyDorm) {
         JDialog dialog = new JDialog(owner(), Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setUndecorated(true);
-        final boolean manage = onlyDorm != null;   // Manage button = two-part dialog; Approve Tenant = original
+        final boolean manage = onlyDorm != null;
         dialog.setSize(manage ? 520 : 480, manage ? 540 : 340);
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(this);
@@ -422,7 +409,7 @@ public class LandlordDashboard extends JPanel {
         topBar.setBackground(Color.decode("#E0E0E0"));
         topBar.setPreferredSize(new Dimension(manage ? 520 : 480, 36));
 
-        JLabel titleLbl = new JLabel(manage ? "  Manage Tenants" : "  Approve Tenant");
+        JLabel titleLbl = new JLabel("  Manage Tenants");
         titleLbl.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 15));
         titleLbl.setForeground(Color.WHITE);
         topBar.add(titleLbl, BorderLayout.WEST);
@@ -574,12 +561,15 @@ public class LandlordDashboard extends JPanel {
     // Pending applicant: name + Approve / Decline
     private void acceptTenant(JDialog parentDialog, JPanel group, Runnable refresh, Dorm dorm, Application application) {
         final String name = application.getTenant().getName();
+        final boolean alreadyResident = dorm.getTenants().stream().anyMatch(
+            tenant -> tenant.getPersonId() == application.getTenant().getPersonId()
+        );
         JPanel row = new JPanel(new BorderLayout());
         row.setOpaque(false);
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
         row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel nameLbl = new JLabel(name);
+        JLabel nameLbl = new JLabel(alreadyResident ? name + " (Already a tenant)" : name);
         nameLbl.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
         nameLbl.setForeground(Color.BLACK);
         row.add(nameLbl, BorderLayout.WEST);
@@ -590,6 +580,7 @@ public class LandlordDashboard extends JPanel {
         JButton approve = new JButton("Approve");
         styleRowButton(approve);
         approve.setBorder(new EmptyBorder(0, 0, 0, 0));
+        approve.setEnabled(!alreadyResident);
         JButton decline = new JButton("Decline");
         styleRowButton(decline);
         decline.setBackground(Color.WHITE);

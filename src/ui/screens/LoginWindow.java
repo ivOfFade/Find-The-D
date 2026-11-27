@@ -6,6 +6,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import service.DormService;
 import ui.components.GradientPanel;
 import ui.FindTheDUI;
@@ -44,7 +45,48 @@ public class LoginWindow extends GradientPanel {
         gbc.gridy = 2;
         JPasswordField passwordField = new JPasswordField("Password");
         setupFieldStyles(passwordField, "Password", true);
-        rightPanel.add(passwordField, gbc);
+        passwordField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(1, 1, 1, 0, new Color(0xD0, 0xD0, 0xD0)),
+            new EmptyBorder(5, 10, 5, 6)
+        ));
+        // Keep the hint readable; masking starts when a real password is entered.
+        passwordField.setEchoChar((char) 0);
+        JPanel passwordRow = new JPanel(new BorderLayout());
+        passwordRow.setOpaque(false);
+        passwordRow.setPreferredSize(new Dimension(300, 40));
+        passwordRow.add(passwordField, BorderLayout.CENTER);
+        EyeButton visibilityButton = new EyeButton();
+        visibilityButton.setToolTipText("Show password");
+        visibilityButton.setFocusable(false);
+        visibilityButton.setEnabled(false);
+        final char passwordEcho = '\u2022';
+        passwordField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            private void updateVisibilityControl() {
+                String value = new String(passwordField.getPassword());
+                boolean hasPassword = !value.isEmpty() && !value.equals("Password");
+                boolean isVisible = visibilityButton.isEnabled()
+                    && passwordField.getEchoChar() == 0;
+                passwordField.setEchoChar(hasPassword && !isVisible ? passwordEcho : (char) 0);
+                visibilityButton.setEnabled(hasPassword);
+                if (!hasPassword) {
+                    visibilityButton.setPasswordVisible(false);
+                    visibilityButton.setToolTipText("Show password");
+                }
+            }
+
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { updateVisibilityControl(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { updateVisibilityControl(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { updateVisibilityControl(); }
+        });
+        visibilityButton.addActionListener(e -> {
+            if (!visibilityButton.isEnabled()) return;
+            boolean showPassword = passwordField.getEchoChar() != 0;
+            passwordField.setEchoChar(showPassword ? (char) 0 : passwordEcho);
+            visibilityButton.setPasswordVisible(showPassword);
+            visibilityButton.setToolTipText(showPassword ? "Show password" : "Hide password");
+        });
+        passwordRow.add(visibilityButton, BorderLayout.EAST);
+        rightPanel.add(passwordRow, gbc);
 
         gbc.gridy = 3;
         JButton loginButton = new JButton("Log In");
@@ -109,6 +151,47 @@ public class LoginWindow extends GradientPanel {
         return text.equals(hint) ? "" : text;
     }
 
+    /** Compact, consistently rendered eye control for the password field. */
+    private static final class EyeButton extends JButton {
+        private boolean passwordVisible;
+
+        EyeButton() {
+            setPreferredSize(new Dimension(42, 40));
+            setContentAreaFilled(false);
+            setOpaque(false);
+            setBorder(new MatteBorder(1, 0, 1, 1, new Color(0xD0, 0xD0, 0xD0)));
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        }
+
+        void setPasswordVisible(boolean visible) {
+            passwordVisible = visible;
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics graphics) {
+            Graphics2D g = (Graphics2D) graphics.create();
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            Color bg = getModel().isPressed() ? new Color(0xE9, 0xEC, 0xF2)
+                : getModel().isRollover() ? new Color(0xF4, 0xF6, 0xF9) : Color.WHITE;
+            g.setColor(bg);
+            g.fillRect(0, 0, getWidth(), getHeight());
+
+            int cx = getWidth() / 2;
+            int cy = getHeight() / 2;
+            g.setStroke(new BasicStroke(1.7f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g.setColor(new Color(0x5D, 0x66, 0x73));
+            g.draw(new java.awt.geom.Arc2D.Double(cx - 9, cy - 6, 18, 12, 0, 180, java.awt.geom.Arc2D.OPEN));
+            g.draw(new java.awt.geom.Arc2D.Double(cx - 9, cy - 6, 18, 12, 180, 180, java.awt.geom.Arc2D.OPEN));
+            g.drawOval(cx - 2, cy - 2, 4, 4);
+            if (!passwordVisible) {
+                g.drawLine(cx - 10, cy + 9, cx + 10, cy - 9);
+            }
+            g.dispose();
+            super.paintComponent(graphics);
+        }
+    }
+
     // text boxes for user input
     public static void setupFieldStyles(JTextField field, String hint, boolean isPassword) {
         field.setPreferredSize(new Dimension(300, 40));
@@ -120,10 +203,6 @@ public class LoginWindow extends GradientPanel {
                 new EmptyBorder(5, 10, 5, 10)
         ));
 
-        if (isPassword && field instanceof JPasswordField) {
-            ((JPasswordField) field).setEchoChar((char) 0);
-        }
-
         field.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -133,9 +212,6 @@ public class LoginWindow extends GradientPanel {
                 if (currentText.equals(hint)) {
                     field.setText(""); 
                     field.setForeground(Color.BLACK); 
-                    if (isPassword && field instanceof JPasswordField) {
-                        ((JPasswordField) field).setEchoChar('•');
-                    }
                 }
             }
 
@@ -145,9 +221,6 @@ public class LoginWindow extends GradientPanel {
                         new String(((JPasswordField) field).getPassword()) : field.getText();
 
                 if (currentText.trim().isEmpty()) {
-                    if (isPassword && field instanceof JPasswordField) {
-                        ((JPasswordField) field).setEchoChar((char) 0);
-                    }
                     field.setText(hint); 
                     field.setForeground(Color.BLACK);
                 }
