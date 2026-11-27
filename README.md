@@ -13,7 +13,7 @@ A Java Swing desktop application for finding, comparing, and managing dormitorie
 ---
 <div align = "center">
 
-**[🏠 Overview](#overview) · [🏠 Features](#features) · [🏠 OOP](#java-and-oop-concepts) · [🏠 Structure](#project-structure) · [🏠 Run](#how-to-run) · [🏠 Screenshots](#screenshot) · [🏠 Team](#meet-the-team)**
+**[🏠 Overview](#overview) · [🏠 Features](#features) · [🏠 OOP](#java-and-oop-concepts) · [🏠 Structure](#project-structure) · [🏠 Run](#how-to-run) · [🏠 Screenshots](#️screenshot️) · [🏠 Team](#meet-the-team)**
 
 </div>
 
@@ -30,6 +30,9 @@ Find The D puts these functions in one application. Tenants can find, compare, a
 ---
 
 ## Features
+
+<div align = "center">
+
 <table>
 <tr>
 <td width="50%" valign="top">
@@ -64,6 +67,7 @@ Find The D puts these functions in one application. Tenants can find, compare, a
 </tr>
 </table>
 
+</div>
 ---
 ##  What It Can Do
 
