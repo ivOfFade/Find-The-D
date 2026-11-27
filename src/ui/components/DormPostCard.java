@@ -202,6 +202,9 @@ class DormPostCard extends RoundedPanel {
     detailsPanel.add(createDetailField("Dorm Rules : " + dormRules));
     detailsPanel.add(createDetailField("Available Slot : " + availableSlot));
     detailsPanel.add(createDetailField("Monthly Rate : " + monthly));
+    detailsPanel.add(createDetailField("Contact Number : " + contactNumber));
+    detailsPanel.add(createDetailField("Facebook Account : " + facebookAccount));
+
 
     detailsPanel.add(createDetailField("Nearby Establishments:"));
     EnumMap<EstablishmentType, Establishment> closest =
