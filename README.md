@@ -2,7 +2,7 @@
 <div align = "center">
 
 ---
-<img src="./src/ui/Logo.png" width="350"><br>
+<img src="./src/ui/logo.png" width="350"><br>
 
 # **Find The D** 
 ### A Dorm Finding and Management System
