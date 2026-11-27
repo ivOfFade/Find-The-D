@@ -352,7 +352,7 @@ When a landlord posts a dorm with a Plus Code, the app asks Geoapify's Places AP
 <tr>
 <td align="center" width="25%">
 <a href="https://github.com/OasisTree">
-<img src="https://images.weserv.nl/?url=github.com/OasisTree.png&w=100&h=100&fit=cover&mask=circle" width="100" alt="Dylan">
+<img src="https://images.weserv.nl/?url=github.com/OasisTree.png&w=100&h=100&fit=cover&mask=circle" width="100" alt="Dylan"><br>
 <b>Dylan</b>
 </a><br>
 Backend Core & Shared Models<br><br>
