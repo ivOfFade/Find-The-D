@@ -811,8 +811,26 @@ class LandlordDashboard extends JPanel {
 
         rightCol.add(createMockLabel("Dorm Rules*"));
         rightCol.add(Box.createVerticalStrut(labelGap));
-        JTextField rulesField = createMockTextField(266, 38);
-        rightCol.add(rulesField);
+        JTextArea rulesField = new JTextArea();
+        rulesField.setBackground(fieldBg);
+        rulesField.setForeground(Color.BLACK);
+        rulesField.setCaretColor(Color.BLACK);
+        rulesField.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
+        rulesField.setLineWrap(true);
+        rulesField.setWrapStyleWord(true);
+        rulesField.setBorder(new EmptyBorder(0, 0, 0, 0));
+
+        JScrollPane rulesScroll = new JScrollPane(rulesField);
+        ModernScrollBarUI.apply(rulesScroll);
+        rulesScroll.getViewport().setBackground(fieldBg);
+        rulesScroll.setBorder(new InsetFieldBorder());
+        Dimension rulesSize = new Dimension(277, 150);
+        rulesScroll.setPreferredSize(rulesSize);
+        rulesScroll.setMinimumSize(rulesSize);
+        rulesScroll.setMaximumSize(rulesSize);
+        rulesScroll.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rightCol.add(rulesScroll);
+
 
         // Available Slot + Monthly Rate side by side
         rightCol.add(Box.createVerticalStrut(rowGap));
@@ -873,9 +891,9 @@ class LandlordDashboard extends JPanel {
 
         // Photos: four empty boxes to start; every photo added after those gets a new box,
         // so there is no limit. The strip scrolls sideways when it gets long.
-        final int thumbW = 64;
-        final int thumbGap = 7;
-        final int thumbH = 77;
+        final int thumbW = 98;
+        final int thumbGap = 8;
+        final int thumbH = 116;
         java.util.List<PhotoThumb> photoThumbs = new java.util.ArrayList<>();
         JPanel thumbRow = new JPanel(new GridLayout(1, 0, thumbGap, 0));
         thumbRow.setOpaque(false);
@@ -948,26 +966,6 @@ class LandlordDashboard extends JPanel {
             }
         });
         rightCol.add(thumbScroll);
-
-        // Nearby Establishment (Name + Type, indented)
-        rightCol.add(Box.createVerticalStrut(24));
-        rightCol.add(createMockLabel("Nearby Establishment"));
-        rightCol.add(Box.createVerticalStrut(19));
-        JPanel nearbyBox = new JPanel();
-        nearbyBox.setLayout(new BoxLayout(nearbyBox, BoxLayout.Y_AXIS));
-        nearbyBox.setOpaque(false);
-        nearbyBox.setBorder(new EmptyBorder(0, 15, 0, 0));
-        nearbyBox.add(createMockLabel("Name"));
-        nearbyBox.add(Box.createVerticalStrut(9));
-        JTextField estNameField = createMockTextField(266, 38);
-        nearbyBox.add(estNameField);
-        nearbyBox.add(Box.createVerticalStrut(11));
-        nearbyBox.add(createMockLabel("Type"));
-        nearbyBox.add(Box.createVerticalStrut(9));
-        JTextField estTypeField = createMockTextField(266, 38);
-        nearbyBox.add(estTypeField);
-        nearbyBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-        rightCol.add(nearbyBox);
 
         // ================= Columns side by side =================
         JPanel formGrid = new JPanel(new BorderLayout(85, 0));
