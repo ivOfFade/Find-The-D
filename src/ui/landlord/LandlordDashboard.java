@@ -19,20 +19,6 @@ import model.DormDetails;
 import model.Landlord;
 import model.Tenant;
 import service.DormService;
-import ui.components.CompactDropdown;
-import ui.components.DormPostCard;
-import ui.components.DropdownField;
-import ui.components.DropShadowBorder;
-import ui.components.FlatButton;
-import ui.components.GradientPanel;
-import ui.components.InsetFieldBorder;
-import ui.components.MessageBubble;
-import ui.components.ModernScrollBarUI;
-import ui.components.OneUiCheckItem;
-import ui.components.PhotoPickerDialog;
-import ui.components.PhotoThumb;
-import ui.components.RoundedPanel;
-import ui.components.SidebarItem;
 import ui.FindTheDUI;
 
 // Landlord page
@@ -1290,7 +1276,7 @@ public class LandlordDashboard extends JPanel {
                 LocalDateTime postedAt = LocalDateTime.parse(cp.get("datePosted"));
                 int complaintId = Integer.parseInt(cp.get("complaintId"));
                 cg.gridy = row++;
-                content.add(new MessageBubble(dorm.getDormName() + " - Anonymous",
+                content.add(new MessageBubble(dorm.getDormName() + " - " + cp.get("senderName"),
                     DormService.dateText(postedAt), DormService.timeText(postedAt),
                     false, cp.get("message"),
                     () -> {
