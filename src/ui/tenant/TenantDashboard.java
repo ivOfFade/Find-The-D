@@ -657,6 +657,7 @@ public class TenantDashboard extends JPanel {
     // The feed updates right away.
     private JPanel createFilterPanel(JPanel feedPanel) {
         final int fieldW = 190;
+        final String[] sortChoice = { "Recent posts" };
         final int[] budget = { -1 }; // -1 = any budget
         java.util.List<JCheckBox> amenityChecks = new java.util.ArrayList<>();
         java.util.List<JLabel> budgetRows = new java.util.ArrayList<>();
@@ -691,7 +692,7 @@ public class TenantDashboard extends JPanel {
                 budgetRows.get(i).setFont(new Font("Yu Gothic UI Light",
                         i - 1 == budget[0] && budget[0] >= 0 ? Font.BOLD : Font.PLAIN, 13));
             }
-            sortField.setValue("Recent posts");
+            sortField.setValue(sortChoice[0]);
 
             clearLink.setVisible(!picked.isEmpty() || budget[0] >= 0);
             applyFeedFilters(feedPanel, picked, budget[0], resultsLabel);
@@ -730,8 +731,21 @@ public class TenantDashboard extends JPanel {
         String[] sortTexts = { "Recent posts", "Most popular" };
         for (String text : sortTexts) {
             OneUiItem row = new OneUiItem(text, () -> {
-                sortField.setValue(text);
                 sortPopup.setVisible(false);
+                try {
+                    java.util.List<Integer> dormIds =
+                        DormService.listingOrder("Most popular".equals(text));
+                    java.util.Map<Integer, Integer> rank = new java.util.HashMap<>();
+                    for (int i = 0; i < dormIds.size(); i++) {
+                        rank.put(dormIds.get(i), i);
+                    }
+                    feedEntries.sort(java.util.Comparator.comparingInt(
+                        entry -> rank.getOrDefault(entry.dorm.getDormId(), Integer.MAX_VALUE)));
+                    sortChoice[0] = text;
+                    refresh.run();
+                } catch (ServiceOperationException ex) {
+                    RoundedDialog.showMessage(owner(), "Message", ex.getMessage());
+                }
             });
             sortPopup.add(row);
         }
