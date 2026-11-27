@@ -37,7 +37,8 @@ Find The D puts these functions in one application. Tenants can find, compare, a
 <tr>
 <td width="50%" valign="top">
 
-### 🙍 The Tenant
+<h3 align = "center"> 🙍 The Tenant </h3>
+
 *On a quest for the perfect room.*
 
 -  Browse & filter dorm listings
@@ -52,7 +53,8 @@ Find The D puts these functions in one application. Tenants can find, compare, a
 </td>
 <td width="50%" valign="top">
 
-### 🏠 The Landlord
+<h3 align = "center"> 🏠 The Landlord </h3>
+
 *Keeping the house full and happy.*
 
 -  Post a new dorm listing
