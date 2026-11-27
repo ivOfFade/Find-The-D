@@ -329,6 +329,54 @@ public class TenantDashboard extends JPanel {
         outerBox.setOutline(GradientBackground.GLASS_LINE);
         outerBox.setBorder(new EmptyBorder(15, 30, 14, 24));
 
+        // Dorm details box (no title inside it — the title sits above it)
+        Dorm myDorm = tenant.getCurrentDorm();
+        RoundedPanel detailsBox = new RoundedPanel();
+        detailsBox.setLayout(new BoxLayout(detailsBox, BoxLayout.Y_AXIS));
+        detailsBox.setBackground(GradientBackground.GLASS);
+        detailsBox.setOutline(GradientBackground.GLASS_LINE);
+        detailsBox.setBorder(new EmptyBorder(14, 24, 14, 24));
+        detailsBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        if (myDorm != null) {
+            String[][] rows = {
+                    { "Location", myDorm.getLocation() },
+                    { "Monthly Rate", String.format("%,.0f", myDorm.getRate()) },
+                    { "Owner", myDorm.getOwner().getName() },
+                    { "Contact", myDorm.getOwner().getContactNum() }
+            };
+            for (String[] row : rows) {
+                JLabel line = new JLabel("<html><b>" + row[0] + "</b> : " + row[1] + "</html>");
+                line.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
+                line.setForeground(Color.BLACK);
+                line.setAlignmentX(Component.LEFT_ALIGNMENT);
+                detailsBox.add(line);
+                detailsBox.add(Box.createVerticalStrut(3));
+            }
+        }
+
+        // Dorm name sits above the box, not inside it
+        JLabel dormNameLabel = new JLabel(myDorm == null ? "No dorm yet" : myDorm.getDormName());
+        dormNameLabel.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 18));
+        dormNameLabel.setForeground(GradientBackground.TEXT);
+        dormNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel annHeading = new JLabel("Announcements");
+        annHeading.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
+        annHeading.setForeground(GradientBackground.TEXT);
+        annHeading.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JPanel pageStack = new JPanel();
+        pageStack.setLayout(new BoxLayout(pageStack, BoxLayout.Y_AXIS));
+        pageStack.setOpaque(false);
+        pageStack.add(dormNameLabel);
+        pageStack.add(Box.createVerticalStrut(6));
+        pageStack.add(detailsBox);
+        pageStack.add(Box.createVerticalStrut(14));
+        pageStack.add(annHeading);
+        pageStack.add(Box.createVerticalStrut(8));
+        pageStack.add(outerBox);
+
         java.util.List<Announcement> mine = tenant.viewAnnouncements();
         for (int n = mine.size() - 1; n >= 0; n--) { // newest first
             if (n < mine.size() - 1) {
@@ -346,8 +394,8 @@ public class TenantDashboard extends JPanel {
 
         JPanel topWrapper = new JPanel(new BorderLayout());
         topWrapper.setOpaque(false);
-        topWrapper.setBorder(new EmptyBorder(60, 45, 0, 55));
-        topWrapper.add(outerBox, BorderLayout.NORTH);
+        topWrapper.setBorder(new EmptyBorder(20, 45, 0, 55));
+        topWrapper.add(pageStack, BorderLayout.NORTH);
         page.add(topWrapper, BorderLayout.CENTER);
 
         // "Post Complain" button, bottom right
