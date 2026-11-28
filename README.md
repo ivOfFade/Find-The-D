@@ -13,7 +13,7 @@ A Java Swing desktop application for finding, comparing, and managing dormitorie
 ---
 <div align = "center">
 
-**[🏠 Overview](#overview)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Features](#features)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 OOP](#java-and-oop-concepts)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Structure](#️project-structure️)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Run](#how-to-run)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Screenshots](#screenshots) · [🏠 Team](#meet-the-team)&nbsp;&nbsp;&nbsp;&nbsp;**
+**[🏠 Overview](#overview)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Features](#features)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 OOP](#java-and-oop-concepts)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Structure](#project-structure)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Run](#how-to-run)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Screenshots](#screenshots) · [🏠 Team](#meet-the-team)&nbsp;&nbsp;&nbsp;&nbsp;**
 
 </div>
 
@@ -360,8 +360,6 @@ When a landlord posts a dorm with a Plus Code, the app asks Geoapify's Places AP
 
 ---
 
-The core OOP examples are encapsulation through private model fields and validated accessors, inheritance through `Tenant` and `Landlord` extending `Person`, polymorphism through overridden methods such as `displayInfo()`, and abstraction through the abstract `Person` class and repository interfaces.
-
 
 ## Limitations 
 1. **Local data only:** Data lives in the project database and doesn't sync across devices.
@@ -437,9 +435,6 @@ Landlord Frontend & Sketches<br><br>
 If it makes even one student's search easier, it did its job. 
 
 ⭐ *If you like the project, give it a star. It makes our day!* ⭐
-
-See the [UML class diagram](docs/uml/UML%20Diagram.pdf) and the more detailed [class design](docs/class-design/class-design.md) for the relationships and responsibilities of the project classes.
-
 
 **DISCLAIMER**
 This project is created for educational purposes under the Object-Oriented Programming course.<br>
