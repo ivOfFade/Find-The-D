@@ -166,7 +166,7 @@ public class LandlordDashboard extends JPanel {
         columnHeaderRow.add(createTableCell("Dorms", SwingConstants.LEFT));
         columnHeaderRow.add(createTableCell("Availability", SwingConstants.CENTER));
         columnHeaderRow.add(createTableCell("Monthly rate", SwingConstants.CENTER));
-        columnHeaderRow.add(createTableCell("Interested", SwingConstants.CENTER));
+        columnHeaderRow.add(createTableCell("Applicants", SwingConstants.CENTER));
         columnHeaderRow.add(new JLabel(""));
         dataTableWrapper.add(columnHeaderRow, tableGbc);
 
@@ -215,7 +215,7 @@ public class LandlordDashboard extends JPanel {
             DormService.twoDigits(dorm.getAvailableSlots()) + "/" + DormService.twoDigits(dorm.getTotalSlots()), SwingConstants.CENTER);
         JLabel rateCell = createTableCell(String.format("Php %.2f", dorm.getRate()), SwingConstants.CENTER);
         JLabel interestedCell = createTableCell(
-            DormService.twoDigits(dorm.getInterestedCount()), SwingConstants.CENTER);
+            DormService.twoDigits(DormService.pending(dorm).size()), SwingConstants.CENTER);
         for (JLabel cell : new JLabel[] {nameCell, availabilityCell, rateCell, interestedCell}) {
             cell.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 14));
             cell.setForeground(Color.BLACK);
