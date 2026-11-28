@@ -82,15 +82,6 @@ CREATE TABLE announcements (
     date_posted TIMESTAMP NOT NULL DEFAULT now()
 );
 
--- own model
-CREATE TABLE establishments (
-    establishment_id      INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    establishment_name    VARCHAR(100),
-    type                  VARCHAR(10), --has types
-    plus_code             VARCHAR(50),
-    nearby_radius_meters INT NOT NULL DEFAULT 0
-);
-
 -- for tenants
 -- own model (done)
 CREATE TABLE tenants (

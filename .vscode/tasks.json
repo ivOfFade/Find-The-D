@@ -1,0 +1,204 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Compile Java sources",
+			"type": "shell",
+			"command": "javac",
+			"args": [
+				"-encoding",
+				"UTF-8",
+				"-cp",
+				"lib/*",
+				"-d",
+				"out",
+				"src/**/*.java"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Compile all Java sources",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"mkdir -p out; javac -encoding UTF-8 -cp 'lib/*' -d out $(find src -name '*.java')"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Compile all Java sources explicitly",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"mkdir -p out; javac -encoding UTF-8 -cp 'lib/jbcrypt-0.4.jar;lib/openlocationcode-1.0.4.jar;lib/postgresql-42.7.14.jar' -d out $(find src -name '*.java')"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Compile all Java sources in PowerShell",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$libs = (Get-ChildItem '.\\lib\\*.jar' | Select-Object -ExpandProperty FullName) -join ';'; $sources = Get-ChildItem '.\\src' -Filter '*.java' -Recurse | Select-Object -ExpandProperty FullName; javac -encoding UTF-8 -cp $libs -d '.\\out' $sources"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Compile Main with sourcepath",
+			"type": "shell",
+			"command": "javac",
+			"args": [
+				"-encoding",
+				"UTF-8",
+				"-cp",
+				"lib/jbcrypt-0.4.jar:lib/openlocationcode-1.0.4.jar:lib/postgresql-42.7.14.jar",
+				"-sourcepath",
+				"src",
+				"-d",
+				"out",
+				"src/Main.java"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Compile complete src directory",
+			"type": "shell",
+			"command": "javac",
+			"args": [
+				"-encoding",
+				"UTF-8",
+				"-cp",
+				"lib/jbcrypt-0.4.jar:lib/openlocationcode-1.0.4.jar:lib/postgresql-42.7.14.jar",
+				"-d",
+				"out",
+				"src/*.java",
+				"src/enums/*.java",
+				"src/exception/*.java",
+				"src/model/*.java",
+				"src/repository/*.java",
+				"src/service/*.java",
+				"src/ui/*.java",
+				"src/ui/components/*.java",
+				"src/ui/landlord/*.java",
+				"src/ui/tenant/*.java",
+				"src/util/*.java"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Compile complete src with JAR wildcard",
+			"type": "shell",
+			"command": "javac",
+			"args": [
+				"-encoding",
+				"UTF-8",
+				"-cp",
+				"\"lib/*.jar\"",
+				"-d",
+				"out",
+				"src/*.java",
+				"src/enums/*.java",
+				"src/exception/*.java",
+				"src/model/*.java",
+				"src/repository/*.java",
+				"src/service/*.java",
+				"src/ui/*.java",
+				"src/ui/components/*.java",
+				"src/ui/landlord/*.java",
+				"src/ui/tenant/*.java",
+				"src/util/*.java"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Compile complete src with semicolon classpath",
+			"type": "shell",
+			"command": "javac",
+			"args": [
+				"-encoding",
+				"UTF-8",
+				"-cp",
+				"lib/jbcrypt-0.4.jar\\;lib/openlocationcode-1.0.4.jar\\;lib/postgresql-42.7.14.jar",
+				"-d",
+				"out",
+				"src/*.java",
+				"src/enums/*.java",
+				"src/exception/*.java",
+				"src/model/*.java",
+				"src/repository/*.java",
+				"src/service/*.java",
+				"src/ui/*.java",
+				"src/ui/components/*.java",
+				"src/ui/landlord/*.java",
+				"src/ui/tenant/*.java",
+				"src/util/*.java"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Verify complete Java source compilation",
+			"type": "shell",
+			"command": "javac",
+			"args": [
+				"-encoding",
+				"UTF-8",
+				"-cp",
+				"lib/jbcrypt-0.4.jar\\;lib/openlocationcode-1.0.4.jar\\;lib/postgresql-42.7.14.jar",
+				"-d",
+				"out",
+				"src/*.java",
+				"src/enums/*.java",
+				"src/exception/*.java",
+				"src/model/*.java",
+				"src/repository/*.java",
+				"src/service/*.java",
+				"src/ui/*.java",
+				"src/ui/components/*.java",
+				"src/ui/landlord/*.java",
+				"src/ui/tenant/*.java",
+				"src/util/*.java"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		}
+	]
+}
