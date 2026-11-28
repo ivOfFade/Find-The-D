@@ -1,13 +1,2 @@
-target/
-.idea/
-*.iml
-.vscode/
-!.vscode/
-!.vscode/settings.json
-src/main/resources/db.properties
-
-*.env
-
-out/
-*.class
-/AGENTS.md
+/.env
+/out/
