@@ -430,25 +430,6 @@ If it makes even one student's search easier, it did its job.
 
 See the [UML class diagram](docs/uml/UML%20Diagram.pdf) and the more detailed [class design](docs/class-design/class-design.md) for the relationships and responsibilities of the project classes.
 
-## Project Structure
-
-```text
-database/       PostgreSQL schema, seed data, migrations, and setup guide
-docs/
-  screenshots/  Application screenshots
-  uml/          UML class diagram
-  class-design/ Detailed class and behavior design
-src/
-  enums/        Shared enumerations
-  exception/    Application exceptions
-  model/        Domain entities and value objects
-  repository/   PostgreSQL data access
-  service/      Application and business logic
-  ui/           Swing entry point, screens, and components
-  util/         Validation, environment, database, and file helpers
-lib/            Required Java dependency jars
-```
-
 
 **DISCLAIMER**
 This project is created for educational purposes under the Object-Oriented Programming course.<br>
@@ -456,11 +437,6 @@ This project is created for educational purposes under the Object-Oriented Progr
 
 </div>
 
-## Acknowledgments
-
-Thanks to our instructor and classmates for their feedback and guidance, and to the contributors of the open-source libraries used by this project. Nearby-place information is provided through Geoapify using OpenStreetMap data, with attribution shown in the application.
-
-Thank you for checking out Find The D!
 
 
 
