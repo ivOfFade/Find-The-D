@@ -75,16 +75,19 @@ Find The D puts these functions in one application. Tenants can find, compare, a
 
 ##  What It Can Do
 
-|| Feature | The Magic Behind It |
-| :---: | --- | --- |
-|| **Smart Registration** | Validates name, email, password strength, age (16–120), and Philippine mobile numbers before you get in. |
-|| **Dorm Discovery** | A filter bar that helps you skip the noise and find the right fit faster. |
-|| **Rich Dorm Pages** | Rate, amenities, house rules, photos, open slots, landlord contact, plus a map with nearby establishments. |
-|| **Slot Tracking** | Finalizing a dorm updates availability automatically. When slots hit zero, the app says no (politely). |
-|| **Plus Code Locations** | Uses full Open Location Codes and decodes them into map coordinates. |
-|| **Targeted Announcements** | Up to 1000 characters, delivered only to tenants of that dorm. |
-|| **Anonymous Complaints** | Tick the box and the sender is never stored. Not hidden, *never stored*. |
-|| **Rock-solid Validation** | Custom exceptions catch bad input before it can cause trouble. |
+| Feature | The Magic Behind It |
+|:---|:---|
+| **Smart Registration** | Validates name, email, password strength, age (16–120), and Philippine mobile numbers before you get in. |
+| **Dorm Discovery** | A filter bar that helps you skip the noise and find the right fit faster. |
+| **Rich Dorm Pages** | Rate, amenities, house rules, photos, open slots, landlord contact, plus a map with nearby establishments. |
+| **Slot Tracking** | Finalizing a dorm updates availability automatically. When slots hit zero, the app says no (politely). |
+| **Plus Code Locations** | Uses full Open Location Codes and decodes them into map coordinates. |
+| **Targeted Announcements** | Up to 1000 characters, delivered only to tenants of that dorm. |
+| **Anonymous Complaints** | Tick the box and the sender is never stored. Not hidden, *never stored*. |
+| **Rock-solid Validation** | Custom exceptions catch bad input before it can cause trouble. |
+
+---
+
 
 ---
 
@@ -174,28 +177,6 @@ landlord.postDorm(newDorm);
 
 
 
-
-## How to Run
-
-### Requirements
-- Java JDK (with `javac` and `java` available on `PATH`)
-- PostgreSQL
-- The dependency jars in the `lib` folder (included in this repository)
-- A Geoapify API key for posting dorm listings with nearby-place results
-
-### Setup
-1. Follow [Database Setup](database/README.md) to create the PostgreSQL database, apply the schema, and optionally load the sample data.
-2. Create a `.env` file in the project root with `DB_URL`, `DB_USER`, `DB_PASSWORD`, and `GEOAPIFY_API_KEY`. See the database setup guide for the format. Keep this file private.
-3. From the project root, compile and launch the application:
-
-```powershell
-New-Item -ItemType Directory -Force out
-javac -encoding UTF-8 -cp "lib/*" -d out (Get-ChildItem -Recurse src -Filter *.java | ForEach-Object { $_.FullName })
-java -cp "out;lib/*" ui.Main
-```
-
-On macOS or Linux, replace the classpath separator `;` with `:` in the `java` command. The application entry point is `ui.Main`.
-
 ## UI Source Layout
 
 The Swing interface is organized into Java packages under `src/ui`:
@@ -239,12 +220,13 @@ Find-The-D/
 ---
 ## How To Run
 
+### Requirements
 -  **JDK 17+** installed and on your `PATH`
 -  **PostgreSQL** installed locally, with `psql` available in your terminal
 -  A free **[Geoapify](https://myprojects.geoapify.com/)** API key (needed to post a dorm with a Plus Code)
 -  An IDE like **IntelliJ IDEA**, **VS Code**, or **Eclipse**
 
-
+### Setup
 First, **Clone the repo**
 ```bash
 git clone https://github.com/ivOfFade/Find-The-D.git
@@ -433,7 +415,7 @@ See the [UML class diagram](docs/uml/UML%20Diagram.pdf) and the more detailed [c
 
 **DISCLAIMER**
 This project is created for educational purposes under the Object-Oriented Programming course.<br>
-© 2026 Team Find The D. All rights reserved.
+© 2026 Team *Find The D*. All rights reserved.
 
 </div>
 

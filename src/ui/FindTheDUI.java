@@ -153,7 +153,7 @@ public class FindTheDUI extends JFrame {
 
         JButton logoutYesButton = new JButton("Yes");
         logoutYesButton.setPreferredSize(new Dimension(80, 36));
-        logoutYesButton.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
+        logoutYesButton.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 14));
         logoutYesButton.setBackground(Color.WHITE);
         logoutYesButton.setForeground(Color.WHITE);
         logoutYesButton.setBorder(new EmptyBorder(0,0,0,0));
@@ -161,7 +161,7 @@ public class FindTheDUI extends JFrame {
         
         JButton noBtn = new JButton("No");
         noBtn.setPreferredSize(new Dimension(80, 36));
-        noBtn.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
+        noBtn.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 14));
         noBtn.setBackground(Color.WHITE);
         noBtn.setForeground(Color.WHITE);
         noBtn.setBorder(new EmptyBorder(0,0,0,0));

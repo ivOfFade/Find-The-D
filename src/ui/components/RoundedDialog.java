@@ -39,7 +39,7 @@ final public class RoundedDialog {
             header.setBackground(themed ? DIALOG_HEADER : HEADER_BG);
             header.setPreferredSize(new Dimension(480, 36));
             JLabel headerTitle = new JLabel("  " + (title == null ? "" : title));
-            headerTitle.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 15));
+            headerTitle.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 15));
             headerTitle.setForeground(themed ? Color.WHITE : Color.BLACK);
             header.add(headerTitle, BorderLayout.WEST);
             root.add(header, BorderLayout.NORTH);
@@ -84,15 +84,15 @@ final public class RoundedDialog {
 
         String safe = message.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
         JLabel msgLabel = new JLabel("<html><div style='width: 400px;'>" + safe + "</div></html>");
-        msgLabel.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 18));
+        msgLabel.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 30));
         msgLabel.setForeground(Color.WHITE);
         body.add(msgLabel, gbc);
 
         gbc.gridy = 1; gbc.weighty = 0; gbc.anchor = GridBagConstraints.EAST;
         gbc.insets = new Insets(0, 0, 15, 25);
         FlatButton okBtn = new FlatButton("OK");
-        okBtn.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 15));
-        okBtn.setForeground(Color.BLACK);
+        okBtn.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 15));
+        okBtn.setForeground(Color.WHITE);
         okBtn.setBackground(new Color(0xDF, 0xDF, 0xDF));
         okBtn.setFocusPainted(false);
         okBtn.setMargin(new Insets(0, 0, 0, 0));
