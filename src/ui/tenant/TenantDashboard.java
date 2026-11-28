@@ -246,30 +246,27 @@ public class TenantDashboard extends JPanel {
         applyBtn.addActionListener(e -> {
             try {
                 boolean hasPreviousApplication = currentApplication != null;
-                int confirmation = JOptionPane.showConfirmDialog(
+                boolean confirmation = showApplyConfirmDialog(
                     owner(),
-                    hasPreviousApplication
-                        ? "Submitting a new application will remove your previous application. Continue?"
-                        : "Submit an application for this dorm?",
                     hasPreviousApplication ? "Replace Previous Application" : "Apply",
-                    JOptionPane.YES_NO_OPTION,
                     hasPreviousApplication
-                        ? JOptionPane.WARNING_MESSAGE
-                        : JOptionPane.QUESTION_MESSAGE
+                         ? "Submitting a new application will remove your previous application. Continue?"
+                         : "Submit an application for this dorm?"
                 );
-                if (confirmation == JOptionPane.YES_OPTION) {
+                if (confirmation) {
                     boolean confirmTransfer = false;
 
                     if (tenant.hasDorm()
                             && tenant.getCurrentDorm().getDormId() != dorm.getDormId()) {
-                        int choice = JOptionPane.showConfirmDialog(
-                                owner(),
-                                "If accepted, you will transfer from your current dorm. Continue?",
-                                "Confirm Transfer",
-                                JOptionPane.YES_NO_OPTION);
+                        boolean choice = showApplyConfirmDialog(
+                            owner(),
+                            "Confirm Transfer",
+                            "If accepted, you will transfer from your current dorm. Continue?"
+                    );
 
-                        if (choice != JOptionPane.YES_OPTION) {
-                            return;
+                    if (!choice) {
+                        return;
+
                         }
 
                         confirmTransfer = true;
@@ -523,7 +520,7 @@ public class TenantDashboard extends JPanel {
                 return;
             }
             // Ask for confirmation before posting
-            if (showConfirmDialog(dialog, "Post Complain")) {
+            if (showComplaintConfirmDialog(dialog, "Post Complain", "Post this complaint?")) {
                 try {
                     DormService.submitComplaint(tenant, complaintArea.getText(), anonymousBox.isSelected());
                     dialog.dispose();
@@ -616,61 +613,69 @@ public class TenantDashboard extends JPanel {
         warnDialog.setVisible(true);
     }
 
-    // "Are you sure?" Yes / No confirmation dialog. Returns true only on "Yes"
-    private boolean showConfirmDialog(Window owner, String title) {
-        JDialog confirm = new JDialog(owner, title, Dialog.ModalityType.APPLICATION_MODAL);
-        confirm.setSize(480, 190);
-        confirm.setResizable(false);
-        confirm.setLocationRelativeTo(owner);
+    private boolean showApplyConfirmDialog(
+        Window owner, String title, String message) {
+        return showComplaintConfirmDialog(owner, title, message);
+    }
+
+    private boolean showComplaintConfirmDialog(
+        Window owner, String title, String message) {
+        JDialog dialog = new JDialog(
+            owner, title, Dialog.ModalityType.APPLICATION_MODAL
+        );
+        dialog.setSize(480, 190);
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(owner);
 
         final boolean[] confirmed = { false };
 
-        JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.setBackground(new Color(0xF2, 0xF2, 0xF2));
-        contentPanel.setBorder(new EmptyBorder(15, 40, 12, 20));
+        JPanel content = new JPanel(new BorderLayout());
+        content.setBorder(new EmptyBorder(15, 40, 12, 20));
 
-        JLabel questionLabel = new JLabel("Are you sure?", SwingConstants.LEFT);
-        questionLabel.setFont(new Font("YU Gothic UI Light", Font.BOLD, 44));
-        questionLabel.setForeground(Color.WHITE);
-        contentPanel.add(questionLabel, BorderLayout.CENTER);
+        JLabel messageLabel = new JLabel(
+            "<html>" + message + "</html>",
+            SwingConstants.LEFT
+        );
+        messageLabel.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 20));
+        messageLabel.setForeground(Color.WHITE);
+        content.add(messageLabel, BorderLayout.CENTER);
 
-        JPanel actionWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
-        actionWrapper.setOpaque(false);
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
+        buttons.setOpaque(false);
 
         JButton yesButton = new JButton("Yes");
-        yesButton.setPreferredSize(new Dimension(86, 36));
-        yesButton.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
-        yesButton.setBackground(new Color(0xE0, 0xE0, 0xE0));
+        yesButton.setFont(new Font("Arial", Font.PLAIN, 14));
         yesButton.setForeground(Color.WHITE);
-        yesButton.setOpaque(true);
-        yesButton.setFocusPainted(false);
-        yesButton.setBorder(new LineBorder(new Color(0xD0, 0xD0, 0xD0), 1));
-        yesButton.addActionListener(ev -> {
+        yesButton.setPreferredSize(new Dimension(86, 36));
+        yesButton.addActionListener(e -> {
             confirmed[0] = true;
-            confirm.dispose();
+            dialog.dispose();
         });
 
-        JButton noBtn = new JButton("No");
-        noBtn.setPreferredSize(new Dimension(86, 36));
-        noBtn.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
-        noBtn.setBackground(new Color(0xF2, 0xF2, 0xF2));
-        noBtn.setForeground(Color.WHITE);
-        noBtn.setOpaque(true);
-        noBtn.setFocusPainted(false);
-        noBtn.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, 3, 3, new Color(0xB0, 0xB0, 0xB0)),
-                new LineBorder(new Color(0x55, 0x55, 0x55), 1)));
-        noBtn.addActionListener(ev -> confirm.dispose());
+        JButton noButton = new JButton("No");
+        noButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        noButton.setForeground(Color.WHITE);
+        noButton.setPreferredSize(new Dimension(86, 36));
+        noButton.addActionListener(e -> dialog.dispose());
 
-        actionWrapper.add(yesButton);
-        actionWrapper.add(noBtn);
-        contentPanel.add(actionWrapper, BorderLayout.SOUTH);
+        buttons.add(yesButton);
+        buttons.add(noButton);
+        content.add(buttons, BorderLayout.SOUTH);
 
-        confirm.add(contentPanel);
-        confirm.getRootPane().setDefaultButton(noBtn);
-        RoundedDialog.apply(confirm);
-        confirm.setVisible(true);
+        dialog.add(content);
+        RoundedDialog.apply(dialog);
+  
+        JPanel header = (JPanel) ((BorderLayout) dialog.getContentPane()
+            .getLayout()).getLayoutComponent(BorderLayout.NORTH);
+        JLabel headerTitle = (JLabel) header.getComponent(0);
+
+        headerTitle.setFont(new Font("Arial", Font.PLAIN, 15));
+        headerTitle.setForeground(Color.WHITE);
+
+        dialog.setVisible(true);
+
         return confirmed[0];
+
     }
 
     // ---------- Filters (Amenities + Budget) ----------
