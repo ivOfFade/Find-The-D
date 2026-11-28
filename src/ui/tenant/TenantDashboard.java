@@ -552,7 +552,7 @@ public class TenantDashboard extends JPanel {
         headerBar.setBackground(new Color(0xBC, 0xBC, 0xBC));
         headerBar.setPreferredSize(new Dimension(480, 36));
         JLabel headerTitle = new JLabel("  Message");
-        headerTitle.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 15));
+        headerTitle.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 15));
         headerTitle.setForeground(Color.WHITE);
         headerBar.add(headerTitle, BorderLayout.WEST);
 
@@ -567,7 +567,7 @@ public class TenantDashboard extends JPanel {
 
         JLabel msgLabel = new JLabel("<html><div style='width: 380px;'>" + message + "</div></html>");
         msgLabel.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 22));
-        msgLabel.setForeground(Color.BLACK);
+        msgLabel.setForeground(Color.WHITE);
         bodyPanel.add(msgLabel, gbc);
 
         // "OK" button
@@ -576,7 +576,7 @@ public class TenantDashboard extends JPanel {
         gbc.insets = new Insets(25, 0, 0, 25);
         FlatButton okBtn = new FlatButton("OK");
         okBtn.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 15));
-        okBtn.setForeground(Color.BLACK);
+        okBtn.setForeground(Color.WHITE);
         okBtn.setBackground(new Color(0xDF, 0xDF, 0xDF));
         okBtn.setFocusPainted(false);
         okBtn.setMargin(new Insets(0, 0, 0, 0));
@@ -626,7 +626,7 @@ public class TenantDashboard extends JPanel {
         buttons.setOpaque(false);
 
         JButton yesButton = new JButton("Yes");
-        yesButton.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
+        yesButton.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
         yesButton.setForeground(Color.WHITE);
         yesButton.setPreferredSize(new Dimension(86, 36));
         yesButton.addActionListener(e -> {
@@ -635,7 +635,7 @@ public class TenantDashboard extends JPanel {
         });
 
         JButton noButton = new JButton("No");
-        noButton.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
+        noButton.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
         noButton.setForeground(Color.WHITE);
         noButton.setPreferredSize(new Dimension(86, 36));
         noButton.addActionListener(e -> dialog.dispose());
