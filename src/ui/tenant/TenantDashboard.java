@@ -11,6 +11,7 @@ import javax.swing.border.LineBorder;
 import model.Announcement;
 import model.Application;
 import model.Dorm;
+import model.Establishment;
 import model.Tenant;
 import enums.ApplicationStatus;
 import service.DormService;
@@ -27,6 +28,7 @@ public class TenantDashboard extends JPanel {
     private Application currentApplication;
     private JPanel browseCard;
     private JPanel myDormCard;
+    private JPanel notificationsCard;
 
     private CardLayout cardLayout;
     private JPanel cardsContainer;
@@ -54,6 +56,7 @@ public class TenantDashboard extends JPanel {
 
         linkMyDorm = createSidebarLink("My Dorm", SidebarItem.Glyph.HOME);
         JLabel linkBrowse = createSidebarLink("Browse", SidebarItem.Glyph.SEARCH);
+        JLabel linkNotifications = createSidebarLink("Notifications", SidebarItem.Glyph.BELL);
         JLabel linkLogOut = createSidebarLink("Log Out", SidebarItem.Glyph.LOGOUT);
 
         myDormGap = Box.createVerticalStrut(4);
@@ -64,6 +67,8 @@ public class TenantDashboard extends JPanel {
         myDormGap.setVisible(tenant.hasDorm());
         sidebarPanel.add(linkBrowse);
         sidebarPanel.add(Box.createVerticalStrut(4));
+        sidebarPanel.add(linkNotifications);
+        sidebarPanel.add(Box.createVerticalStrut(4));
         sidebarPanel.add(linkLogOut);
 
         // ---------- Center cards ----------
@@ -71,8 +76,10 @@ public class TenantDashboard extends JPanel {
         cardsContainer = new JPanel(cardLayout);
         browseCard = createBrowseCardView();
         myDormCard = createMyDormCardView();
+        notificationsCard = createTenantNotificationsCard();
         cardsContainer.add(browseCard, "Browse");
         cardsContainer.add(myDormCard, "MyDorm");
+        cardsContainer.add(notificationsCard, "Notifications");
 
         linkMyDorm.addMouseListener(new MouseAdapter() {
             @Override
@@ -80,6 +87,7 @@ public class TenantDashboard extends JPanel {
                 cardLayout.show(cardsContainer, "MyDorm");
                 setUnderlined(linkMyDorm, true);
                 setUnderlined(linkBrowse, false);
+                setUnderlined(linkNotifications, false);
             }
         });
         linkBrowse.addMouseListener(new MouseAdapter() {
@@ -88,6 +96,18 @@ public class TenantDashboard extends JPanel {
                 cardLayout.show(cardsContainer, "Browse");
                 setUnderlined(linkBrowse, true);
                 setUnderlined(linkMyDorm, false);
+                setUnderlined(linkNotifications, false);
+            }
+        });
+        linkNotifications.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent e) {
+                cardsContainer.remove(notificationsCard);
+                notificationsCard = createTenantNotificationsCard();
+                cardsContainer.add(notificationsCard, "Notifications");
+                cardLayout.show(cardsContainer, "Notifications");
+                setUnderlined(linkNotifications, true);
+                setUnderlined(linkMyDorm, false);
+                setUnderlined(linkBrowse, false);
             }
         });
         linkLogOut.addMouseListener(new MouseAdapter() {
@@ -104,6 +124,7 @@ public class TenantDashboard extends JPanel {
         cardLayout.show(cardsContainer, initialCard);
         setUnderlined(linkMyDorm, tenant.hasDorm());
         setUnderlined(linkBrowse, !tenant.hasDorm());
+        setUnderlined(linkNotifications, false);
     }
 
     private void loadCurrentApplication() {
@@ -225,6 +246,56 @@ public class TenantDashboard extends JPanel {
         return browsePanel;
     }
 
+    private JPanel createTenantNotificationsCard() {
+        JPanel page = new GradientPanel(new BorderLayout());
+        JPanel content = new JPanel();
+        content.setOpaque(false);
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setBorder(new EmptyBorder(28, 45, 20, 45));
+        JLabel heading = new JLabel("Notifications");
+        heading.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 20));
+        heading.setForeground(GradientBackground.TEXT);
+        heading.setAlignmentX(Component.LEFT_ALIGNMENT);
+        content.add(heading);
+        content.add(Box.createVerticalStrut(12));
+        java.util.List<java.util.Map<String, String>> notices = DormService.complaintNotifications(tenant);
+        if (notices.isEmpty()) {
+            JLabel empty = new JLabel("No notifications yet.");
+            empty.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 14));
+            empty.setForeground(GradientBackground.TEXT);
+            content.add(empty);
+        } else {
+            for (java.util.Map<String, String> notice : notices) {
+                RoundedPanel card = new RoundedPanel(new BorderLayout(0, 6));
+                card.setBackground(GradientBackground.GLASS);
+                card.setOutline(GradientBackground.GLASS_LINE);
+                card.setBorder(new EmptyBorder(12, 16, 12, 16));
+                card.setAlignmentX(Component.LEFT_ALIGNMENT);
+                JLabel message = new JLabel(notice.get("message"));
+                message.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
+                message.setForeground(Color.BLACK);
+                JLabel date = new JLabel(DormService.stamp(java.time.LocalDateTime.parse(notice.get("datePosted"))));
+                date.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 11));
+                date.setForeground(Color.BLACK);
+                date.setHorizontalAlignment(SwingConstants.RIGHT);
+                card.add(message, BorderLayout.CENTER);
+                card.add(date, BorderLayout.SOUTH);
+                Dimension cardSize = card.getPreferredSize();
+                card.setMaximumSize(new Dimension(Integer.MAX_VALUE, cardSize.height));
+                content.add(card);
+                content.add(Box.createVerticalStrut(8));
+            }
+        }
+        JScrollPane scroll = new JScrollPane(content);
+        ModernScrollBarUI.apply(scroll);
+        scroll.setBorder(null);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        GradientBackground.makeTransparent(scroll);
+        page.add(scroll, BorderLayout.CENTER);
+        return page;
+    }
+
     // Builds one dorm post for the tenant feed (with an Apply button)
     private JPanel createDormPostCard(Dorm dorm) {
         JButton applyBtn = new JButton("Apply");
@@ -306,19 +377,6 @@ public class TenantDashboard extends JPanel {
         page.setBackground(new Color(0xE8, 0xE8, 0xE8));
 
         Dorm currentDorm = tenant.getCurrentDorm();
-        if (currentDorm != null) {
-            JLabel dormTitle = new JLabel(currentDorm.getDormName());
-            dormTitle.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 26));
-            dormTitle.setForeground(GradientBackground.TEXT);
-            dormTitle.setBorder(new EmptyBorder(0, 0, 14, 0));
-
-            JPanel titleWrapper = new JPanel(new BorderLayout());
-            titleWrapper.setOpaque(false);
-            titleWrapper.setBorder(new EmptyBorder(28, 45, 0, 55));
-            titleWrapper.add(dormTitle, BorderLayout.WEST);
-            page.add(titleWrapper, BorderLayout.NORTH);
-        }
-
         // Outer "Announcement" box
         RoundedPanel outerBox = new RoundedPanel();
         outerBox.setLayout(new BoxLayout(outerBox, BoxLayout.Y_AXIS));
@@ -329,13 +387,16 @@ public class TenantDashboard extends JPanel {
         // Dorm details box (no title inside it — the title sits above it)
         Dorm myDorm = tenant.getCurrentDorm();
         RoundedPanel detailsBox = new RoundedPanel();
-        detailsBox.setLayout(new BoxLayout(detailsBox, BoxLayout.Y_AXIS));
+        detailsBox.setLayout(new GridLayout(1, 2, 24, 0));
         detailsBox.setBackground(GradientBackground.GLASS);
         detailsBox.setOutline(GradientBackground.GLASS_LINE);
         detailsBox.setBorder(new EmptyBorder(14, 24, 14, 24));
         detailsBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         if (myDorm != null) {
+            JPanel dormInfo = new JPanel();
+            dormInfo.setLayout(new BoxLayout(dormInfo, BoxLayout.Y_AXIS));
+            dormInfo.setOpaque(false);
             String[][] rows = {
                     { "Location", myDorm.getLocation() },
                     { "Monthly Rate", String.format("%,.0f", myDorm.getRate()) },
@@ -347,9 +408,37 @@ public class TenantDashboard extends JPanel {
                 line.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
                 line.setForeground(Color.BLACK);
                 line.setAlignmentX(Component.LEFT_ALIGNMENT);
-                detailsBox.add(line);
-                detailsBox.add(Box.createVerticalStrut(3));
+                dormInfo.add(line);
+                dormInfo.add(Box.createVerticalStrut(3));
             }
+            detailsBox.add(dormInfo);
+
+            JPanel nearbyPanel = new JPanel();
+            nearbyPanel.setLayout(new BoxLayout(nearbyPanel, BoxLayout.Y_AXIS));
+            nearbyPanel.setOpaque(false);
+            JLabel nearbyHeading = new JLabel("Nearby Establishments");
+            nearbyHeading.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 14));
+            nearbyHeading.setForeground(Color.BLACK);
+            nearbyHeading.setAlignmentX(Component.LEFT_ALIGNMENT);
+            nearbyPanel.add(nearbyHeading);
+            nearbyPanel.add(Box.createVerticalStrut(5));
+            java.util.List<Establishment> nearbyPlaces = myDorm.getNearbyEstablishments();
+            if (nearbyPlaces.isEmpty()) {
+                JLabel noneNearby = new JLabel("No nearby establishments found.");
+                noneNearby.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
+                noneNearby.setForeground(Color.BLACK);
+                nearbyPanel.add(noneNearby);
+            } else {
+                for (Establishment place : nearbyPlaces) {
+                    JLabel placeLine = new JLabel("• " + place.getName() + " (" + place.getType().toString().toLowerCase().replace('_', ' ') + ")");
+                    placeLine.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
+                    placeLine.setForeground(Color.BLACK);
+                    placeLine.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    nearbyPanel.add(placeLine);
+                    nearbyPanel.add(Box.createVerticalStrut(3));
+                }
+            }
+            detailsBox.add(nearbyPanel);
         }
 
         // Dorm name sits above the box, not inside it

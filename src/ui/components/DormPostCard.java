@@ -201,7 +201,7 @@ public class DormPostCard extends RoundedPanel {
     detailsPanel.add(amenitiesRow);
 
     detailsPanel.add(createDetailField("Dorm Rules : " + dormRules));
-    detailsPanel.add(createDetailField("Available Slot : " + availableSlot));
+    detailsPanel.add(createDetailField("Occupied / Total Slots : " + availableSlot));
     detailsPanel.add(createDetailField("Monthly Rate : " + monthly));
     detailsPanel.add(createDetailField("Contact Number : " + contactNumber));
     detailsPanel.add(createDetailField("Facebook Account : " + facebookAccount));

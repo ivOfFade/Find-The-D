@@ -18,6 +18,7 @@ public class MessageBubble extends RoundedPanel {
   private static final Color TIME_TEXT = Color.decode("#323131");
 
   private Runnable deleteAction;
+  private String actionLabel = "\u2022\u2022\u2022";
 
   /** Same bubble, but the three-dot menu also removes the record behind it. */
   public MessageBubble(
@@ -28,8 +29,22 @@ public class MessageBubble extends RoundedPanel {
     String message,
     Runnable deleteAction
   ) {
+    this(title, mainHeaderDate, bottomTimestamp, timeOnTop, message, deleteAction, "\u2022\u2022\u2022");
+  }
+
+  public MessageBubble(
+    String title,
+    String mainHeaderDate,
+    String bottomTimestamp,
+    boolean timeOnTop,
+    String message,
+    Runnable action,
+    String actionLabel
+  ) {
     this(title, mainHeaderDate, bottomTimestamp, timeOnTop, message);
-    this.deleteAction = deleteAction;
+    this.deleteAction = action;
+    this.actionLabel = actionLabel;
+    addActionButton();
   }
 
   public MessageBubble(
@@ -80,7 +95,7 @@ public class MessageBubble extends RoundedPanel {
     titleLabel.setForeground(TITLE_TEXT);
     titleRow.add(titleLabel, BorderLayout.WEST);
 
-    // Three-dot options button -> asks for confirmation, then deletes this message
+    // Kept as a placeholder for the action control added by the action constructor.
     JButton dotsButton = new JButton("\u2022\u2022\u2022");
     dotsButton.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 12));
     dotsButton.setForeground(DOTS);
@@ -89,7 +104,7 @@ public class MessageBubble extends RoundedPanel {
     dotsButton.setFocusPainted(false);
     dotsButton.setMargin(new Insets(0, 4, 0, 4));
     dotsButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-    dotsButton.setToolTipText("Delete message");
+    dotsButton.setToolTipText("Message options");
     dotsButton.addMouseListener(
       new MouseAdapter() {
         @Override
@@ -104,9 +119,7 @@ public class MessageBubble extends RoundedPanel {
       }
     );
     dotsButton.addActionListener(e -> {
-      if (showDeleteConfirmationDialog()) {
-        deleteSelf();
-      }
+      if (showDeleteConfirmationDialog("Remove")) deleteSelf();
     });
     titleRow.add(dotsButton, BorderLayout.EAST);
     add(titleRow, gbc);
@@ -138,6 +151,45 @@ public class MessageBubble extends RoundedPanel {
     }
   }
 
+  private void addActionButton() {
+    Component[] children = getComponents();
+    for (Component child : children) {
+      if (child instanceof JPanel) {
+        for (Component rowChild : ((JPanel) child).getComponents()) {
+          if (rowChild instanceof JButton) {
+            JButton button = (JButton) rowChild;
+            button.setText(actionLabel);
+            button.setForeground(Color.WHITE);
+            button.setToolTipText("Resolve".equals(actionLabel) ? "Resolve complaint" : "Remove message");
+            button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            button.setFocusPainted(false);
+            if ("Resolve".equals(actionLabel)) {
+              button.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 12));
+              button.setUI(new GlassButtonUI());
+              button.setOpaque(false);
+              button.setContentAreaFilled(false);
+              button.setBorder(new EmptyBorder(0, 12, 0, 12));
+              button.setPreferredSize(new Dimension(88, 32));
+            } else {
+              button.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 12));
+              button.setBorderPainted(false);
+              button.setBorder(new EmptyBorder(0, 4, 0, 4));
+            }
+            button.setContentAreaFilled(false);
+            button.setRolloverEnabled(true);
+            for (ActionListener listener : button.getActionListeners()) button.removeActionListener(listener);
+            button.addActionListener(e -> {
+              boolean resolving = "Resolve".equals(actionLabel);
+              String question = resolving ? "Resolve this complaint?" : "Are you sure?";
+              if (showDeleteConfirmationDialog(resolving ? "Resolve" : "Remove", question)) deleteSelf();
+            });
+            return;
+          }
+        }
+      }
+    }
+  }
+
   // Removes this message bubble and, when a delete action was given, the record behind it
   private void deleteSelf() {
     if (deleteAction != null) {
@@ -158,11 +210,15 @@ public class MessageBubble extends RoundedPanel {
 
   // Confirmation dialog styled like the "Remove / Are you sure?" mockup.
   // Returns true only if the user clicks "Yes"
-  private boolean showDeleteConfirmationDialog() {
+  private boolean showDeleteConfirmationDialog(String action) {
+    return showDeleteConfirmationDialog(action, "Are you sure?");
+  }
+
+  private boolean showDeleteConfirmationDialog(String action, String question) {
     Window owner = SwingUtilities.getWindowAncestor(this);
     JDialog dialog = new JDialog(
       owner,
-      "Remove",
+      action,
       Dialog.ModalityType.APPLICATION_MODAL
     );
     dialog.setSize(480, 190);
@@ -173,10 +229,14 @@ public class MessageBubble extends RoundedPanel {
 
     JPanel contentPanel = new JPanel(new BorderLayout());
     contentPanel.setBackground(new Color(0xF2, 0xF2, 0xF2));
-    contentPanel.setBorder(new EmptyBorder(15, 40, 12, 20));
+    contentPanel.setBorder(new EmptyBorder(14, 26, 14, 26));
 
-    JLabel questionLabel = new JLabel("Are you sure?", SwingConstants.LEFT);
-    questionLabel.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 44));
+    String safeQuestion = question.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    JLabel questionLabel = new JLabel(
+      "<html><div style='width: 390px;'>" + safeQuestion + "</div></html>",
+      SwingConstants.LEFT
+    );
+    questionLabel.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 32));
     questionLabel.setForeground(Color.WHITE);
     contentPanel.add(questionLabel, BorderLayout.CENTER);
 

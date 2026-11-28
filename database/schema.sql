@@ -124,9 +124,21 @@ CREATE TABLE complaints (
     complaint_id      INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     dorm_id           INT NOT NULL REFERENCES dorms(dorm_id) ON DELETE CASCADE,
     sender_id         INT REFERENCES tenants(person_id) ON DELETE SET NULL,
+    reporter_id       INT REFERENCES tenants(person_id) ON DELETE SET NULL,
     message           VARCHAR(1000) NOT NULL
                         CHECK (length(trim(message)) > 0),
     date_posted       TIMESTAMP NOT NULL DEFAULT now(),
     anonymous         BOOLEAN NOT NULL DEFAULT false
-                        CHECK (NOT anonymous OR sender_id IS NULL)
+                        CHECK (NOT anonymous OR sender_id IS NULL),
+    resolved          BOOLEAN NOT NULL DEFAULT false,
+    resolved_at       TIMESTAMP
+);
+
+CREATE TABLE complaint_notifications (
+    notification_id   INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    complaint_id      INT NOT NULL REFERENCES complaints(complaint_id) ON DELETE CASCADE,
+    tenant_id         INT NOT NULL REFERENCES tenants(person_id) ON DELETE CASCADE,
+    message           VARCHAR(1000) NOT NULL,
+    date_posted       TIMESTAMP NOT NULL DEFAULT now(),
+    is_read           BOOLEAN NOT NULL DEFAULT false
 );

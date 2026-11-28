@@ -17,10 +17,15 @@
    psql -U postgres -d findtheddb -c "\dt"
 
 ## Existing databases
-Run the migration once on a database created before nearby OpenStreetMap results
-were stored:
+Run each migration once on databases created before its feature was added.
+Apply them in order:
 
    psql -U postgres -d findtheddb -v ON_ERROR_STOP=1 -1 -f database/migrations/001_dorm_nearby_establishments.sql
+
+   psql -U postgres -d findtheddb -v ON_ERROR_STOP=1 -1 -f database/migrations/20261128_complaint_resolution.sql
+
+The complaint-resolution migration adds complaint status and the tenant
+notification table. The application expects these tables and columns to exist.
 
 When a landlord posts a dorm with a Plus Code, the application queries
 Geoapify's hosted Places API (using OpenStreetMap data) before saving the
