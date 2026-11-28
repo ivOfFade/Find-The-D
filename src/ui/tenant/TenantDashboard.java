@@ -247,25 +247,23 @@ public class TenantDashboard extends JPanel {
             try {
                 boolean hasPreviousApplication = currentApplication != null;
                 boolean confirmation = showApplyConfirmDialog(
-                    owner(),
-                    hasPreviousApplication ? "Replace Previous Application" : "Apply",
-                    hasPreviousApplication
-                         ? "Submitting a new application will remove your previous application. Continue?"
-                         : "Submit an application for this dorm?"
-                );
+                        owner(),
+                        hasPreviousApplication ? "Replace Previous Application" : "Apply",
+                        hasPreviousApplication
+                                ? "Submitting a new application will remove your previous application. Continue?"
+                                : "Submit an application for this dorm?");
                 if (confirmation) {
                     boolean confirmTransfer = false;
 
                     if (tenant.hasDorm()
                             && tenant.getCurrentDorm().getDormId() != dorm.getDormId()) {
                         boolean choice = showApplyConfirmDialog(
-                            owner(),
-                            "Confirm Transfer",
-                            "If accepted, you will transfer from your current dorm. Continue?"
-                    );
+                                owner(),
+                                "Confirm Transfer",
+                                "If accepted, you will transfer from your current dorm. Continue?");
 
-                    if (!choice) {
-                        return;
+                        if (!choice) {
+                            return;
 
                         }
 
@@ -296,28 +294,14 @@ public class TenantDashboard extends JPanel {
 
     private boolean isApplicationFor(Dorm dorm) {
         return currentApplication != null
-            && currentApplication.getStatus() == ApplicationStatus.PENDING
-            && currentApplication.getDorm().getDormId() == dorm.getDormId();
+                && currentApplication.getStatus() == ApplicationStatus.PENDING
+                && currentApplication.getDorm().getDormId() == dorm.getDormId();
     }
 
     // ---------- My Dorm view (announcements + Post Complain) ----------
     private JPanel createMyDormCardView() {
         JPanel page = new GradientPanel(new BorderLayout());
         page.setBackground(new Color(0xE8, 0xE8, 0xE8));
-
-        Dorm currentDorm = tenant.getCurrentDorm();
-        if (currentDorm != null) {
-            JLabel dormTitle = new JLabel(currentDorm.getDormName());
-            dormTitle.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 26));
-            dormTitle.setForeground(GradientBackground.TEXT);
-            dormTitle.setBorder(new EmptyBorder(0, 0, 14, 0));
-
-            JPanel titleWrapper = new JPanel(new BorderLayout());
-            titleWrapper.setOpaque(false);
-            titleWrapper.setBorder(new EmptyBorder(28, 45, 0, 55));
-            titleWrapper.add(dormTitle, BorderLayout.WEST);
-            page.add(titleWrapper, BorderLayout.NORTH);
-        }
 
         // Outer "Announcement" box
         RoundedPanel outerBox = new RoundedPanel();
@@ -326,7 +310,7 @@ public class TenantDashboard extends JPanel {
         outerBox.setOutline(GradientBackground.GLASS_LINE);
         outerBox.setBorder(new EmptyBorder(15, 30, 14, 24));
 
-        // Dorm details box (no title inside it — the title sits above it)
+        // Dorm details box
         Dorm myDorm = tenant.getCurrentDorm();
         RoundedPanel detailsBox = new RoundedPanel();
         detailsBox.setLayout(new BoxLayout(detailsBox, BoxLayout.Y_AXIS));
@@ -352,7 +336,7 @@ public class TenantDashboard extends JPanel {
             }
         }
 
-        // Dorm name sits above the box, not inside it
+        // The one dorm name above the box
         JLabel dormNameLabel = new JLabel(myDorm == null ? "No dorm yet" : myDorm.getDormName());
         dormNameLabel.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 18));
         dormNameLabel.setForeground(GradientBackground.TEXT);
@@ -367,7 +351,7 @@ public class TenantDashboard extends JPanel {
         pageStack.setLayout(new BoxLayout(pageStack, BoxLayout.Y_AXIS));
         pageStack.setOpaque(false);
         pageStack.add(dormNameLabel);
-        pageStack.add(Box.createVerticalStrut(6));
+        pageStack.add(Box.createVerticalStrut(8));
         pageStack.add(detailsBox);
         pageStack.add(Box.createVerticalStrut(14));
         pageStack.add(annHeading);
@@ -383,7 +367,7 @@ public class TenantDashboard extends JPanel {
         }
         if (mine.isEmpty()) {
             JLabel none = new JLabel("No announcements yet.");
-            none.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
+            none.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 14));
             none.setForeground(Color.BLACK);
             none.setAlignmentX(Component.LEFT_ALIGNMENT);
             outerBox.add(none);
@@ -614,15 +598,14 @@ public class TenantDashboard extends JPanel {
     }
 
     private boolean showApplyConfirmDialog(
-        Window owner, String title, String message) {
+            Window owner, String title, String message) {
         return showComplaintConfirmDialog(owner, title, message);
     }
 
     private boolean showComplaintConfirmDialog(
-        Window owner, String title, String message) {
+            Window owner, String title, String message) {
         JDialog dialog = new JDialog(
-            owner, title, Dialog.ModalityType.APPLICATION_MODAL
-        );
+                owner, title, Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setSize(480, 190);
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(owner);
@@ -633,9 +616,8 @@ public class TenantDashboard extends JPanel {
         content.setBorder(new EmptyBorder(15, 40, 12, 20));
 
         JLabel messageLabel = new JLabel(
-            "<html>" + message + "</html>",
-            SwingConstants.LEFT
-        );
+                "<html>" + message + "</html>",
+                SwingConstants.LEFT);
         messageLabel.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 20));
         messageLabel.setForeground(Color.WHITE);
         content.add(messageLabel, BorderLayout.CENTER);
@@ -644,7 +626,7 @@ public class TenantDashboard extends JPanel {
         buttons.setOpaque(false);
 
         JButton yesButton = new JButton("Yes");
-        yesButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        yesButton.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
         yesButton.setForeground(Color.WHITE);
         yesButton.setPreferredSize(new Dimension(86, 36));
         yesButton.addActionListener(e -> {
@@ -653,7 +635,7 @@ public class TenantDashboard extends JPanel {
         });
 
         JButton noButton = new JButton("No");
-        noButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        noButton.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
         noButton.setForeground(Color.WHITE);
         noButton.setPreferredSize(new Dimension(86, 36));
         noButton.addActionListener(e -> dialog.dispose());
@@ -664,9 +646,9 @@ public class TenantDashboard extends JPanel {
 
         dialog.add(content);
         RoundedDialog.apply(dialog);
-  
+
         JPanel header = (JPanel) ((BorderLayout) dialog.getContentPane()
-            .getLayout()).getLayoutComponent(BorderLayout.NORTH);
+                .getLayout()).getLayoutComponent(BorderLayout.NORTH);
         JLabel headerTitle = (JLabel) header.getComponent(0);
 
         headerTitle.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -786,14 +768,13 @@ public class TenantDashboard extends JPanel {
             OneUiItem row = new OneUiItem(text, () -> {
                 sortPopup.setVisible(false);
                 try {
-                    java.util.List<Integer> dormIds =
-                        DormService.listingOrder("Most popular".equals(text));
+                    java.util.List<Integer> dormIds = DormService.listingOrder("Most popular".equals(text));
                     java.util.Map<Integer, Integer> rank = new java.util.HashMap<>();
                     for (int i = 0; i < dormIds.size(); i++) {
                         rank.put(dormIds.get(i), i);
                     }
                     feedEntries.sort(java.util.Comparator.comparingInt(
-                        entry -> rank.getOrDefault(entry.dorm.getDormId(), Integer.MAX_VALUE)));
+                            entry -> rank.getOrDefault(entry.dorm.getDormId(), Integer.MAX_VALUE)));
                     sortChoice[0] = text;
                     refresh.run();
                 } catch (ServiceOperationException ex) {
