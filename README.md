@@ -346,7 +346,7 @@ When a landlord posts a dorm with a Plus Code, the app asks Geoapify's Places AP
 | :---: | :---: |
 | <img src="./docs/screenshots/LoginT.png" width="450" height="280" alt="Tenant Login"> | <img src="./docs/screenshots/LoginL.png" width="450" height="280" alt="Landlord Login"> |
 
-| Tenant My Dorm | Tenant BBrowse |
+| Tenant My Dorm | Tenant Browse |
 | :---: | :---: |
 | <img src="./docs/screenshots/Tenant1.png" width="450" height="280" alt="Tenant Screen 1"> | <img src="./docs/screenshots/TenantB.png" width="450" height="280" alt="Tenant B"> |
 
