@@ -346,18 +346,25 @@ When a landlord posts a dorm with a Plus Code, the app asks Geoapify's Places AP
 | :---: | :---: |
 | <img src="./docs/screenshots/LoginT.png" width="450" height="280" alt="Tenant Login"> | <img src="./docs/screenshots/LoginL.png" width="450" height="280" alt="Landlord Login"> |
 
+| Tenant Registration | Landlord Registration |
+| :---: | :---: |
+| <img src="./docs/screenshots/tenantregister.png" width="450" height="280" alt="Tenant Registration"> | <img src="./docs/screenshots/landlordregister.png" width="450" height="280" alt="Landlord Registration"> |
+
 | Tenant My Dorm | Tenant Browse |
 | :---: | :---: |
-| <img src="./docs/screenshots/Tenant1.png" width="450" height="280" alt="Tenant Screen 1"> | <img src="./docs/screenshots/TenantB.png" width="450" height="280" alt="Tenant B"> |
+| <img src="./docs/screenshots/Tenant1.png" width="450" height="280" alt="Tenant My Dorm"> | <img src="./docs/screenshots/TenantB.png" width="450" height="280" alt="Tenant Browse"> |
 
 | Tenant Notifications | Tenant Post Complain |
 | :---: | :---: |
-| <img src="./docs/screenshots/TenantNotif.png" width="450" height="280" alt="Tenant Notifications"> | <img src="./docs/screenshots/TenantPC.png" width="450" height="280" alt="Tenant PC"> |
+| <img src="./docs/screenshots/TenantNotif.png" width="450" height="280" alt="Tenant Notifications"> | <img src="./docs/screenshots/TenantPC.png" width="450" height="280" alt="Tenant Post Complain"> |
 
-| Landlord Menu | Landlord My Dorm | Landlord Notification |
-| :---: | :---: | :---: |
-| <img src="./docs/screenshots/Landlord1.png" width="290" height="180" alt="Landlord Screen 1"> | <img src="./docs/screenshots/Landlord2.png" width="290" height="180" alt="Landlord Screen 2"> | <img src="./docs/screenshots/Landlord3.png" width="290" height="180" alt="Landlord Screen 3"> |
+| Landlord Menu | Landlord My Dorm |
+| :---: | :---: |
+| <img src="./docs/screenshots/Landlord1.png" width="450" height="280" alt="Landlord Menu"> | <img src="./docs/screenshots/Landlord2.png" width="450" height="280" alt="Landlord My Dorm"> |
 
+| Landlord Notification | Landlord Post New Dorm |
+| :---: | :---: |
+| <img src="./docs/screenshots/Landlord3.png" width="450" height="280" alt="Landlord Notification"> | <img src="./docs/screenshots/newdorm.png" width="450" height="280" alt="Landlord Post New Dorm"> |
 ---
 
 
