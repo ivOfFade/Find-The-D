@@ -517,7 +517,7 @@ public class LandlordDashboard extends JPanel {
         container.add(sep);
         container.add(Box.createVerticalStrut(10));
     }
-
+    
     private void addManageEmptyLabel(JPanel container, String text) {
         JLabel noneLabel = new JLabel(text);
         noneLabel.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 14));
@@ -654,7 +654,7 @@ public class LandlordDashboard extends JPanel {
 
         // title ng pop ups
         JLabel title = new JLabel("  " + dialogTitle);
-        title.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 15));
+        title.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 15));
         title.setForeground(Color.WHITE);
         header.add(title, BorderLayout.WEST);
 
@@ -675,6 +675,7 @@ public class LandlordDashboard extends JPanel {
         actions.setOpaque(false);
 
         JButton yes = new JButton("Yes");
+        yes.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 14));
         yes.setPreferredSize(new Dimension(75, 34));
         yes.setBackground(Color.WHITE);
         yes.setForeground(Color.WHITE);
@@ -682,6 +683,7 @@ public class LandlordDashboard extends JPanel {
         yes.setFocusPainted(false);
 
         JButton no = new JButton("No");
+        no.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 14));
         no.setPreferredSize(new Dimension(75, 34));
         no.setBackground(Color.WHITE);
         no.setForeground(Color.WHITE);
@@ -1174,6 +1176,7 @@ public class LandlordDashboard extends JPanel {
     // Posted pop up after posting
     private void showCustomPostedNotificationDialog() {
         JDialog successDialog = new JDialog(owner(), "Message", Dialog.ModalityType.APPLICATION_MODAL);
+        successDialog.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
         successDialog.setSize(480, 200);
         successDialog.setLocationRelativeTo(this);
         
@@ -1192,7 +1195,7 @@ public class LandlordDashboard extends JPanel {
         // Close button sa pop up after you post an announcement
         JButton closeNotificationBtn = new JButton("Close");
         closeNotificationBtn.setPreferredSize(new Dimension(90, 35));
-        closeNotificationBtn.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
+        closeNotificationBtn.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 14));
         closeNotificationBtn.setBackground(new Color(225, 225, 225));
         closeNotificationBtn.setForeground(Color.WHITE);
         closeNotificationBtn.setFocusPainted(false);
