@@ -316,12 +316,18 @@ public final class DormService {
     }
   }
 
-  public static void removeComplaint(Landlord landlord, int complaintId) {
+  public static void resolveComplaint(Landlord landlord, int complaintId) {
     try {
-      ListingService.requireLandlord(landlord);
-      Validator.savedId(complaintId);
-      new repository.ComplaintRepository().delete(complaintId);
+      COMPLAINTS.resolveComplaint(landlord, complaintId);
     } catch (SQLException | InvalidInputException | UnauthorizedActionException exception) {
+      throw failure(exception);
+    }
+  }
+
+  public static List<Map<String, String>> complaintNotifications(Tenant tenant) {
+    try {
+      return COMPLAINTS.getNotifications(tenant);
+    } catch (SQLException | InvalidInputException exception) {
       throw failure(exception);
     }
   }
@@ -443,10 +449,10 @@ public final class DormService {
 
   public static String slotsText(Dorm dorm) {
     if (dorm == null) {
-      return "0 slot";
+      return "00/00";
     }
-    int slots = dorm.getAvailableSlots();
-    return slots + (slots == 1 ? " slot" : " slots");
+    int occupied = dorm.getTotalSlots() - dorm.getAvailableSlots();
+    return twoDigits(occupied) + "/" + twoDigits(dorm.getTotalSlots());
   }
 
   public static String nearbyName(Dorm dorm) {

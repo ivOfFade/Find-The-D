@@ -8,11 +8,8 @@ import model.Dorm;
 import model.Landlord;
 import model.Tenant;
 import repository.ComplaintRepository;
-import repository.DormRepository;
 import repository.TenantRepository;
-import util.DatabaseConnection;
 import util.Validator;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +35,22 @@ public class ComplaintService {
     ListingService.requireLandlord(landlord);
     Validator.requiredReference(dorm, "Dorm");
     Validator.savedId(dorm.getDormId());
-    try (Connection connection = DatabaseConnection.getConnection()) {
-      new DormRepository().findOwnedDorm(connection, dorm.getDormId(), landlord, false);
-      return complaints.findForOwner(dorm.getDormId(), landlord.getPersonId());
-    }
+    return complaints.findForOwner(dorm.getDormId(), landlord.getPersonId());
+  }
+
+  public void resolveComplaint(Landlord landlord, int complaintId)
+      throws SQLException, InvalidInputException, UnauthorizedActionException {
+    ListingService.requireLandlord(landlord);
+    Validator.savedId(complaintId);
+    Complaint complaint = complaints.findById(complaintId)
+      .orElseThrow(() -> new InvalidInputException("Complaint was not found."));
+    complaints.resolve(complaintId, landlord.getPersonId(), complaint.getReporterId(), complaint.getDorm().getDormName());
+  }
+
+  public List<Map<String, String>> getNotifications(Tenant tenant)
+      throws SQLException, InvalidInputException {
+    Validator.requiredReference(tenant, "Tenant");
+    Validator.savedId(tenant.getPersonId());
+    return complaints.findNotificationsForTenant(tenant.getPersonId());
   }
 }

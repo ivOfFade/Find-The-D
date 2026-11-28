@@ -45,6 +45,13 @@ public class RegisterWindow extends GradientPanel {
         rightPanel.add(emailField, gbc);
         JTextField otherAccountField = null;
         JPasswordField passwordField;
+        JPanel passwordRow = new JPanel(new BorderLayout());
+        passwordRow.setOpaque(false);
+        passwordRow.setPreferredSize(new Dimension(300, 40));
+        LoginWindow.EyeButton visibilityButton = new LoginWindow.EyeButton();
+        visibilityButton.setToolTipText("Show password");
+        visibilityButton.setFocusable(false);
+        visibilityButton.setEnabled(false);
         if (role.equalsIgnoreCase("Landlord")) {
             gbc.gridy = 4;
             otherAccountField = new JTextField("Facebook Account");
@@ -53,13 +60,46 @@ public class RegisterWindow extends GradientPanel {
             gbc.gridy = 5;
             passwordField = new JPasswordField("Password*");
             LoginWindow.setupFieldStyles(passwordField, "Password*", true);
-            rightPanel.add(passwordField, gbc);
+            passwordRow.add(passwordField, BorderLayout.CENTER);
+            passwordRow.add(visibilityButton, BorderLayout.EAST);
+            rightPanel.add(passwordRow, gbc);
         } else {
             gbc.gridy = 4;
             passwordField = new JPasswordField("Password*");
             LoginWindow.setupFieldStyles(passwordField, "Password*", true);
-            rightPanel.add(passwordField, gbc);
+            passwordRow.add(passwordField, BorderLayout.CENTER);
+            passwordRow.add(visibilityButton, BorderLayout.EAST);
+            rightPanel.add(passwordRow, gbc);
         }
+        passwordField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(1, 1, 1, 0, new Color(0xD0, 0xD0, 0xD0)),
+            new EmptyBorder(5, 10, 5, 6)
+        ));
+        passwordField.setEchoChar((char) 0);
+        final char passwordEcho = '\u2022';
+        passwordField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            private void updateVisibilityControl() {
+                String value = new String(passwordField.getPassword());
+                boolean hasPassword = !value.isEmpty() && !value.equals("Password*");
+                boolean isVisible = visibilityButton.isEnabled() && passwordField.getEchoChar() == 0;
+                passwordField.setEchoChar(hasPassword && !isVisible ? passwordEcho : (char) 0);
+                visibilityButton.setEnabled(hasPassword);
+                if (!hasPassword) {
+                    visibilityButton.setPasswordVisible(false);
+                    visibilityButton.setToolTipText("Show password");
+                }
+            }
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { updateVisibilityControl(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { updateVisibilityControl(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { updateVisibilityControl(); }
+        });
+        visibilityButton.addActionListener(e -> {
+            if (!visibilityButton.isEnabled()) return;
+            boolean showPassword = passwordField.getEchoChar() != 0;
+            passwordField.setEchoChar(showPassword ? (char) 0 : passwordEcho);
+            visibilityButton.setPasswordVisible(showPassword);
+            visibilityButton.setToolTipText(showPassword ? "Show password" : "Hide password");
+        });
         final JTextField facebookField = otherAccountField;
         final JPasswordField pwField = passwordField;
         gbc.gridy = 6;

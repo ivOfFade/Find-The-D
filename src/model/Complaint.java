@@ -12,6 +12,7 @@ public class Complaint {
     private final LocalDateTime datePosted;
     private final boolean anonymous;
     private final Tenant sender;
+    private final Integer reporterId;
 
     // new complaint
     public Complaint (
@@ -27,6 +28,7 @@ public class Complaint {
         this.anonymous = anonymous;
 
         Validator.requiredReference(sender, "Sender");
+        this.reporterId = sender.getPersonId();
         Validator.condition(
             Dorm.sameIdentity(sender.getCurrentDorm(), this.dorm),
             "You can only submit a complaint about your current dorm."
@@ -46,13 +48,15 @@ public class Complaint {
         Tenant sender,
         String message,
         boolean anonymous,
-        LocalDateTime datePosted
+        LocalDateTime datePosted,
+        Integer reporterId
     ) throws InvalidInputException {
         this.complaintId = Validator.savedId(complaintId);
         this.dorm = Validator.requiredReference(dorm, "Dorm");
         this.message = Validator.message(message);
         this.datePosted = Validator.requiredReference(datePosted, "Posting date");
         this.anonymous = anonymous;
+        this.reporterId = reporterId;
 
         if (anonymous) {
             this.sender = null;
@@ -101,6 +105,10 @@ public class Complaint {
 
     public Tenant getSender() {
         return sender;
+    }
+
+    public Integer getReporterId() {
+        return reporterId;
     }
 
     public String getMessage() {

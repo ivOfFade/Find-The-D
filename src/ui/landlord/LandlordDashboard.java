@@ -138,7 +138,7 @@ public class LandlordDashboard extends JPanel {
         complaintsValue = new JLabel("00");
         metricsContainer.add(createMetricCard("Total Dorms", totalDormsValue));
         metricsContainer.add(createMetricCard("Total Tenants", totalTenantsValue));
-        metricsContainer.add(createMetricCard("Complaints", complaintsValue));
+        metricsContainer.add(createMetricCard("Active Complaints", complaintsValue));
         mainCanvas.add(metricsContainer, gbc);
 
         gbc.gridy = 2; gbc.insets = new Insets(0, 0, 0, 0);
@@ -202,7 +202,7 @@ public class LandlordDashboard extends JPanel {
         dormRowsPanel.repaint();
     }
 
-    // One row of the Dorm List: name | availability | monthly rate | interested | Manage
+    // One row of the Dorm List: name | occupied/total | monthly rate | interested | Manage
     private JPanel createDormRow(Dorm dorm) {
         JPanel row = new JPanel(new GridLayout(1, 5));
         row.setOpaque(false);
@@ -211,8 +211,9 @@ public class LandlordDashboard extends JPanel {
 
         // rows inside ng tenant list
         JLabel nameCell = createTableCell(dorm.getDormName(), SwingConstants.LEFT);
+        int occupiedSlots = dorm.getTotalSlots() - dorm.getAvailableSlots();
         JLabel availabilityCell = createTableCell(
-            DormService.twoDigits(dorm.getAvailableSlots()) + "/" + DormService.twoDigits(dorm.getTotalSlots()), SwingConstants.CENTER);
+            DormService.twoDigits(occupiedSlots) + "/" + DormService.twoDigits(dorm.getTotalSlots()), SwingConstants.CENTER);
         JLabel rateCell = createTableCell(String.format("Php %.2f", dorm.getRate()), SwingConstants.CENTER);
         JLabel interestedCell = createTableCell(
             DormService.twoDigits(DormService.pending(dorm).size()), SwingConstants.CENTER);
@@ -826,14 +827,14 @@ public class LandlordDashboard extends JPanel {
         rightCol.add(rulesScroll);
 
 
-        // Available Slot + Monthly Rate side by side
+        // Total tenant capacity + Monthly Rate side by side
         rightCol.add(Box.createVerticalStrut(rowGap));
         JTextField slotField = createMockTextField(114, 40);
         JTextField rateField = createMockTextField(114, 40);
         JPanel slotBox = new JPanel();
         slotBox.setLayout(new BoxLayout(slotBox, BoxLayout.Y_AXIS));
         slotBox.setOpaque(false);
-        slotBox.add(createMockLabel("Available Slot*"));
+        slotBox.add(createMockLabel("Total Slots*"));
         slotBox.add(Box.createVerticalStrut(10));
         slotBox.add(slotField);
         JPanel rateBox = new JPanel();
@@ -1018,7 +1019,7 @@ public class LandlordDashboard extends JPanel {
                     locationField.getText(),
                     plusCodeField.getText(),
                     descriptionField.getText(),
-                    DormService.parseWhole(slotField.getText(), "Available Slot"),
+                    DormService.parseWhole(slotField.getText(), "Total Slots"),
                     DormService.parseMoney(rateField.getText()),
                     amenities,
                     rulesField.getText(),
@@ -1280,9 +1281,13 @@ public class LandlordDashboard extends JPanel {
                     DormService.dateText(postedAt), DormService.timeText(postedAt),
                     false, cp.get("message"),
                     () -> {
-                        DormService.removeComplaint(landlord, complaintId);
-                        refreshNotification();
-                    }), cg);
+                        try {
+                            DormService.resolveComplaint(landlord, complaintId);
+                            refreshNotification();
+                        } catch (ServiceOperationException ex) {
+                            RoundedDialog.showMessage(owner(), "Message", ex.getMessage());
+                        }
+                    }, "Resolve"), cg);
             }
             JScrollPane complaintsScroll = new JScrollPane(content);
             ModernScrollBarUI.apply(complaintsScroll);

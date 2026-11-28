@@ -152,7 +152,7 @@ public class LoginWindow extends GradientPanel {
     }
 
     /** Compact, consistently rendered eye control for the password field. */
-    private static final class EyeButton extends JButton {
+    static final class EyeButton extends JButton {
         private boolean passwordVisible;
 
         EyeButton() {
