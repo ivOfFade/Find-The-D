@@ -13,7 +13,7 @@ A Java Swing desktop application for finding, comparing, and managing dormitorie
 ---
 <div align = "center">
 
-**[🏠 Overview](#overview)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Features](#features)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 OOP](#java-and-oop-concepts)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Structure](#project-structure)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Run](#how-to-run)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Screenshots](#️screenshot️) · [🏠 Team](#meet-the-team)&nbsp;&nbsp;&nbsp;&nbsp;**
+**[🏠 Overview](#overview)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Features](#features)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 OOP](#java-and-oop-concepts)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Structure](#️project-structure️)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Run](#how-to-run)&nbsp;&nbsp;&nbsp;&nbsp;· [🏠 Screenshots](#screenshots) · [🏠 Team](#meet-the-team)&nbsp;&nbsp;&nbsp;&nbsp;**
 
 </div>
 
@@ -192,24 +192,29 @@ Run the application with `Main` as the main class.
 
 
 
-## ‼️Project Structure‼️
+## Project Structure
 
 ```
 Find-The-D/
-├──  data/              # Sample & seed data
-├──  database/          # Database files & schema
-├──  docs/              # Design docs, class design, service API
-│   ├──  sketches/      # Wireframes of every screen
-│   └──  screenshots/   # App screenshots
-├──  src/               # The app itself
-│   ├── model/          # Person, Tenant, Landlord, Dorm, Announcement,
-│   │                   # Complaint, Establishment
-│   ├── service/        # Auth, Dorm, Interest, TenantHome,
-│   │                   # Complaint, Announcement services
-│   ├── util/           # Validator, PlusCode
-│   ├── exception/      # Custom exceptions
-│   └── view/           # Tenant & Landlord screens
-└──  README.md          # You are here!
+├──  database/       
+├──  docs/
+│   ├──  class design/    
+│   ├──  flowcharts/      
+│   ├──  screenshots/     
+│   └──  uml/            
+├──  lib/                
+│   ├── enums/              
+│   ├── exception/          
+│   ├── model/              
+│   ├── repository/        
+│   ├── service/            
+│   ├── ui/
+│   │   ├── components/     
+│   │   ├── landlord/      
+│   │   ├── screens/        
+│   │   └── tenant/         
+│   └── util/               
+└──  README.md
 ```
 
 ---
@@ -327,9 +332,32 @@ When a landlord posts a dorm with a Plus Code, the app asks Geoapify's Places AP
 -  Announcements only reach the tenants of the posting dorm.
 -  Anonymous complaints never reveal who sent them.
 ---
-# ‼️screenshot‼️
-```
-```
+# Screenshots
+
+<div align="center">
+
+| Role Selection |
+| :---: |
+| <img src="./docs/screenshots/Role.png" width="450" height="280" alt="Role Selection"> |
+
+</div>
+
+| Tenant Login | Landlord Login |
+| :---: | :---: |
+| <img src="./docs/screenshots/LoginT.png" width="450" height="280" alt="Tenant Login"> | <img src="./docs/screenshots/LoginL.png" width="450" height="280" alt="Landlord Login"> |
+
+| Tenant My Dorm | Tenant BBrowse |
+| :---: | :---: |
+| <img src="./docs/screenshots/Tenant1.png" width="450" height="280" alt="Tenant Screen 1"> | <img src="./docs/screenshots/TenantB.png" width="450" height="280" alt="Tenant B"> |
+
+| Tenant Notifications | Tenant Post Complain |
+| :---: | :---: |
+| <img src="./docs/screenshots/TenantNotif.png" width="450" height="280" alt="Tenant Notifications"> | <img src="./docs/screenshots/TenantPC.png" width="450" height="280" alt="Tenant PC"> |
+
+| Landlord Menu | Landlord My Dorm | Landlord Notification |
+| :---: | :---: | :---: |
+| <img src="./docs/screenshots/Landlord1.png" width="290" height="180" alt="Landlord Screen 1"> | <img src="./docs/screenshots/Landlord2.png" width="290" height="180" alt="Landlord Screen 2"> | <img src="./docs/screenshots/Landlord3.png" width="290" height="180" alt="Landlord Screen 3"> |
+
 ---
 
 The core OOP examples are encapsulation through private model fields and validated accessors, inheritance through `Tenant` and `Landlord` extending `Person`, polymorphism through overridden methods such as `displayInfo()`, and abstraction through the abstract `Person` class and repository interfaces.
