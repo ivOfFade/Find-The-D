@@ -412,7 +412,7 @@ See the [UML class diagram](docs/uml/UML%20Diagram.pdf) and the more detailed [c
 
 **DISCLAIMER**
 This project is created for educational purposes under the Object-Oriented Programming course.<br>
-© 2026 Team Find The D. All rights reserved.
+© 2026 Team *Find The D*. All rights reserved.
 
 </div>
 
