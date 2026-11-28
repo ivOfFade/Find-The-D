@@ -239,8 +239,11 @@ public class DormPostCard extends RoundedPanel {
             + " (" + establishment.getDistanceMeters() + " m)";
       }
 
-      JComponent row = createDetailField(text);
+      JPanel row = new JPanel(new BorderLayout());
+      row.setOpaque(false);
+      row.setAlignmentX(Component.LEFT_ALIGNMENT);
       row.setBorder(new EmptyBorder(0, 20, 0, 0));
+      row.add(createDetailField(text), BorderLayout.CENTER);
       detailsPanel.add(row);
     }
     detailsPanel.add(seeLessLink);
